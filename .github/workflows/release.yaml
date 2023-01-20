@@ -14,8 +14,8 @@ jobs:
     timeout-minutes: 10
 
     env:
-      PYPI_TOKEN: ${secrets.PYPI_TOKEN}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
     defaults:
       run:
