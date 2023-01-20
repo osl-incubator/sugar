@@ -41,6 +41,8 @@ python = "^3.8"
 podman-compose = "^1.0.3"
 docker-compose = "^1.29.2"
 sh = "^1.14.3"
+pyyaml = "<6.0"
+types-pyyaml = "^6.0.12.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7"
@@ -79,3 +81,6 @@ line_length = 79
 multi_line_output = 3
 include_trailing_comma = true
 skip_glob = ["docs/*", "*.egg-info"]
+
+[tool.mypy]
+ignore_missing_imports = true

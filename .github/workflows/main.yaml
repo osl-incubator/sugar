@@ -18,7 +18,6 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        mamba-version: "0.23.0"
         environment-file: conda/dev.yaml
         channels: conda-forge,nodefaults
         activate-environment: containers-sugar
@@ -34,6 +33,7 @@ jobs:
         containers-sugar version
         containers-sugar build --group group1 --services ""
         containers-sugar build --group group2 --services ""
+        containers-sugar build --group group1
 
     - name: Run style checks
       if: success() || failure()

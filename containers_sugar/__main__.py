@@ -2,7 +2,7 @@ import argparse
 import os
 from pathlib import Path
 
-from containers_sugar import __version__, Sugar
+from containers_sugar import Sugar, __version__
 
 
 def _get_args():
@@ -24,8 +24,9 @@ def _get_args():
         help='Specify the command to be performed.',
     )
     parser.add_argument(
-        '--service-group', '--group',
-        dest="service_group",
+        '--service-group',
+        '--group',
+        dest='service_group',
         type=str,
         help='Specify the group name of the services you want to use',
     )
