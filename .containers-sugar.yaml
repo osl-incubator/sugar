@@ -1,0 +1,27 @@
+version: 1.0.0
+compose-app: docker-compose
+service-groups:
+  - name: group1
+    project-name: project1  # optional
+    compose-path: containers/tests/group1/compose.yaml
+    env-file: .env
+    services:
+      default: service1,service3
+      list:
+        - name: service1
+          health-check: true
+        - name: service2
+          health-check: false
+        - name: service3
+          health-check: true
+  - name: group2
+    project-name: null  # optional
+    compose-path: containers/tests/group2/compose.yaml
+    env-file: .env
+    services:
+      default: null
+      list:
+        - name: service1
+          health-check: true
+        - name: service1
+          health-check: false
