@@ -8,14 +8,14 @@ on:
     branches: [ main ]
 
 jobs:
-  env:
-    PYPI_TOKEN: ${secrets.PYPI_TOKEN}
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   release:
     name: Release
     runs-on: ubuntu-latest
-    timeout_minutes: 10
+    timeout-minutes: 10
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
     defaults:
       run:
@@ -23,6 +23,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          environment-file: conda/dev.yaml
+          channels: conda-forge,nodefaults
+          activate-environment: containers-sugar
+          use-mamba: true
+          miniforge-variant: Mambaforge
 
       - name: Install deps
         run: poetry install
