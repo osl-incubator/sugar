@@ -15,7 +15,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    timeout_minutes: 10
+    timeout-minutes: 10
 
     defaults:
       run:
