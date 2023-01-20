@@ -2,11 +2,11 @@
 
 Simplify the usage of containers.
 
-You maybe would be thinking, why I need new library that wrap-up
-docker-compose or podman-compose if it is really simple to use?
+You may be thinking, why do I need a new library that wrap-up
+docker-compose or podman-compose if they are already really simple to use?
 
-Yes, that is simple to use, but if you have some other parameters to
-the compose command line, it could be very tedious to right it every time
+Yes, they are simple to use, but if you have some other parameters to
+the compose command line, it could be very tedious to write them every time
 such as `--env-file`, `--project-name`, `--file`, etc.
 
 So, in this case we could use something like a script or `make`, right?
@@ -17,8 +17,8 @@ or collaborate a bunch of projects, it would be like a boiler plate.
 Additionally, if you are maintaining some extra scripts in order to improve
 your containers stack, these scripts would be like a boilerplate as well.
 
-So, the idea of this project is to organize the containers stack and
-gather some useful scripts and keep this information centralized in a
+So, the idea of this project is to organize your stack of containers, 
+gathering some useful scripts and keeping this information centralized in a
 configuration file. So the command line would be very simple.
 
 
@@ -34,12 +34,12 @@ The commands availables now are:
   `logs`, `logs-follow`, `pull`, `restart`,
   `start`, `stop`, `wait`.
 
-> Note: get-ip and wait were not implemented yet.
+> Note: `get-ip` and `wait` are not yet implemented.
 
 
 ## How to use it
 
-First you need to have in the root of your project the config file `.containers-sugar.yaml`. This is an example of a configuration file:
+First you need to place the config file `.containers-sugar.yaml` in the root of your project. This is an example of a configuration file:
 
 ```yaml
 version: 1.0.0
