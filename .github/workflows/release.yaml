@@ -8,14 +8,14 @@ on:
     branches: [ main ]
 
 jobs:
-  env:
-    PYPI_TOKEN: ${secrets.PYPI_TOKEN}
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   release:
     name: Release
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
+    env:
+      PYPI_TOKEN: ${secrets.PYPI_TOKEN}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     defaults:
       run:
