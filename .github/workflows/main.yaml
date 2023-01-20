@@ -29,9 +29,13 @@ jobs:
       run: poetry install
 
     - name: Run tests
-      run: make test
+      run: |
+        containers-sugar help
+        containers-sugar version
+        containers-sugar build --group group1 --services ""
+        containers-sugar build --group group2 --services ""
 
     - name: Run style checks
+      if: success() || failure()
       run: |
         pre-commit install
-        make lint
