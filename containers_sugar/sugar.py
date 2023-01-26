@@ -52,7 +52,7 @@ class Sugar:
         self._load_service_names()
 
     def _call_compose_app(self, *args):
-        return self.compose_app(
+        p = self.compose_app(
             *self.compose_args,
             *args,
             *self.service_names,
@@ -63,6 +63,15 @@ class Sugar:
             _no_err=True,
             _env=os.environ,
         )
+
+        try:
+            p.wait()
+        except sh.ErrorReturnCode:
+            ...
+        except KeyboardInterrupt:
+            pid = p.pid
+            p.kill()
+            print(f'[WW] Process {pid} killed.')
 
     def _check_config_file(self):
         return Path(self.config_file).exists()
