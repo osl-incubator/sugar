@@ -1,6 +1,7 @@
 """Sugar class for containers"""
 import sys
 from pathlib import Path
+from typing import Optional
 
 import yaml
 
@@ -29,10 +30,10 @@ class Sugar:
         'wait',
     ]
 
-    args: object | None = None
+    args: Optional[object] = None
     config_file: str = ''
     config: dict = {}
-    compose_app: object | None = None
+    compose_app: Optional[object] = None
     compose_args: list = []
     service_group: dict = {}
     service_names: list = []
