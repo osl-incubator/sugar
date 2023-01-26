@@ -1,4 +1,5 @@
 """Sugar class for containers"""
+import os
 import sys
 from pathlib import Path
 from typing import Optional
@@ -57,6 +58,10 @@ class Sugar:
             *self.service_names,
             _out=sys.stdout,
             _err=sys.stderr,
+            _bg=True,
+            _bg_exc=False,
+            _no_err=True,
+            _env=os.environ,
         )
 
     def _check_config_file(self):
