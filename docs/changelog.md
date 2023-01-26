@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.0.3](https://github.com/osl-incubator/containers-sugar/compare/1.0.2...1.0.3) (2023-01-26)
+
+
+### Bug Fixes
+
+* Suppress traceback from sh ([#14](https://github.com/osl-incubator/containers-sugar/issues/14)) ([69902c6](https://github.com/osl-incubator/containers-sugar/commit/69902c6372ec55cc36bbdd87e0f594c733163886))
+
 ## [1.0.2](https://github.com/osl-incubator/containers-sugar/compare/1.0.1...1.0.2) (2023-01-26)
 
 
