@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.0.5](https://github.com/osl-incubator/containers-sugar/compare/1.0.4...1.0.5) (2023-01-26)
+
+
+### Bug Fixes
+
+* Fix the import of sh lib and add pre-commit run to CI ([#16](https://github.com/osl-incubator/containers-sugar/issues/16)) ([ac048e1](https://github.com/osl-incubator/containers-sugar/commit/ac048e189ecf553277246f34fa9b6f67010dc7ca))
+
 ## [1.0.4](https://github.com/osl-incubator/containers-sugar/compare/1.0.3...1.0.4) (2023-01-26)
 
 
