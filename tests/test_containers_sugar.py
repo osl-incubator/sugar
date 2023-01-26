@@ -1,7 +1,7 @@
 """Tests for `containers-sugar` package."""
 import pytest
 
-import containers_sugar
+import containers_sugar  # noqa: F401
 
 
 @pytest.fixture

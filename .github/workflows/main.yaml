@@ -39,7 +39,10 @@ jobs:
     - name: Install dependencies
       run: poetry install
 
-    - name: Run tests
+    - name: run unit tests
+      run: pytest
+
+    - name: CLI tests
       run: |
         containers-sugar help
         containers-sugar version
