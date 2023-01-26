@@ -1,6 +1,7 @@
 """Tests for `containers-sugar` package."""
-
 import pytest
+
+import containers_sugar
 
 
 @pytest.fixture
