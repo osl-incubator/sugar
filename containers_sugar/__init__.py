@@ -3,7 +3,7 @@
 
 __author__ = 'Ivan Ogasawara'
 __email__ = 'ivan.ogasawara@gmail.com'
-__version__ = '1.0.3'  # semantic-release
+__version__ = '1.0.4'  # semantic-release
 
 
 from containers_sugar.sugar import Sugar  # noqa: F401

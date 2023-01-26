@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.0.4](https://github.com/osl-incubator/containers-sugar/compare/1.0.3...1.0.4) (2023-01-26)
+
+
+### Bug Fixes
+
+* Fix the sh call ([#15](https://github.com/osl-incubator/containers-sugar/issues/15)) ([6e26308](https://github.com/osl-incubator/containers-sugar/commit/6e263088458ece50bd66d9a3575ed5d0cec51f8a))
+
 ## [1.0.3](https://github.com/osl-incubator/containers-sugar/compare/1.0.2...1.0.3) (2023-01-26)
 
 
