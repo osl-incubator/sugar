@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.0.6](https://github.com/osl-incubator/containers-sugar/compare/1.0.5...1.0.6) (2023-01-27)
+
+
+### Bug Fixes
+
+* Fix env-file access and improve version sub-command output ([#17](https://github.com/osl-incubator/containers-sugar/issues/17)) ([bc50bb9](https://github.com/osl-incubator/containers-sugar/commit/bc50bb9b2d7dcaf87e847f794c296b82dff7a4e9))
+
 ## [1.0.5](https://github.com/osl-incubator/containers-sugar/compare/1.0.4...1.0.5) (2023-01-26)
 
 
