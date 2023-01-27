@@ -29,6 +29,7 @@ class Sugar:
         'restart',
         'start',
         'stop',
+        'version',
         'wait',
     ]
 
@@ -42,14 +43,14 @@ class Sugar:
 
     def __init__(self, args):
         self.args = args
-
         self.config_file = self.args.config_file
-
-        self._verify_args()
         self._load_config()
-        self._verify_config()
+        self._verify_args()
         self._load_compose_app()
+
+    def load_services(self):
         self._load_compose_args()
+        self._verify_config()
         self._load_service_names()
 
     def _call_compose_app(self, *args):
@@ -110,6 +111,18 @@ class Sugar:
         if self.compose_app is None:
             raise Exception(f'"{self.config["compose-app"]}" not found.')
 
+    def _load_compose_args(self):
+        self._filter_service_group()
+
+        if 'env-file' in self.service_group:
+            self.compose_args.extend(
+                ['--env-file', self.service_group['env-file']]
+            )
+
+        self.compose_args.extend(
+            ['--file', self.service_group['compose-path']]
+        )
+
     def _filter_service_group(self):
         groups = self.config['service-groups']
 
@@ -133,18 +146,6 @@ class Sugar:
         raise Exception(
             f'The given group service "{group_name}" was not found in the '
             'configuration file.'
-        )
-
-    def _load_compose_args(self):
-        self._filter_service_group()
-
-        if hasattr(self.service_group, 'env-file'):
-            self.compose_args.extend(
-                ['--env-file', self.service_group['env-file']]
-            )
-
-        self.compose_args.extend(
-            ['--file', self.service_group['compose-path']]
         )
 
     def _load_service_names(self):
@@ -189,6 +190,10 @@ class Sugar:
 
     def _wait(self):
         print('wait')
+
+    def _version(self):
+        print('Container App Path: ', self.compose_app)
+        self._call_compose_app('--version')
 
     def run(self):
         return getattr(self, f'_{self.args.action.replace("-", "_")}')()

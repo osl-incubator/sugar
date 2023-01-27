@@ -20,7 +20,7 @@ def _get_args():
 
     parser.add_argument(
         'action',
-        choices=['help', 'version'] + Sugar.ACTIONS,
+        choices=['help'] + Sugar.ACTIONS,
         help='Specify the command to be performed.',
     )
     parser.add_argument(
@@ -48,7 +48,7 @@ def _get_args():
 
 
 def show_version():
-    print(__version__)
+    print('containers-sugar version:', __version__)
 
 
 def app():
@@ -58,10 +58,14 @@ def app():
     if args.action == 'help':
         return args_parser.print_help()
 
-    if args.action == 'version':
-        return show_version()
-
     sugar = Sugar(args)
+
+    if args.action == 'version':
+        show_version()
+        sugar.run()
+        return
+
+    sugar.load_services()
     return sugar.run()
 
 
