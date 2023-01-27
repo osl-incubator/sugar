@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.1.0](https://github.com/osl-incubator/containers-sugar/compare/1.0.6...1.1.0) (2023-01-27)
+
+
+### Features
+
+* Add run and exec initial implementation ([#21](https://github.com/osl-incubator/containers-sugar/issues/21)) ([332f2bc](https://github.com/osl-incubator/containers-sugar/commit/332f2bce7d7c6945707ffe128619bc9bda2b8548))
+
 ## [1.0.6](https://github.com/osl-incubator/containers-sugar/compare/1.0.5...1.0.6) (2023-01-27)
 
 
