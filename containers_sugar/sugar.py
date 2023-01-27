@@ -22,10 +22,12 @@ class Sugar:
     ACTIONS = [
         'build',
         'down',
+        'exec',
         'get-ip',
         'logs',
         'logs-follow',
         'pull',
+        'run',
         'restart',
         'start',
         'stop',
@@ -53,11 +55,11 @@ class Sugar:
         self._verify_config()
         self._load_service_names()
 
-    def _call_compose_app(self, *args):
+    def _call_compose_app(self, *args, services=[]):
         p = self.compose_app(
             *self.compose_args,
             *args,
-            *self.service_names,
+            *services,
             _out=sys.stdout,
             _err=sys.stderr,
             _bg=True,
@@ -123,6 +125,11 @@ class Sugar:
             ['--file', self.service_group['compose-path']]
         )
 
+        if 'project-name' in self.service_group:
+            self.compose_args.extend(
+                ['--project-name', self.service_group['project-name']]
+            )
+
     def _filter_service_group(self):
         groups = self.config['service-groups']
 
@@ -161,35 +168,54 @@ class Sugar:
     # container commands
 
     def _build(self):
-        self._call_compose_app('build')
+        self._call_compose_app('build', services=self.service_names)
 
     def _down(self):
-        self._call_compose_app('down', '--volumes', '--remove-orphans')
+        self._call_compose_app(
+            'down',
+            '--volumes',
+            '--remove-orphans',
+            services=self.service_names,
+        )
+
+    def _exec(self):
+        if len(self.service_names) > 1:
+            raise Exception(
+                '`exec` sub-command expected just one service as parameter'
+            )
+        self._call_compose_app('exec', services=self.service_names)
 
     def _get_ip(self):
-        print('get_ip')
+        raise Exception('[EE] `get-ip` mot implemented yet.')
 
     def _logs(self):
-        self._call_compose_app('logs')
+        self._call_compose_app('logs', services=self.service_names)
 
     def _logs_follow(self):
-        self._call_compose_app('logs', '--follow')
+        self._call_compose_app('logs', '--follow', services=self.service_names)
 
     def _pull(self):
-        self._call_compose_app('pull')
+        self._call_compose_app('pull', services=self.service_names)
 
     def _restart(self):
         self._stop()
         self._start()
 
+    def _run(self):
+        if len(self.service_names) > 1:
+            raise Exception(
+                '`run` sub-command expected just one service as parameter'
+            )
+        self._call_compose_app('run', services=self.service_names)
+
     def _start(self):
-        self._call_compose_app('up', '-d')
+        self._call_compose_app('up', '-d', services=self.service_names)
 
     def _stop(self):
-        self._call_compose_app('stop')
+        self._call_compose_app('stop', services=self.service_names)
 
     def _wait(self):
-        print('wait')
+        raise Exception('[EE] `wait` not implemented yet.')
 
     def _version(self):
         print('Container App Path: ', self.compose_app)
