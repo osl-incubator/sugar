@@ -6,7 +6,7 @@ service-groups:
     compose-path: containers/tests/group1/compose.yaml
     env-file: .env
     services:
-      default: service1a,service3a
+      default: service1,service3
       list:
         - name: service1
           health-check: true
