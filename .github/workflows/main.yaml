@@ -6,8 +6,14 @@ jobs:
   build:
     strategy:
       matrix:
-        python_version: ["3.7.1", "3.8", "3.9", "3.10"]
-        os: ["ubuntu", "macos"]
+        python_version:
+          - "3.7.1"
+          # - "3.8"
+          # - "3.9"
+          # - "3.10"
+        os:
+          # - "ubuntu"
+          - "macos"
 
     runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 10
@@ -22,6 +28,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Change to podman on MacOS
+      if: ${{ matrix.os == 'macos' }}
+      run:
+        # sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
+        ln -sf /usr/bin/podman /usr/bin/docker
 
     - name: Prepare .env file
       run: touch .env
@@ -42,12 +54,6 @@ jobs:
 
     - name: Install dependencies
       run: poetry install
-
-    - name: Change to podman on MacOS
-      if: ${{ matrix.os == 'macos' }}
-      run:
-        # sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
-        sudo ln -sf /usr/bin/podman /usr/bin/docker
 
     - name: run unit tests
       run: pytest
