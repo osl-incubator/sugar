@@ -29,14 +29,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-
-    - name: Change to podman on MacOS
+    - name: Install docker
       if: ${{ matrix.os == 'macos' }}
       run:
         # sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
-        ln -sf /usr/bin/podman /usr/bin/docker
+        # ln -sf /usr/bin/podman /usr/bin/docker
+        brew install docker
 
     - name: Prepare .env file
       run: touch .env
@@ -68,6 +66,10 @@ jobs:
         containers-sugar build --group group1 --services ""
         containers-sugar build --group group2 --services ""
         containers-sugar build --group group1
+
+    - name: Setup tmate session
+      if: failure()
+      uses: mxschmitt/action-tmate@v3
 
     - name: Run style checks
       if: success() || failure()
