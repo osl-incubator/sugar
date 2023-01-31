@@ -26,6 +26,16 @@ jobs:
     - name: Prepare .env file
       run: touch .env
 
+    # Taken from https://github.com/actions/virtual-environments/issues/1143#issuecomment-652264388
+    - name: Install docker
+      if: ${{ matrix.os == 'macos' }}
+      run: |
+        mkdir -p ~/.docker/machine/cache
+        curl -Lo ~/.docker/machine/cache/boot2docker.iso https://github.com/boot2docker/boot2docker/releases/download/v19.03.12/boot2docker.iso
+        brew install docker docker-machine
+        docker-machine create --driver virtualbox default
+        docker-machine env default
+
     - name: Prepare conda environment
       run: |
         sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
