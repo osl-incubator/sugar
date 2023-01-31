@@ -70,8 +70,9 @@ class Sugar:
 
         try:
             p.wait()
-        except sh.ErrorReturnCode:
-            ...
+        except sh.ErrorReturnCode as e:
+            print(f'[EE] Command {e.full_cmd} failed ({e.exit_code})')
+            exit(e.exit_code)
         except KeyboardInterrupt:
             pid = p.pid
             p.kill()
@@ -82,19 +83,22 @@ class Sugar:
 
     def _verify_args(self):
         if not self._check_config_file():
-            raise Exception(
-                '[config] Config file .containers-sugar.yaml not found.'
+            print(
+                '[EE] [config] Config file .containers-sugar.yaml not found.'
             )
+            exit(1)
 
         if self.args.action not in self.ACTIONS:
-            raise Exception(
-                'The given action is not valid. Use one of them: '
+            print(
+                '[EE] The given action is not valid. Use one of them: '
                 + ','.join(self.ACTIONS)
             )
+            exit(1)
 
     def _verify_config(self):
         if not len(self.config['service-groups']):
-            raise Exception('No service groups found.')
+            print('[EE] No service groups found.')
+            exit(1)
 
     def _load_config(self):
         with open(self.config_file, 'r') as f:
@@ -106,12 +110,12 @@ class Sugar:
         elif self.config['compose-app'] == 'podman-compose':
             self.compose_app = podman_compose
         else:
-            raise Exception(
-                f'"{self.config["compose-app"]}" not supported yet.'
-            )
+            print(f'[EE] "{self.config["compose-app"]}" not supported yet.')
+            exit(1)
 
         if self.compose_app is None:
-            raise Exception(f'"{self.config["compose-app"]}" not found.')
+            print(f'[EE] "{self.config["compose-app"]}" not found.')
+            exit(1)
 
     def _load_compose_args(self):
         self._filter_service_group()
@@ -135,12 +139,13 @@ class Sugar:
 
         if not self.args.service_group:
             if len(groups) > 1:
-                raise Exception(
-                    'Unable to infer the service group:'
+                print(
+                    '[EE] Unable to infer the service group:'
                     'The service group for this operation was not defined, '
                     'and there are more than one service group in the '
                     'configuration file.'
                 )
+                exit(1)
             self.service_group = groups[0]
             return
 
@@ -150,10 +155,11 @@ class Sugar:
                 self.service_group = g
                 return
 
-        raise Exception(
-            f'The given group service "{group_name}" was not found in the '
-            'configuration file.'
+        print(
+            f'[EE] The given group service "{group_name}" was not found '
+            'in the configuration file.'
         )
+        exit(1)
 
     def _load_service_names(self):
         services = self.service_group['services']
@@ -180,13 +186,16 @@ class Sugar:
 
     def _exec(self):
         if len(self.service_names) > 1:
-            raise Exception(
-                '`exec` sub-command expected just one service as parameter'
+            print(
+                '[EE] `exec` sub-command expected just one service '
+                'as parameter.'
             )
+            exit(1)
         self._call_compose_app('exec', services=self.service_names)
 
     def _get_ip(self):
-        raise Exception('[EE] `get-ip` mot implemented yet.')
+        print('[EE] `get-ip` mot implemented yet.')
+        exit(1)
 
     def _logs(self):
         self._call_compose_app('logs', services=self.service_names)
@@ -203,9 +212,10 @@ class Sugar:
 
     def _run(self):
         if len(self.service_names) > 1:
-            raise Exception(
-                '`run` sub-command expected just one service as parameter'
+            print(
+                '[EE] `run` sub-command expected just one service as parameter'
             )
+            exit(1)
         self._call_compose_app('run', services=self.service_names)
 
     def _start(self):
@@ -215,7 +225,8 @@ class Sugar:
         self._call_compose_app('stop', services=self.service_names)
 
     def _wait(self):
-        raise Exception('[EE] `wait` not implemented yet.')
+        print('[EE] `wait` not implemented yet.')
+        exit(1)
 
     def _version(self):
         print('Container App Path: ', self.compose_app)
