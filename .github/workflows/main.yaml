@@ -31,7 +31,7 @@ jobs:
 
     - name: Install docker
       if: ${{ matrix.os == 'macos' }}
-      run:
+      run: |
         # sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
         # ln -sf /usr/bin/podman /usr/bin/docker
         brew install docker
@@ -43,8 +43,8 @@ jobs:
     - name: Prepare conda environment (osx)
       if: ${{ matrix.os == 'macos' }}
       run: |
-        PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH" \
-          sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
+        export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+        sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
         cat conda/dev.yaml
 
     - name: Prepare conda environment (linux)
