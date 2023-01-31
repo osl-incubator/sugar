@@ -43,8 +43,8 @@ jobs:
     - name: Prepare conda environment (osx)
       if: ${{ matrix.os == 'macos' }}
       run: |
-        export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
-        sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
+        PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH" \
+          sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
         cat conda/dev.yaml
 
     - name: Prepare conda environment (linux)
