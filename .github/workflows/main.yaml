@@ -12,9 +12,9 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 10
 
-    defaults:
-      run:
-        shell: bash -l {0}
+    # defaults:
+    #   run:
+    #     shell: bash -l {0}
 
     concurrency:
       group: ci-${{ matrix.os }}-${{ matrix.python_version }}-${{ github.ref }}
