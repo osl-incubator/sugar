@@ -46,19 +46,21 @@ jobs:
       if: ${{ matrix.os == 'macos' }}
       run: |
         export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
-        sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
-        cat conda/dev.yaml
+        sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ \
+          conda/dev-${{ matrix.container_app }}.yaml
+        cat conda/dev-${{ matrix.container_app }}.yaml
 
     - name: Prepare conda environment (linux)
       if: ${{ matrix.os == 'ubuntu' }}
       run: |
-        sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
-        cat conda/dev.yaml
+        sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ \
+          conda/dev-${{ matrix.container_app }}.yaml
+        cat conda/dev-${{ matrix.container_app }}.yaml
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        environment-file: conda/${{ matrix.container_app }}.yaml
+        environment-file: conda/dev-${{ matrix.container_app }}.yaml
         channels: conda-forge,nodefaults
         activate-environment: containers-sugar
         use-mamba: true
