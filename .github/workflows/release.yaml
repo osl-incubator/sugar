@@ -27,7 +27,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
-          environment-file: conda/dev.yaml
+          environment-file: conda/dev-docker.yaml
           channels: conda-forge,nodefaults
           activate-environment: containers-sugar
           use-mamba: true
