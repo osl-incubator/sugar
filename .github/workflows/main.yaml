@@ -64,7 +64,9 @@ jobs:
 
     - name: Install podman
       if: ${{ matrix.container_app == 'podman' }}
-      run: sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
+      run: |
+        sed --version
+        sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
 
     - name: Install dependencies
       run: poetry install
