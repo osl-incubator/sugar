@@ -16,7 +16,7 @@ jobs:
           - "macos"
 
     runs-on: ${{ matrix.os }}-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     defaults:
       run:
@@ -34,8 +34,13 @@ jobs:
       run: |
         # sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
         # ln -sf /usr/bin/podman /usr/bin/docker
-        brew install docker
         brew install gnu-sed
+        # install docker (macOS specific)
+        HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask docker
+        sudo /Applications/Docker.app/Contents/MacOS/Docker --unattended --install-privileged-components
+        open -a /Applications/Docker.app --args --unattended --accept-license
+        echo "We are waiting for Docker to be up and running. It can take over 2 minutes..."
+        while ! /Applications/Docker.app/Contents/Resources/bin/docker info &>/dev/null; do sleep 1; done
 
     - name: Prepare .env file
       run: touch .env
