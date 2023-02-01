@@ -7,13 +7,19 @@ jobs:
     strategy:
       matrix:
         python_version:
-          - "3.7.1"
+          # - "3.7.1"
           # - "3.8"
           # - "3.9"
           # - "3.10"
         os:
           # - "ubuntu"
-          - "macos"
+        container_app:
+          # - docker
+
+        include:
+          - os: macos
+            container-app: podman
+            python_version: "3.7.1"
 
     runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 20
@@ -52,24 +58,21 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        environment-file: conda/dev.yaml
+        environment-file: conda/${{ matrix.container_app }}.yaml
         channels: conda-forge,nodefaults
         activate-environment: containers-sugar
         use-mamba: true
         miniforge-variant: Mambaforge
 
     - name: Install podman
-      if: ${{ matrix.os == 'macos' }}
-      run: |
-        mamba install -y podman
-        sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
-        # ln -sf /usr/bin/podman /usr/bin/docker
+      if: ${{ matrix.container_app == 'podman' }}
+      run: sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
 
     - name: Install dependencies
       run: poetry install
 
     - name: run unit tests
-      run: pytest
+      run: makim tests
 
     - name: CLI tests
       run: |
@@ -87,4 +90,4 @@ jobs:
       if: success() || failure()
       run: |
         pre-commit install
-        pre-commit run --all
+        makim lint

@@ -1,0 +1,38 @@
+version: 1.0.0
+shell: bash
+groups:
+  - name: default
+    targets:
+      clean:
+        help: Remove temporary unnecessary files
+        run: |
+          rm -fr build/
+          rm -fr dist/
+          rm -fr .eggs/
+          find . -name '*.egg-info' -exec rm -fr {} +
+          find . -name '*.egg' -exec rm -f {} +
+          find . -name '*.pyc' -exec rm -f {} +
+          find . -name
+          find . -name '__pycache__' -exec rm -fr '*.pyo' -exec rm -f {} +
+          find . -name '*~' -exec rm -f {} +{} +
+          rm -f .coverage
+          rm -fr htmlcov/
+          rm -fr .pytest_cache
+
+      lint:
+        help: Run linter tools
+        run: pre-commit run --all-files --verbose
+
+      tests:
+        help: Run tests
+        run: pytest
+
+      docs-build:
+        help:
+        run: mkdocs build --config-file docs/mkdocs.yaml
+
+      docs-preview:
+        dependencies:
+          targets:
+            - docs-build
+        run: mkdocs serve --watch docs --config-file docs/mkdocs.yaml
