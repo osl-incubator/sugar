@@ -35,34 +35,47 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install sed
+    - name: Install MacOS extra tools and add extra config
       if: ${{ matrix.os == 'macos' }}
-      run: brew install gnu-sed
+      run: |
+        brew install gnu-sed
+        echo 'export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"' >> ~/.bashrc
+        echo 'export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"' >> ~/.bash_profile
+
+    - name: Install Podman on MacOS
+      if: ${{ matrix.os == 'macos' && matrix.container_app == 'podman' }}
+      run: |
+        brew install podman
 
     - name: Prepare .env file
       run: touch .env
 
-    - name: Prepare macOS environment
-      if: ${{ matrix.os == 'macos' }}
-      run: |
-        echo 'export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"' >> ~/.bashrc
-
-    - name: Prepare conda environment
+    - name: Prepare Conda environment
       run: |
         sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ \
-          conda/dev-${{ matrix.container_app }}.yaml
-        cat conda/dev-${{ matrix.container_app }}.yaml
+          conda/dev.yaml
+        cat conda/dev.yaml
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-        environment-file: conda/dev-${{ matrix.container_app }}.yaml
+        environment-file: conda/dev.yaml
         channels: conda-forge,nodefaults
         activate-environment: containers-sugar
         use-mamba: true
         miniforge-variant: Mambaforge
 
-    - name: Install podman
+    - name: Prepare configuration for Podman
+      if: ${{ matrix.container_app == 'podman' }}
+      run: |
+        sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
+
+    - name: Install podman on MacOS
+      if: ${{ matrix.container_app == 'podman' }}
+      run: |
+        sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
+
+    - name: Install podman on Linux
       if: ${{ matrix.container_app == 'podman' }}
       run: |
         sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
