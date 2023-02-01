@@ -18,7 +18,7 @@ jobs:
 
         include:
           - os: macos
-            container-app: podman
+            container_app: podman
             python_version: "3.7.1"
 
     runs-on: ${{ matrix.os }}-latest
@@ -42,16 +42,12 @@ jobs:
     - name: Prepare .env file
       run: touch .env
 
-    - name: Prepare conda environment (osx)
+    - name: Prepare macOS environment
       if: ${{ matrix.os == 'macos' }}
       run: |
-        export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
-        sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ \
-          conda/dev-${{ matrix.container_app }}.yaml
-        cat conda/dev-${{ matrix.container_app }}.yaml
+        echo 'export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"' >> ~/.bashrc
 
-    - name: Prepare conda environment (linux)
-      if: ${{ matrix.os == 'ubuntu' }}
+    - name: Prepare conda environment
       run: |
         sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ \
           conda/dev-${{ matrix.container_app }}.yaml
