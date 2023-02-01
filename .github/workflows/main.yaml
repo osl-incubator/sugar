@@ -29,18 +29,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install docker
+    - name: Install sed
       if: ${{ matrix.os == 'macos' }}
-      run: |
-        # sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
-        # ln -sf /usr/bin/podman /usr/bin/docker
-        brew install gnu-sed
-        # install docker (macOS specific)
-        HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask docker
-        sudo /Applications/Docker.app/Contents/MacOS/Docker --unattended --install-privileged-components
-        open -a /Applications/Docker.app --args --unattended --accept-license
-        echo "We are waiting for Docker to be up and running. It can take over 2 minutes..."
-        while ! /Applications/Docker.app/Contents/Resources/bin/docker info &>/dev/null; do sleep 1; done
+      run: brew install gnu-sed
 
     - name: Prepare .env file
       run: touch .env
@@ -57,6 +48,13 @@ jobs:
       run: |
         sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
         cat conda/dev.yaml
+
+    - name: Install podman
+      if: ${{ matrix.os == 'macos' }}
+      run: |
+        mamba install -y podman
+        sed -i s/docker-compose/podman-compose/ .containers-sugar.yaml
+        # ln -sf /usr/bin/podman /usr/bin/docker
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
