@@ -20,11 +20,11 @@ jobs:
       cancel-in-progress: true
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Prepare conda environment
       run: |
-        sed -i s/python\ 3\.7\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
+        sed -i s/python\ 3\.8/python\ ${{ matrix.python_version }}/ conda/dev.yaml
         cat conda/dev.yaml
 
     - uses: conda-incubator/setup-miniconda@v2
