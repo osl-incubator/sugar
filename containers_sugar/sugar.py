@@ -38,7 +38,8 @@ class Sugar:
     args: Optional[object] = None
     config_file: str = ''
     config: dict = {}
-    compose_app: Optional[object] = None
+    # starts with a simple command
+    compose_app: sh.Command = sh.echo
     compose_args: list = []
     service_group: dict = {}
     service_names: list = []
@@ -55,17 +56,41 @@ class Sugar:
         self._verify_config()
         self._load_service_names()
 
-    def _call_compose_app(self, *args, services=[]):
-        p = self.compose_app(
+    def _call_compose_app(
+        self,
+        *args,
+        services: list = [],
+        extras: list = [],
+        cmd: str = '',
+    ):
+        sh_extras = {
+            '_in': sys.stdin,
+            '_out': sys.stdout,
+            '_err': sys.stderr,
+            '_no_err': True,
+            '_env': os.environ,
+        }
+
+        if args[0] not in ['run', 'exec']:
+            sh_extras.update(
+                {
+                    '_bg': True,
+                    '_bg_exc': False,
+                }
+            )
+
+        print(
+            '>>>',
+            self.compose_app,
             *self.compose_args,
             *args,
+            *extras,
             *services,
-            _out=sys.stdout,
-            _err=sys.stderr,
-            _bg=True,
-            _bg_exc=False,
-            _no_err=True,
-            _env=os.environ,
+            cmd,
+        )
+        print('-' * 80)
+        p = self.compose_app(
+            *self.compose_args, *args, *extras, *services, cmd, **sh_extras
         )
 
         try:
@@ -183,7 +208,14 @@ class Sugar:
             raise Exception(
                 '`exec` sub-command expected just one service as parameter'
             )
-        self._call_compose_app('exec', services=self.service_names)
+        # note: this is very fragile, we should use a better way to do that
+        extras = self.args.extras.split(' ')
+        self._call_compose_app(
+            'exec',
+            services=self.service_names,
+            extras=extras,
+            cmd=self.args.cmd,
+        )
 
     def _get_ip(self):
         raise Exception('[EE] `get-ip` mot implemented yet.')
@@ -206,7 +238,14 @@ class Sugar:
             raise Exception(
                 '`run` sub-command expected just one service as parameter'
             )
-        self._call_compose_app('run', services=self.service_names)
+        # note: this is very fragile, we should use a better way to do that
+        extras = self.args.extras.split(' ')
+        self._call_compose_app(
+            'run',
+            services=self.service_names,
+            extras=extras,
+            cmd=self.args.cmd,
+        )
 
     def _start(self):
         self._call_compose_app('up', '-d', services=self.service_names)

@@ -37,7 +37,7 @@ exclude = [
 
 
 [tool.poetry.dependencies]
-python = "^3.7.1"
+python = "^3.8"
 podman-compose = "^1.0.3"
 docker-compose = "^1.29.2"
 sh = "^1.14.3"
