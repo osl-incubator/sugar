@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.2.0](https://github.com/osl-incubator/containers-sugar/compare/1.1.0...1.2.0) (2023-02-06)
+
+
+### Features
+
+* Add extra args and command argument for run and exec action ([#27](https://github.com/osl-incubator/containers-sugar/issues/27)) ([8680799](https://github.com/osl-incubator/containers-sugar/commit/8680799ae7bdbbe57281180f0bd2d2461445cbbc))
+
 # [1.1.0](https://github.com/osl-incubator/containers-sugar/compare/1.0.6...1.1.0) (2023-01-27)
 
 
