@@ -39,6 +39,22 @@ def _get_args():
         ),
     )
     parser.add_argument(
+        '--all',
+        action='store_true',
+        help='Use all services for the command.',
+    )
+    parser.add_argument(
+        '--extras',
+        type=str,
+        default='',
+        help='Set extra arguments to be used by the compose app.',
+    )
+    parser.add_argument(
+        '--cmd',
+        type=str,
+        help='Set the command to be used by run/exec.',
+    )
+    parser.add_argument(
         '--config-file',
         type=str,
         default=str(Path(os.getcwd()) / '.containers-sugar.yaml'),
