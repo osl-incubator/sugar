@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.3.1](https://github.com/osl-incubator/containers-sugar/compare/1.3.0...1.3.1) (2023-02-07)
+
+
+### Bug Fixes
+
+* Fix --extras parameter and improve the CI ([#32](https://github.com/osl-incubator/containers-sugar/issues/32)) ([9340712](https://github.com/osl-incubator/containers-sugar/commit/9340712a9a9c65c07f9ff9ad732a47f6d3dc0d0d))
+
 # [1.3.0](https://github.com/osl-incubator/containers-sugar/compare/1.2.0...1.3.0) (2023-02-07)
 
 
