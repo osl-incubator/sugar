@@ -16,11 +16,8 @@ jobs:
         python_version: ["3.8", "3.9", "3.10"]
 
     concurrency:
-      group: ci-${{ matrix.python_version }}-${{ github.ref }}
+      group: ci-tests-${{ matrix.python_version }}-${{ github.ref }}
       cancel-in-progress: true
-
-    env:
-      GROUP: {{ matrix.group_name }}
 
     steps:
     - uses: actions/checkout@v3
