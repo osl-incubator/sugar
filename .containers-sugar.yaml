@@ -23,5 +23,5 @@ service-groups:
       list:
         - name: service1
           health-check: true
-        - name: service1
+        - name: service2
           health-check: false

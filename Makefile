@@ -51,3 +51,23 @@ docs-preview: docs-build
 .PHONY:build
 build:
 	poetry build
+
+
+.ONESHELL:
+.PHONY: smoke-test
+smoke-tests:
+	set -ex
+	containers-sugar help
+	containers-sugar version
+	containers-sugar build --group group1 --all
+	containers-sugar build --group group1
+	containers-sugar build --group group1 --services service1
+	containers-sugar pull --group group1 --all
+	containers-sugar pull --group group1
+	containers-sugar pull --group group1 --services service1
+	containers-sugar start --group group1 --all
+	containers-sugar restart --group group1 --all
+	containers-sugar exec --group group1 --services service1 --cmd "env"
+	containers-sugar stop --group group1 --all
+	containers-sugar run --group group1 --services service1 --cmd "env"
+	containers-sugar down --group group1 --all
