@@ -63,9 +63,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: create a dotenv file
-      run: touch .env
-
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -79,7 +76,6 @@ jobs:
       run: poetry install
 
     - name: Run style checks
-      if: success() || failure()
       run: |
         pre-commit install
         pre-commit run --all
