@@ -67,7 +67,7 @@ smoke-tests:
 	containers-sugar pull --group group1 --services service1
 	containers-sugar start --group group1 --all
 	containers-sugar restart --group group1 --all
-	containers-sugar exec --group group1 --services service1 --cmd "env"
+	containers-sugar exec --group group1 --services service1 --extras="-T" --cmd "env"
 	containers-sugar stop --group group1 --all
-	containers-sugar run --group group1 --services service1 --cmd "env"
+	containers-sugar run --group group1 --services service1 --extras="-T" --cmd "env"
 	containers-sugar down --group group1 --all
