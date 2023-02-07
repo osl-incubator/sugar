@@ -12,11 +12,6 @@ try:
 except Exception:
     docker_compose = None
 
-try:
-    from sh import podman_compose
-except Exception:
-    podman_compose = None
-
 
 class Sugar:
     ACTIONS = [
@@ -81,10 +76,7 @@ class Sugar:
                 }
             )
 
-        cmd_list = []
-        if cmd:
-            cmd = f'{cmd}'
-            cmd_list = [cmd]
+        cmd_list = [cmd] if cmd else []
 
         print(
             '>>>',
@@ -93,37 +85,35 @@ class Sugar:
             *args,
             *extras,
             *services,
-            cmd,
+            *cmd_list,
         )
         print('-' * 80)
+
+        positional_parameters = (
+            self.compose_args + list(args) + extras + services + cmd_list
+        )
 
         if not run_in_bg:
             try:
                 self.compose_app(
-                    *self.compose_args,
-                    *args,
-                    *extras,
-                    *services,
-                    *cmd_list,
+                    *positional_parameters,
                     **sh_extras,
                 )
             except sh.ErrorReturnCode as e:
                 print(e)
+                exit(1)
             return
 
         p = self.compose_app(
-            *self.compose_args,
-            *args,
-            *extras,
-            *services,
-            f'{cmd}',
+            *positional_parameters,
             **sh_extras,
         )
 
         try:
             p.wait()
-        except sh.ErrorReturnCode:
-            ...
+        except sh.ErrorReturnCode as e:
+            print(e)
+            exit(1)
         except KeyboardInterrupt:
             pid = p.pid
             p.kill()
@@ -156,8 +146,6 @@ class Sugar:
     def _load_compose_app(self):
         if self.config['compose-app'] == 'docker-compose':
             self.compose_app = docker_compose
-        elif self.config['compose-app'] == 'podman-compose':
-            self.compose_app = podman_compose
         else:
             print(f'[EE] "{self.config["compose-app"]}" not supported yet.')
             exit(1)
@@ -213,7 +201,9 @@ class Sugar:
     def _load_service_names(self):
         services = self.service_group['services']
 
-        if self.args.services == '':
+        if self.args.all:
+            self.service_names = []
+        elif self.args.services == '':
             pass
         elif self.args.services:
             self.service_names = self.args.services.split(',')
@@ -241,7 +231,8 @@ class Sugar:
             )
             exit(1)
         # note: this is very fragile, we should use a better way to do that
-        extras = self.args.extras.split(' ')
+        extras = self.args.extras.split(' ') if self.args.extras else []
+
         self._call_compose_app(
             'exec',
             services=self.service_names,

@@ -1,9 +1,9 @@
-name: build
+name: main
 
 on: [push, pull_request]
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -16,7 +16,7 @@ jobs:
         python_version: ["3.8", "3.9", "3.10"]
 
     concurrency:
-      group: ci-${{ matrix.python_version }}-${{ github.ref }}
+      group: ci-tests-${{ matrix.python_version }}-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
@@ -26,6 +26,9 @@ jobs:
       run: |
         sed -i s/python\ 3\.8/python\ ${{ matrix.python_version }}/ conda/dev.yaml
         cat conda/dev.yaml
+
+    - name: create a dotenv file
+      run: touch .env
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
@@ -43,15 +46,36 @@ jobs:
       run: pytest
 
     - name: CLI tests
-      run: |
-        containers-sugar help
-        containers-sugar version
-        containers-sugar build --group group1 --services ""
-        containers-sugar build --group group2 --services ""
-        containers-sugar build --group group1
+      run: make smoke-tests
+
+  linter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    concurrency:
+      group: ci-linter-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        environment-file: conda/dev.yaml
+        channels: conda-forge,nodefaults
+        activate-environment: containers-sugar
+        use-mamba: true
+        miniforge-variant: Mambaforge
+
+    - name: Install dependencies
+      run: poetry install
 
     - name: Run style checks
-      if: success() || failure()
       run: |
         pre-commit install
         pre-commit run --all
