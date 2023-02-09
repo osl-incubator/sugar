@@ -317,7 +317,7 @@ class Sugar:
         exit(1)
 
     def _version(self):
-        self._print_error('Container App Path: ', self.compose_app)
+        self._print_error('Container App Path: ' + str(self.compose_app))
         self._call_compose_app('--version')
 
     def run(self):
