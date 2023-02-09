@@ -6,14 +6,12 @@ service-groups:
     compose-path: containers/tests/group1/compose.yaml
     env-file: .env
     services:
-      default: service1,service3
+      default: service1-1,service1-3
       list:
-        - name: service1
-          health-check: true
-        - name: service2
-          health-check: false
-        - name: service3
-          health-check: true
+        - name: service1-1
+        - name: service1-2
+        - name: service1-3
+
   - name: group2
     project-name: null  # optional
     compose-path: containers/tests/group2/compose.yaml
@@ -21,7 +19,19 @@ service-groups:
     services:
       default: null
       list:
-        - name: service1
-          health-check: true
-        - name: service2
-          health-check: false
+        - name: service2-1
+        - name: service2-2
+
+  - name: group-mix
+    project-name: null  # optional
+    compose-path:
+      - containers/tests/group1/compose.yaml
+      - containers/tests/group2/compose.yaml
+    env-file: .env
+    services:
+      default: null
+      list:
+        - name: service1-1
+        - name: service1-2
+        - name: service2-1
+        - name: service2-2
