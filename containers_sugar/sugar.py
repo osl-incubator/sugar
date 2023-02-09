@@ -202,7 +202,10 @@ class Sugar:
         services = self.service_group['services']
 
         if self.args.all:
-            self.service_names = []
+            self.service_names = [
+                v['name']
+                for v in self.service_group.get('services', {}).get('list')
+            ]
         elif self.args.services == '':
             pass
         elif self.args.services:
