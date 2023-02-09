@@ -71,7 +71,7 @@ smoke-tests:
 	containers-sugar exec --group group1 --services service1-1 --extras="-T" --cmd "env"
 	containers-sugar stop --group group1 --all
 	containers-sugar run --group group1 --services service1-1 --extras="-T" --cmd "env"
-	containers-sugar down --group group1 --all
+	containers-sugar down --group group1
 	# group 2
 	containers-sugar build --group group2 --all
 	containers-sugar build --group group2
@@ -84,7 +84,7 @@ smoke-tests:
 	containers-sugar exec --group group2 --services service2-1 --extras="-T" --cmd "env"
 	containers-sugar stop --group group2 --all
 	containers-sugar run --group group2 --services service2-1 --extras="-T" --cmd "env"
-	containers-sugar down --group group2 --all
+	containers-sugar down --group group2
 	# group mix
 	containers-sugar build --group group-mix --all
 	containers-sugar build --group group-mix
@@ -97,4 +97,4 @@ smoke-tests:
 	containers-sugar exec --group group-mix --services service2-1 --extras="-T" --cmd "env"
 	containers-sugar stop --group group-mix --all
 	containers-sugar run --group group-mix --services service2-1 --extras="-T" --cmd "env"
-	containers-sugar down --group group-mix --all
+	containers-sugar down --group group-mix
