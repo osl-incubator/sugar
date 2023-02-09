@@ -253,7 +253,7 @@ class Sugar:
             'down',
             '--volumes',
             '--remove-orphans',
-            services=self.service_names,
+            services=[],
         )
 
     def _exec(self):
