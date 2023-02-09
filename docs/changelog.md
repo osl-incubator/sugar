@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.4.0](https://github.com/osl-incubator/containers-sugar/compare/1.3.2...1.4.0) (2023-02-09)
+
+
+### Features
+
+* Add support for multiples compose-path ([#37](https://github.com/osl-incubator/containers-sugar/issues/37)) ([c726250](https://github.com/osl-incubator/containers-sugar/commit/c7262501235453641adbf735d93be9bed22193a6))
+
 ## [1.3.2](https://github.com/osl-incubator/containers-sugar/compare/1.3.1...1.3.2) (2023-02-09)
 
 
