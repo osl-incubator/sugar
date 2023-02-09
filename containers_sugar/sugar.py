@@ -249,6 +249,13 @@ class Sugar:
         self._call_compose_app('build', services=self.service_names)
 
     def _down(self):
+        if self.args.all or self.args.services:
+            self._print_error(
+                "[EE] The `down` sub-command doesn't accept `--all` "
+                'neither `--services` parameters.'
+            )
+            exit(1)
+
         self._call_compose_app(
             'down',
             '--volumes',
