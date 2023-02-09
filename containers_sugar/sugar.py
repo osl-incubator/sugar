@@ -6,6 +6,7 @@ from typing import Optional
 
 import sh
 import yaml
+from colorama import Fore
 
 try:
     from sh import docker_compose
@@ -100,7 +101,7 @@ class Sugar:
                     **sh_extras,
                 )
             except sh.ErrorReturnCode as e:
-                print(e)
+                self._print_error(str(e))
                 exit(1)
             return
 
@@ -112,23 +113,26 @@ class Sugar:
         try:
             p.wait()
         except sh.ErrorReturnCode as e:
-            print(e)
+            self._print_error(str(e))
             exit(1)
         except KeyboardInterrupt:
             pid = p.pid
             p.kill()
-            print(f'[WW] Process {pid} killed.')
+            self._print_error(f'[EE] Process {pid} killed.')
+            exit(1)
 
     def _check_config_file(self):
         return Path(self.config_file).exists()
 
     def _verify_args(self):
         if not self._check_config_file():
-            print('[EE] Config file .containers-sugar.yaml not found.')
+            self._print_error(
+                '[EE] Config file .containers-sugar.yaml not found.'
+            )
             exit(1)
 
         if self.args.action not in self.ACTIONS:
-            print(
+            self._print_error(
                 '[EE] The given action is not valid. Use one of them: '
                 + ','.join(self.ACTIONS)
             )
@@ -136,7 +140,7 @@ class Sugar:
 
     def _verify_config(self):
         if not len(self.config['service-groups']):
-            print('[EE] No service groups found.')
+            self._print_error('[EE] No service groups found.')
             exit(1)
 
     def _load_config(self):
@@ -147,11 +151,15 @@ class Sugar:
         if self.config['compose-app'] == 'docker-compose':
             self.compose_app = docker_compose
         else:
-            print(f'[EE] "{self.config["compose-app"]}" not supported yet.')
+            self._print_error(
+                f'[EE] "{self.config["compose-app"]}" not supported yet.'
+            )
             exit(1)
 
         if self.compose_app is None:
-            print(f'[EE] "{self.config["compose-app"]}" not found.')
+            self._print_error(
+                f'[EE] "{self.config["compose-app"]}" not found.'
+            )
             exit(1)
 
     def _load_compose_args(self):
@@ -162,11 +170,22 @@ class Sugar:
                 ['--env-file', self.service_group['env-file']]
             )
 
-        self.compose_args.extend(
-            ['--file', self.service_group['compose-path']]
-        )
+        service_group = []
+        if isinstance(self.service_group['compose-path'], str):
+            service_group.append(self.service_group['compose-path'])
+        elif isinstance(self.service_group['compose-path'], list):
+            service_group.extend(self.service_group['compose-path'])
+        else:
+            self.self._print_error(
+                '[EE] The attribute compose-path` supports the data types'
+                'string or list.'
+            )
+            exit(1)
 
-        if 'project-name' in self.service_group:
+        for p in service_group:
+            self.compose_args.extend(['--file', p])
+
+        if self.service_group.get('project-name'):
             self.compose_args.extend(
                 ['--project-name', self.service_group['project-name']]
             )
@@ -176,7 +195,7 @@ class Sugar:
 
         if not self.args.service_group:
             if len(groups) > 1:
-                print(
+                self._print_error(
                     '[EE] Unable to infer the service group:'
                     'The service group for this operation was not defined, '
                     'and there are more than one service group in the '
@@ -192,7 +211,7 @@ class Sugar:
                 self.service_group = g
                 return
 
-        print(
+        self._print_error(
             f'[EE] The given group service "{group_name}" was not found '
             'in the configuration file.'
         )
@@ -213,22 +232,40 @@ class Sugar:
         elif 'default' in services and services['default']:
             self.service_names = services['default'].split(',')
 
+    # print messages
+
+    def _print_error(self, message: str):
+        print(Fore.RED, message, Fore.RESET)
+
+    def _print_info(self, message: str):
+        print(Fore.BLUE, message, Fore.RESET)
+
+    def _print_warning(self, message: str):
+        print(Fore.YELLOW, message, Fore.RESET)
+
     # container commands
 
     def _build(self):
         self._call_compose_app('build', services=self.service_names)
 
     def _down(self):
+        if self.args.all or self.args.services:
+            self._print_error(
+                "[EE] The `down` sub-command doesn't accept `--all` "
+                'neither `--services` parameters.'
+            )
+            exit(1)
+
         self._call_compose_app(
             'down',
             '--volumes',
             '--remove-orphans',
-            services=self.service_names,
+            services=[],
         )
 
     def _exec(self):
         if len(self.service_names) > 1:
-            print(
+            self._print_error(
                 '[EE] `exec` sub-command expected just one service as '
                 'parameter'
             )
@@ -244,7 +281,7 @@ class Sugar:
         )
 
     def _get_ip(self):
-        print('[EE] `get-ip` mot implemented yet.')
+        self._print_error('[EE] `get-ip` mot implemented yet.')
         exit(1)
 
     def _logs(self):
@@ -262,7 +299,7 @@ class Sugar:
 
     def _run(self):
         if len(self.service_names) > 1:
-            print(
+            self._print_error(
                 '[EE] `run` sub-command expected just one service as '
                 'parameter'
             )
@@ -283,11 +320,11 @@ class Sugar:
         self._call_compose_app('stop', services=self.service_names)
 
     def _wait(self):
-        print('[EE] `wait` not implemented yet.')
+        self._print_error('[EE] `wait` not implemented yet.')
         exit(1)
 
     def _version(self):
-        print('Container App Path: ', self.compose_app)
+        self._print_error('Container App Path: ' + str(self.compose_app))
         self._call_compose_app('--version')
 
     def run(self):

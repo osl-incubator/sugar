@@ -57,17 +57,44 @@ build:
 .PHONY: smoke-test
 smoke-tests:
 	set -ex
+	# group 1
 	containers-sugar help
 	containers-sugar version
 	containers-sugar build --group group1 --all
 	containers-sugar build --group group1
-	containers-sugar build --group group1 --services service1
+	containers-sugar build --group group1 --services service1-1
 	containers-sugar pull --group group1 --all
 	containers-sugar pull --group group1
-	containers-sugar pull --group group1 --services service1
+	containers-sugar pull --group group1 --services service1-1
 	containers-sugar start --group group1 --all
 	containers-sugar restart --group group1 --all
-	containers-sugar exec --group group1 --services service1 --extras="-T" --cmd "env"
+	containers-sugar exec --group group1 --services service1-1 --extras="-T" --cmd "env"
 	containers-sugar stop --group group1 --all
-	containers-sugar run --group group1 --services service1 --extras="-T" --cmd "env"
-	containers-sugar down --group group1 --all
+	containers-sugar run --group group1 --services service1-1 --extras="-T" --cmd "env"
+	containers-sugar down --group group1
+	# group 2
+	containers-sugar build --group group2 --all
+	containers-sugar build --group group2
+	containers-sugar build --group group2 --services service2-1
+	containers-sugar pull --group group2 --all
+	containers-sugar pull --group group2
+	containers-sugar pull --group group2 --services service2-1
+	containers-sugar start --group group2 --all
+	containers-sugar restart --group group2 --all
+	containers-sugar exec --group group2 --services service2-1 --extras="-T" --cmd "env"
+	containers-sugar stop --group group2 --all
+	containers-sugar run --group group2 --services service2-1 --extras="-T" --cmd "env"
+	containers-sugar down --group group2
+	# group mix
+	containers-sugar build --group group-mix --all
+	containers-sugar build --group group-mix
+	containers-sugar build --group group-mix --services service1-1,service2-1
+	containers-sugar pull --group group-mix --all
+	containers-sugar pull --group group-mix
+	containers-sugar pull --group group-mix --services service1-1,service2-1
+	containers-sugar start --group group-mix --all
+	containers-sugar restart --group group-mix --all
+	containers-sugar exec --group group-mix --services service2-1 --extras="-T" --cmd "env"
+	containers-sugar stop --group group-mix --all
+	containers-sugar run --group group-mix --services service2-1 --extras="-T" --cmd "env"
+	containers-sugar down --group group-mix

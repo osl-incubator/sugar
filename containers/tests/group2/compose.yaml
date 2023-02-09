@@ -1,15 +1,15 @@
 version: '3.4'
 
 services:
-  service1:
-    hostname: service1
+  service2-1:
+    hostname: service2-1
     image: python:latest
     ports:
       - 28000:8000
     command: python -m http.server
 
-  service2:
-    hostname: service2
+  service2-2:
+    hostname: service2-2
     image: python:latest
     ports:
       - 28001:8000
