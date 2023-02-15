@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.1](https://github.com/osl-incubator/containers-sugar/compare/1.4.0...1.4.1) (2023-02-15)
+
+
+### Bug Fixes
+
+* Use extras for all sub-commands ([#38](https://github.com/osl-incubator/containers-sugar/issues/38)) ([41abdeb](https://github.com/osl-incubator/containers-sugar/commit/41abdebc51c24cd1d4739c66d9595b8dd404c355))
+
 # [1.4.0](https://github.com/osl-incubator/containers-sugar/compare/1.3.2...1.4.0) (2023-02-09)
 
 
