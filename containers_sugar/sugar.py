@@ -1,8 +1,8 @@
 """Sugar class for containers"""
+import argparse
 import os
 import sys
 from pathlib import Path
-from typing import Optional
 
 import sh
 import yaml
@@ -31,7 +31,7 @@ class Sugar:
         'wait',
     ]
 
-    args: Optional[object] = None
+    args: argparse.Namespace = argparse.Namespace()
     config_file: str = ''
     config: dict = {}
     # starts with a simple command
@@ -56,9 +56,11 @@ class Sugar:
         self,
         *args,
         services: list = [],
-        extras: list = [],
         cmd: str = '',
     ):
+        # note: this is very fragile, we should use a better way to do that
+        extras = self.args.extras.split(' ') if self.args.extras else []
+
         sh_extras = {
             '_in': sys.stdin,
             '_out': sys.stdout,
@@ -270,13 +272,10 @@ class Sugar:
                 'parameter'
             )
             exit(1)
-        # note: this is very fragile, we should use a better way to do that
-        extras = self.args.extras.split(' ') if self.args.extras else []
 
         self._call_compose_app(
             'exec',
             services=self.service_names,
-            extras=extras,
             cmd=self.args.cmd,
         )
 
@@ -304,12 +303,10 @@ class Sugar:
                 'parameter'
             )
             exit(1)
-        # note: this is very fragile, we should use a better way to do that
-        extras = self.args.extras.split(' ')
+
         self._call_compose_app(
             'run',
             services=self.service_names,
-            extras=extras,
             cmd=self.args.cmd,
         )
 
