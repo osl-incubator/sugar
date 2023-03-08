@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.2](https://github.com/osl-incubator/containers-sugar/compare/1.4.1...1.4.2) (2023-03-08)
+
+
+### Bug Fixes
+
+* Fix the exit function when an error happens ([#64](https://github.com/osl-incubator/containers-sugar/issues/64)) ([6305cd8](https://github.com/osl-incubator/containers-sugar/commit/6305cd8189b2745c56c87f80c53f118965358226))
+
 ## [1.4.1](https://github.com/osl-incubator/containers-sugar/compare/1.4.0...1.4.1) (2023-02-15)
 
 
