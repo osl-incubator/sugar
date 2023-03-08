@@ -43,7 +43,7 @@ jobs:
       run: poetry install
 
     - name: run unit tests
-      run: pytest
+      run: make test
 
     - name: CLI tests
       run: make smoke-tests
