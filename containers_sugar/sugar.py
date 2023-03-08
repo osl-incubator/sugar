@@ -70,15 +70,12 @@ class Sugar:
             '_env': os.environ,
         }
 
-        run_in_bg = False
-        if args[0] in ['start', 'restart']:
-            run_in_bg = True
-            sh_extras.update(
-                {
-                    '_bg': True,
-                    '_bg_exc': False,
-                }
-            )
+        sh_extras.update(
+            {
+                '_bg': True,
+                '_bg_exc': False,
+            }
+        )
 
         cmd_list = [cmd] if cmd else []
 
@@ -96,17 +93,6 @@ class Sugar:
         positional_parameters = (
             self.compose_args + list(args) + extras + services + cmd_list
         )
-
-        if not run_in_bg:
-            try:
-                self.compose_app(
-                    *positional_parameters,
-                    **sh_extras,
-                )
-            except sh.ErrorReturnCode as e:
-                self._print_error(str(e))
-                os._exit(1)
-            return
 
         p = self.compose_app(
             *positional_parameters,
