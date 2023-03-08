@@ -37,7 +37,7 @@ lint:
 
 .PHONY:test
 test: ## run tests quickly with the default Python
-	pytest
+	pytest -s -vv tests
 
 
 .PHONY:docs-build

@@ -1,16 +1,38 @@
 """Tests for `containers-sugar` package."""
+from dataclasses import dataclass
+from pathlib import Path
+
 import pytest
 
-import containers_sugar  # noqa: F401
+from containers_sugar import Sugar
+
+CONFIG_PATH = Path(__file__).parent.parent / '.containers-sugar.yaml'
 
 
-@pytest.fixture
-def response():
-    """Sample pytest fixture.
+@dataclass
+class Args:
+    action: str = ''
+    config_file: str = ''
+    service_group: str = ''
+    services: str = ''
+    extras: str = ''
+    all: bool = False
 
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
 
+@pytest.mark.parametrize(
+    'args',
+    [
+        {'action': 'version'},
+        {'action': 'config', 'service_group': 'group1', 'extras': ''},
+    ],
+)
+def test_success(args):
+    """Test success cases."""
+    args.update({'config_file': str(CONFIG_PATH.absolute())})
+    args_obj = Args(**args)
+    s = Sugar(args_obj)
 
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
+    if args_obj.action != 'version':
+        s.load_services()
+
+    s.run()

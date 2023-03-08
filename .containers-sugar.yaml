@@ -3,7 +3,7 @@ compose-app: docker-compose
 service-groups:
   - name: group1
     project-name: project1  # optional
-    compose-path: containers/tests/group1/compose.yaml
+    compose-path: tests/containers/group1/compose.yaml
     env-file: .env
     services:
       default: service1-1,service1-3
@@ -14,7 +14,7 @@ service-groups:
 
   - name: group2
     project-name: null  # optional
-    compose-path: containers/tests/group2/compose.yaml
+    compose-path: tests/containers/group2/compose.yaml
     env-file: .env
     services:
       default: null
@@ -25,8 +25,8 @@ service-groups:
   - name: group-mix
     project-name: null  # optional
     compose-path:
-      - containers/tests/group1/compose.yaml
-      - containers/tests/group2/compose.yaml
+      - tests/containers/group1/compose.yaml
+      - tests/containers/group2/compose.yaml
     env-file: .env
     services:
       default: null

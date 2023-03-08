@@ -17,6 +17,7 @@ except Exception:
 class Sugar:
     ACTIONS = [
         'build',
+        'config',
         'down',
         'exec',
         'get-ip',
@@ -104,7 +105,7 @@ class Sugar:
                 )
             except sh.ErrorReturnCode as e:
                 self._print_error(str(e))
-                exit(1)
+                os._exit(1)
             return
 
         p = self.compose_app(
@@ -116,12 +117,12 @@ class Sugar:
             p.wait()
         except sh.ErrorReturnCode as e:
             self._print_error(str(e))
-            exit(1)
+            os._exit(1)
         except KeyboardInterrupt:
             pid = p.pid
             p.kill()
             self._print_error(f'[EE] Process {pid} killed.')
-            exit(1)
+            os._exit(1)
 
     def _check_config_file(self):
         return Path(self.config_file).exists()
@@ -131,19 +132,19 @@ class Sugar:
             self._print_error(
                 '[EE] Config file .containers-sugar.yaml not found.'
             )
-            exit(1)
+            os._exit(1)
 
         if self.args.action not in self.ACTIONS:
             self._print_error(
                 '[EE] The given action is not valid. Use one of them: '
                 + ','.join(self.ACTIONS)
             )
-            exit(1)
+            os._exit(1)
 
     def _verify_config(self):
         if not len(self.config['service-groups']):
             self._print_error('[EE] No service groups found.')
-            exit(1)
+            os._exit(1)
 
     def _load_config(self):
         with open(self.config_file, 'r') as f:
@@ -156,13 +157,13 @@ class Sugar:
             self._print_error(
                 f'[EE] "{self.config["compose-app"]}" not supported yet.'
             )
-            exit(1)
+            os._exit(1)
 
         if self.compose_app is None:
             self._print_error(
                 f'[EE] "{self.config["compose-app"]}" not found.'
             )
-            exit(1)
+            os._exit(1)
 
     def _load_compose_args(self):
         self._filter_service_group()
@@ -182,7 +183,7 @@ class Sugar:
                 '[EE] The attribute compose-path` supports the data types'
                 'string or list.'
             )
-            exit(1)
+            os._exit(1)
 
         for p in service_group:
             self.compose_args.extend(['--file', p])
@@ -203,7 +204,7 @@ class Sugar:
                     'and there are more than one service group in the '
                     'configuration file.'
                 )
-                exit(1)
+                os._exit(1)
             self.service_group = groups[0]
             return
 
@@ -217,7 +218,7 @@ class Sugar:
             f'[EE] The given group service "{group_name}" was not found '
             'in the configuration file.'
         )
-        exit(1)
+        os._exit(1)
 
     def _load_service_names(self):
         services = self.service_group['services']
@@ -246,6 +247,8 @@ class Sugar:
         print(Fore.YELLOW, message, Fore.RESET)
 
     # container commands
+    def _config(self):
+        self._call_compose_app('config')
 
     def _build(self):
         self._call_compose_app('build', services=self.service_names)
@@ -256,7 +259,7 @@ class Sugar:
                 "[EE] The `down` sub-command doesn't accept `--all` "
                 'neither `--services` parameters.'
             )
-            exit(1)
+            os._exit(1)
 
         self._call_compose_app(
             'down',
@@ -271,7 +274,7 @@ class Sugar:
                 '[EE] `exec` sub-command expected just one service as '
                 'parameter'
             )
-            exit(1)
+            os._exit(1)
 
         self._call_compose_app(
             'exec',
@@ -281,7 +284,7 @@ class Sugar:
 
     def _get_ip(self):
         self._print_error('[EE] `get-ip` mot implemented yet.')
-        exit(1)
+        os._exit(1)
 
     def _logs(self):
         self._call_compose_app('logs', services=self.service_names)
@@ -302,7 +305,7 @@ class Sugar:
                 '[EE] `run` sub-command expected just one service as '
                 'parameter'
             )
-            exit(1)
+            os._exit(1)
 
         self._call_compose_app(
             'run',
@@ -318,7 +321,7 @@ class Sugar:
 
     def _wait(self):
         self._print_error('[EE] `wait` not implemented yet.')
-        exit(1)
+        os._exit(1)
 
     def _version(self):
         self._print_error('Container App Path: ' + str(self.compose_app))
