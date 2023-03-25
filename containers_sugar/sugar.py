@@ -249,7 +249,6 @@ class Sugar:
 
         self._call_compose_app(
             'down',
-            '--volumes',
             '--remove-orphans',
             services=[],
         )
