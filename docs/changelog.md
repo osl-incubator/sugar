@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.3](https://github.com/osl-incubator/containers-sugar/compare/1.4.2...1.4.3) (2023-03-25)
+
+
+### Bug Fixes
+
+* Remove --volumes from down command ([#66](https://github.com/osl-incubator/containers-sugar/issues/66)) ([8bcaae4](https://github.com/osl-incubator/containers-sugar/commit/8bcaae47fb413f682337759a7f5cab152ee83e76))
+
 ## [1.4.2](https://github.com/osl-incubator/containers-sugar/compare/1.4.1...1.4.2) (2023-03-08)
 
 
