@@ -31,6 +31,11 @@ def _get_args():
         help='Show the command executed.',
     )
     parser.add_argument(
+        '--version',
+        action='store_true',
+        help='Show the version of containers-sugar.',
+    )
+    parser.add_argument(
         '--service-group',
         '--group',
         dest='service_group',
@@ -44,6 +49,11 @@ def _get_args():
             'Set the services for the container call. '
             "Use comma to separate the services's name"
         ),
+    )
+    parser.add_argument(
+        '--service',
+        type=str,
+        help=('Set the service for the container call.'),
     )
     parser.add_argument(
         '--all',
@@ -78,14 +88,11 @@ def app():
     args_parser = _get_args()
     args = args_parser.parse_args()
 
-    if args.action == 'help':
-        return args_parser.print_help()
-
     sugar = Sugar(args)
 
-    if args.action == 'version':
+    if args.version:
         show_version()
-        sugar.run()
+        sugar._version()
         return
 
     sugar.load_services()

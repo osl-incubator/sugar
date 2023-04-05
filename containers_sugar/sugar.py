@@ -29,7 +29,6 @@ class Sugar:
         'restart',
         'start',
         'stop',
-        'version',
         'wait',
     ]
 
@@ -117,7 +116,7 @@ class Sugar:
             )
             os._exit(1)
 
-        if self.args.action not in self.ACTIONS:
+        if self.args.action and self.args.action not in self.ACTIONS:
             self._print_error(
                 '[EE] The given action is not valid. Use one of them: '
                 + ','.join(self.ACTIONS)
@@ -251,16 +250,15 @@ class Sugar:
         )
 
     def _exec(self):
-        if len(self.service_names) > 1:
+        if not self.args.service:
             self._print_error(
-                '[EE] `exec` sub-command expected just one service as '
-                'parameter'
+                '[EE] `exec` sub-command expected --service parameter.'
             )
             os._exit(1)
 
         self._call_compose_app(
             'exec',
-            services=self.service_names,
+            services=[self.args.service],
             cmd=self.args.cmd,
         )
 
@@ -282,16 +280,15 @@ class Sugar:
         self._start()
 
     def _run(self):
-        if len(self.service_names) > 1:
+        if not self.args.service:
             self._print_error(
-                '[EE] `run` sub-command expected just one service as '
-                'parameter'
+                '[EE] `run` sub-command expected --service parameter.'
             )
             os._exit(1)
 
         self._call_compose_app(
             'run',
-            services=self.service_names,
+            services=[self.args.service],
             cmd=self.args.cmd,
         )
 
