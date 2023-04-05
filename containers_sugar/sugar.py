@@ -1,6 +1,7 @@
 """Sugar class for containers"""
 import argparse
 import os
+import shlex
 import sys
 from pathlib import Path
 
@@ -14,7 +15,18 @@ except Exception:
     docker_compose = None
 
 
-class Sugar:
+class PrintPlugin:
+    def _print_error(self, message: str):
+        print(Fore.RED, message, Fore.RESET)
+
+    def _print_info(self, message: str):
+        print(Fore.BLUE, message, Fore.RESET)
+
+    def _print_warning(self, message: str):
+        print(Fore.YELLOW, message, Fore.RESET)
+
+
+class Sugar(PrintPlugin):
     ACTIONS = [
         'build',
         'config',
@@ -28,7 +40,6 @@ class Sugar:
         'restart',
         'start',
         'stop',
-        'version',
         'wait',
     ]
 
@@ -68,27 +79,23 @@ class Sugar:
             '_err': sys.stderr,
             '_no_err': True,
             '_env': os.environ,
+            '_bg': True,
+            '_bg_exc': False,
         }
 
-        sh_extras.update(
-            {
-                '_bg': True,
-                '_bg_exc': False,
-            }
-        )
+        cmd_list = shlex.split(cmd) if cmd else []
 
-        cmd_list = [cmd] if cmd else []
-
-        print(
-            '>>>',
-            self.compose_app,
-            *self.compose_args,
-            *args,
-            *extras,
-            *services,
-            *cmd_list,
-        )
-        print('-' * 80)
+        if self.args.verbose:
+            print(
+                '>>>',
+                self.compose_app,
+                *self.compose_args,
+                *args,
+                *extras,
+                *services,
+                *cmd_list,
+            )
+            print('-' * 80)
 
         positional_parameters = (
             self.compose_args + list(args) + extras + services + cmd_list
@@ -120,7 +127,7 @@ class Sugar:
             )
             os._exit(1)
 
-        if self.args.action not in self.ACTIONS:
+        if self.args.action and self.args.action not in self.ACTIONS:
             self._print_error(
                 '[EE] The given action is not valid. Use one of them: '
                 + ','.join(self.ACTIONS)
@@ -159,11 +166,11 @@ class Sugar:
                 ['--env-file', self.service_group['env-file']]
             )
 
-        service_group = []
+        compose_path = []
         if isinstance(self.service_group['compose-path'], str):
-            service_group.append(self.service_group['compose-path'])
+            compose_path.append(self.service_group['compose-path'])
         elif isinstance(self.service_group['compose-path'], list):
-            service_group.extend(self.service_group['compose-path'])
+            compose_path.extend(self.service_group['compose-path'])
         else:
             self.self._print_error(
                 '[EE] The attribute compose-path` supports the data types'
@@ -171,7 +178,7 @@ class Sugar:
             )
             os._exit(1)
 
-        for p in service_group:
+        for p in compose_path:
             self.compose_args.extend(['--file', p])
 
         if self.service_group.get('project-name'):
@@ -184,12 +191,7 @@ class Sugar:
 
         if not self.args.service_group:
             if len(groups) > 1:
-                self._print_error(
-                    '[EE] Unable to infer the service group:'
-                    'The service group for this operation was not defined, '
-                    'and there are more than one service group in the '
-                    'configuration file.'
-                )
+                self._print_error('[EE] The service group was not defined.')
                 os._exit(1)
             self.service_group = groups[0]
             return
@@ -221,17 +223,6 @@ class Sugar:
         elif 'default' in services and services['default']:
             self.service_names = services['default'].split(',')
 
-    # print messages
-
-    def _print_error(self, message: str):
-        print(Fore.RED, message, Fore.RESET)
-
-    def _print_info(self, message: str):
-        print(Fore.BLUE, message, Fore.RESET)
-
-    def _print_warning(self, message: str):
-        print(Fore.YELLOW, message, Fore.RESET)
-
     # container commands
     def _config(self):
         self._call_compose_app('config')
@@ -254,16 +245,15 @@ class Sugar:
         )
 
     def _exec(self):
-        if len(self.service_names) > 1:
+        if not self.args.service:
             self._print_error(
-                '[EE] `exec` sub-command expected just one service as '
-                'parameter'
+                '[EE] `exec` sub-command expected --service parameter.'
             )
             os._exit(1)
 
         self._call_compose_app(
             'exec',
-            services=self.service_names,
+            services=[self.args.service],
             cmd=self.args.cmd,
         )
 
@@ -285,16 +275,15 @@ class Sugar:
         self._start()
 
     def _run(self):
-        if len(self.service_names) > 1:
+        if not self.args.service:
             self._print_error(
-                '[EE] `run` sub-command expected just one service as '
-                'parameter'
+                '[EE] `run` sub-command expected --service parameter.'
             )
             os._exit(1)
 
         self._call_compose_app(
             'run',
-            services=self.service_names,
+            services=[self.args.service],
             cmd=self.args.cmd,
         )
 
