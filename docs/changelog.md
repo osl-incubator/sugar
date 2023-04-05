@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.4](https://github.com/osl-incubator/containers-sugar/compare/1.4.3...1.4.4) (2023-04-05)
+
+
+### Bug Fixes
+
+* Fix the internal usage of the value from --cmd flag ([#67](https://github.com/osl-incubator/containers-sugar/issues/67)) ([ac8a048](https://github.com/osl-incubator/containers-sugar/commit/ac8a0487f41404c52195cfcf74fa18a86f4523f8))
+
 ## [1.4.3](https://github.com/osl-incubator/containers-sugar/compare/1.4.2...1.4.3) (2023-03-25)
 
 
