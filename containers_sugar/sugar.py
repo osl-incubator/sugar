@@ -15,7 +15,18 @@ except Exception:
     docker_compose = None
 
 
-class Sugar:
+class PrintPlugin:
+    def _print_error(self, message: str):
+        print(Fore.RED, message, Fore.RESET)
+
+    def _print_info(self, message: str):
+        print(Fore.BLUE, message, Fore.RESET)
+
+    def _print_warning(self, message: str):
+        print(Fore.YELLOW, message, Fore.RESET)
+
+
+class Sugar(PrintPlugin):
     ACTIONS = [
         'build',
         'config',
@@ -155,11 +166,11 @@ class Sugar:
                 ['--env-file', self.service_group['env-file']]
             )
 
-        service_group = []
+        compose_path = []
         if isinstance(self.service_group['compose-path'], str):
-            service_group.append(self.service_group['compose-path'])
+            compose_path.append(self.service_group['compose-path'])
         elif isinstance(self.service_group['compose-path'], list):
-            service_group.extend(self.service_group['compose-path'])
+            compose_path.extend(self.service_group['compose-path'])
         else:
             self.self._print_error(
                 '[EE] The attribute compose-path` supports the data types'
@@ -167,7 +178,7 @@ class Sugar:
             )
             os._exit(1)
 
-        for p in service_group:
+        for p in compose_path:
             self.compose_args.extend(['--file', p])
 
         if self.service_group.get('project-name'):
@@ -180,12 +191,7 @@ class Sugar:
 
         if not self.args.service_group:
             if len(groups) > 1:
-                self._print_error(
-                    '[EE] Unable to infer the service group:'
-                    'The service group for this operation was not defined, '
-                    'and there are more than one service group in the '
-                    'configuration file.'
-                )
+                self._print_error('[EE] The service group was not defined.')
                 os._exit(1)
             self.service_group = groups[0]
             return
@@ -216,17 +222,6 @@ class Sugar:
             self.service_names = self.args.services.split(',')
         elif 'default' in services and services['default']:
             self.service_names = services['default'].split(',')
-
-    # print messages
-
-    def _print_error(self, message: str):
-        print(Fore.RED, message, Fore.RESET)
-
-    def _print_info(self, message: str):
-        print(Fore.BLUE, message, Fore.RESET)
-
-    def _print_warning(self, message: str):
-        print(Fore.YELLOW, message, Fore.RESET)
 
     # container commands
     def _config(self):

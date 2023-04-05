@@ -11,6 +11,8 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
+ARGS:=
+
 .PHONY:help
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -37,7 +39,7 @@ lint:
 
 .PHONY:test
 test: ## run tests quickly with the default Python
-	pytest -s -vv tests
+	pytest -s -vv tests ${ARGS}
 
 
 .PHONY:docs-build
@@ -58,8 +60,8 @@ build:
 smoke-tests:
 	set -ex
 	# group 1
-	containers-sugar help
-	containers-sugar version
+	containers-sugar --help
+	containers-sugar --version
 	containers-sugar build --group group1 --all
 	containers-sugar build --group group1
 	containers-sugar build --group group1 --services service1-1
