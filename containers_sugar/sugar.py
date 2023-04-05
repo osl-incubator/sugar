@@ -1,6 +1,7 @@
 """Sugar class for containers"""
 import argparse
 import os
+import shlex
 import sys
 from pathlib import Path
 
@@ -72,7 +73,7 @@ class Sugar:
             '_bg_exc': False,
         }
 
-        cmd_list = [cmd] if cmd else []
+        cmd_list = shlex.split(cmd) if cmd else []
 
         if self.args.verbose:
             print(
