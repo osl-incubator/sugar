@@ -20,8 +20,15 @@ def _get_args():
 
     parser.add_argument(
         'action',
-        choices=['help'] + Sugar.ACTIONS,
+        choices=Sugar.ACTIONS,
+        nargs='?',
+        default=None,
         help='Specify the command to be performed.',
+    )
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        help='Show the command executed.',
     )
     parser.add_argument(
         '--service-group',

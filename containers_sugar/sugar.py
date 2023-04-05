@@ -68,27 +68,23 @@ class Sugar:
             '_err': sys.stderr,
             '_no_err': True,
             '_env': os.environ,
+            '_bg': True,
+            '_bg_exc': False,
         }
-
-        sh_extras.update(
-            {
-                '_bg': True,
-                '_bg_exc': False,
-            }
-        )
 
         cmd_list = [cmd] if cmd else []
 
-        print(
-            '>>>',
-            self.compose_app,
-            *self.compose_args,
-            *args,
-            *extras,
-            *services,
-            *cmd_list,
-        )
-        print('-' * 80)
+        if self.args.verbose:
+            print(
+                '>>>',
+                self.compose_app,
+                *self.compose_args,
+                *args,
+                *extras,
+                *services,
+                *cmd_list,
+            )
+            print('-' * 80)
 
         positional_parameters = (
             self.compose_args + list(args) + extras + services + cmd_list
