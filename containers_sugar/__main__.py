@@ -73,7 +73,11 @@ def _get_args():
 def extract_post_args() -> list:
     container_args = list(sys.argv)
 
-    sep_idx = container_args.index('--')
+    if '--' in container_args:
+        sep_idx = container_args.index('--')
+    else:
+        sep_idx = None
+
     total_args = len(container_args)
 
     if not sep_idx:
