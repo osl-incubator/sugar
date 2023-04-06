@@ -250,7 +250,10 @@ class Sugar(PrintPlugin):
         self._call_compose_app('pull', services=self.service_names)
 
     def _restart(self):
+        post_args = self.post_args
+        self.post_args = []
         self._stop()
+        self.post_args = post_args
         self._start()
 
     def _run(self):

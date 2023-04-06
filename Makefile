@@ -68,8 +68,8 @@ smoke-tests:
 	containers-sugar pull --group group1 --all
 	containers-sugar pull --group group1
 	containers-sugar pull --group group1 --services service1-1
-	containers-sugar start --group group1 --all
-	containers-sugar restart --group group1 --all
+	containers-sugar start --group group1 --all -- -d
+	containers-sugar restart --group group1 --all -- -d
 	containers-sugar exec --group group1 --service service1-1 -- -T env
 	containers-sugar stop --group group1 --all
 	containers-sugar run --group group1 --service service1-1 -- -T env
@@ -81,8 +81,8 @@ smoke-tests:
 	containers-sugar pull --group group2 --all
 	containers-sugar pull --group group2
 	containers-sugar pull --group group2 --services service2-1
-	containers-sugar start --group group2 --all
-	containers-sugar restart --group group2 --all
+	containers-sugar start --group group2 --all -- -d
+	containers-sugar restart --group group2 --all -- -d
 	containers-sugar exec --group group2 --service service2-1 -- -T env
 	containers-sugar stop --group group2 --all
 	containers-sugar run --group group2 --service service2-1 -- -T env
@@ -94,8 +94,8 @@ smoke-tests:
 	containers-sugar pull --group group-mix --all
 	containers-sugar pull --group group-mix
 	containers-sugar pull --group group-mix --services service1-1,service2-1
-	containers-sugar start --group group-mix --all
-	containers-sugar restart --group group-mix --all
+	containers-sugar start --group group-mix --all -- -d
+	containers-sugar restart --group group-mix --all -- -d
 	containers-sugar exec --group group-mix --service service2-1 -- -T env
 	containers-sugar stop --group group-mix --all
 	containers-sugar run --group group-mix --service service2-1 -- -T env
