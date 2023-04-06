@@ -1,7 +1,6 @@
 """Sugar class for containers"""
 import argparse
 import os
-import shlex
 import sys
 from pathlib import Path
 
@@ -34,7 +33,6 @@ class Sugar(PrintPlugin):
         'exec',
         'get-ip',
         'logs',
-        'logs-follow',
         'pull',
         'run',
         'restart',
@@ -49,11 +47,13 @@ class Sugar(PrintPlugin):
     # starts with a simple command
     compose_app: sh.Command = sh.echo
     compose_args: list = []
+    post_args: list = []
     service_group: dict = {}
     service_names: list = []
 
-    def __init__(self, args):
+    def __init__(self, args: argparse.Namespace, post_args: list):
         self.args = args
+        self.post_args = post_args
         self.config_file = self.args.config_file
         self._load_config()
         self._verify_args()
@@ -68,11 +68,7 @@ class Sugar(PrintPlugin):
         self,
         *args,
         services: list = [],
-        cmd: str = '',
     ):
-        # note: this is very fragile, we should use a better way to do that
-        extras = self.args.extras.split(' ') if self.args.extras else []
-
         sh_extras = {
             '_in': sys.stdin,
             '_out': sys.stdout,
@@ -83,23 +79,13 @@ class Sugar(PrintPlugin):
             '_bg_exc': False,
         }
 
-        cmd_list = shlex.split(cmd) if cmd else []
+        positional_parameters = (
+            self.compose_args + list(args) + services + self.post_args
+        )
 
         if self.args.verbose:
-            print(
-                '>>>',
-                self.compose_app,
-                *self.compose_args,
-                *args,
-                *extras,
-                *services,
-                *cmd_list,
-            )
+            print('>>>', self.compose_app, *positional_parameters)
             print('-' * 80)
-
-        positional_parameters = (
-            self.compose_args + list(args) + extras + services + cmd_list
-        )
 
         p = self.compose_app(
             *positional_parameters,
@@ -251,11 +237,7 @@ class Sugar(PrintPlugin):
             )
             os._exit(1)
 
-        self._call_compose_app(
-            'exec',
-            services=[self.args.service],
-            cmd=self.args.cmd,
-        )
+        self._call_compose_app('exec', services=[self.args.service])
 
     def _get_ip(self):
         self._print_error('[EE] `get-ip` mot implemented yet.')
@@ -263,9 +245,6 @@ class Sugar(PrintPlugin):
 
     def _logs(self):
         self._call_compose_app('logs', services=self.service_names)
-
-    def _logs_follow(self):
-        self._call_compose_app('logs', '--follow', services=self.service_names)
 
     def _pull(self):
         self._call_compose_app('pull', services=self.service_names)
@@ -281,14 +260,10 @@ class Sugar(PrintPlugin):
             )
             os._exit(1)
 
-        self._call_compose_app(
-            'run',
-            services=[self.args.service],
-            cmd=self.args.cmd,
-        )
+        self._call_compose_app('run', services=[self.args.service])
 
     def _start(self):
-        self._call_compose_app('up', '-d', services=self.service_names)
+        self._call_compose_app('up', services=self.service_names)
 
     def _stop(self):
         self._call_compose_app('stop', services=self.service_names)
