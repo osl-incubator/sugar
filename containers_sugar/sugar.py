@@ -51,7 +51,7 @@ class Sugar(PrintPlugin):
     service_group: dict = {}
     service_names: list = []
 
-    def __init__(self, args: argparse.Namespace, post_args: list):
+    def __init__(self, args: argparse.Namespace, post_args: list = []):
         self.args = args
         self.post_args = post_args
         self.config_file = self.args.config_file
