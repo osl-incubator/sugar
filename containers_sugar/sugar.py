@@ -1,4 +1,36 @@
-"""Sugar class for containers"""
+"""
+Sugar class for containers
+
+This is the docker-compose commands signature that should be considered:
+
+docker-compose build [options] [SERVICE...]
+docker-compose bundle [options]
+docker-compose config [options]
+docker-compose create [options] [SERVICE...]
+docker-compose down [options] [--rmi type] [--volumes] [--remove-orphans]
+docker-compose events [options] [SERVICE...]
+docker-compose exec [options] SERVICE COMMAND [ARGS...]
+docker-compose images [options] [SERVICE...]
+docker-compose kill [options] [SERVICE...]
+docker-compose logs [options] [SERVICE...]
+docker-compose pause [options] SERVICE...
+docker-compose port [options] SERVICE PRIVATE_PORT
+docker-compose ps [options] [SERVICE...]
+docker-compose pull [options] [SERVICE...]
+docker-compose push [options] [SERVICE...]
+docker-compose restart [options] [SERVICE...]
+docker-compose rm [options] [-f | -s] [SERVICE...]
+docker-compose run [options] [-p TARGET...] [-v VOLUME...] [-e KEY=VAL...]
+    [-l KEY=VAL...] SERVICE [COMMAND] [ARGS...]
+docker-compose scale [options] [SERVICE=NUM...]
+docker-compose start [options] [SERVICE...]
+docker-compose stop [options] [SERVICE...]
+docker-compose top [options] [SERVICE...]
+docker-compose unpause [options] SERVICE...
+docker-compose up [options] [--scale SERVICE=NUM...] [--no-color]
+    [--quiet-pull] [SERVICE...]
+docker-compose version [options]
+"""
 import argparse
 import os
 import sys
@@ -47,13 +79,20 @@ class Sugar(PrintPlugin):
     # starts with a simple command
     compose_app: sh.Command = sh.echo
     compose_args: list = []
-    post_args: list = []
+    options_args: list = []
+    cmd_args: list = []
     service_group: dict = {}
     service_names: list = []
 
-    def __init__(self, args: argparse.Namespace, post_args: list = []):
+    def __init__(
+        self,
+        args: argparse.Namespace,
+        options_args: list = [],
+        cmd_args: list = [],
+    ):
         self.args = args
-        self.post_args = post_args
+        self.options_args = options_args
+        self.cmd_args = cmd_args
         self.config_file = self.args.config_file
         self._load_config()
         self._verify_args()
@@ -80,7 +119,11 @@ class Sugar(PrintPlugin):
         }
 
         positional_parameters = (
-            self.compose_args + list(args) + services + self.post_args
+            self.compose_args
+            + list(args)
+            + self.options_args
+            + services
+            + self.cmd_args
         )
 
         if self.args.verbose:
@@ -250,10 +293,10 @@ class Sugar(PrintPlugin):
         self._call_compose_app('pull', services=self.service_names)
 
     def _restart(self):
-        post_args = self.post_args
-        self.post_args = []
+        options_args = self.options_args
+        self.options_args = []
         self._stop()
-        self.post_args = post_args
+        self.options_args = options_args
         self._start()
 
     def _run(self):
