@@ -17,7 +17,7 @@ or collaborate a bunch of projects, it would be like a boiler plate.
 Additionally, if you are maintaining some extra scripts in order to improve
 your containers stack, these scripts would be like a boilerplate as well.
 
-So, the idea of this project is to organize your stack of containers, 
+So, the idea of this project is to organize your stack of containers,
 gathering some useful scripts and keeping this information centralized in a
 configuration file. So the command line would be very simple.
 
@@ -31,15 +31,15 @@ configuration file. So the command line would be very simple.
 
 The commands availables now are:
   `help`, `version`, `build`, `down`, `get-ip`,
-  `logs`, `logs-follow`, `pull`, `restart`,
-  `start`, `stop`, `wait`.
+  `logs`, `pull`, `restart`, `start`, `stop`, `wait`.
 
 > Note: `get-ip` and `wait` are not yet implemented.
 
 
 ## How to use it
 
-First you need to place the config file `.containers-sugar.yaml` in the root of your project. This is an example of a configuration file:
+First you need to place the config file `.containers-sugar.yaml` in the root
+of your project. This is an example of a configuration file:
 
 ```yaml
 version: 1.0.0
@@ -81,13 +81,13 @@ Some examples of how to use it:
   `containers-sugar build --group group2`
 
 * build all services (ignore default) for group1:
-  `containers-sugar build --group group1 --service ""`
+  `containers-sugar build --group group1 --all`
 
 * start the default services for group1:
   `containers-sugar start --group group1`
 
 * restart all services (ignore defaults) for group1:
-  `containers-sugar restart --group group1 --service ""`
+  `containers-sugar restart --group group1 --all`
 
 * restart service1 and service2 for group1:
-  `containers-sugar restart --group group1 --service service1,service2`
+  `containers-sugar restart --group group1 --services service1,service2`

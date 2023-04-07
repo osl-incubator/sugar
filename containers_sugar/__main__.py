@@ -1,6 +1,8 @@
 import argparse
 import os
+import sys
 from pathlib import Path
+from typing import Tuple
 
 from containers_sugar import Sugar, __version__
 
@@ -10,7 +12,7 @@ def _get_args():
         prog='Containers-Sugar',
         description=(
             'Containers-Sugar is a tool that help you to organize'
-            "and simplify your containers' stack"
+            "and simplify your containers' stack."
         ),
         epilog=(
             'If you have any problem, open an issue at: '
@@ -61,23 +63,86 @@ def _get_args():
         help='Use all services for the command.',
     )
     parser.add_argument(
-        '--extras',
-        type=str,
-        default='',
-        help='Set extra arguments to be used by the compose app.',
-    )
-    parser.add_argument(
-        '--cmd',
-        type=str,
-        help='Set the command to be used by run/exec.',
-    )
-    parser.add_argument(
         '--config-file',
         type=str,
         default=str(Path(os.getcwd()) / '.containers-sugar.yaml'),
         help='Specify a custom location for the config file.',
     )
+    parser.add_argument(
+        '--options',
+        type=str,
+        required=False,
+        help=(
+            'Specify the options for docker-compose command. '
+            'E.g.: --options -d'
+        ),
+    )
+    parser.add_argument(
+        '--cmd',
+        type=str,
+        required=False,
+        help=(
+            'Specify the COMMAND for some docker-compose command. '
+            'E.g.: --cmd python -c "print(1)"'
+        ),
+    )
     return parser
+
+
+def extract_options_and_cmd_args() -> Tuple[list, list]:
+    args = list(sys.argv)
+    total_args = len(args)
+
+    if '--options' in args:
+        options_sep_idx = args.index('--options')
+    else:
+        options_sep_idx = None
+
+    if '--cmd' in args:
+        cmd_sep_idx = args.index('--cmd')
+    else:
+        cmd_sep_idx = None
+
+    if options_sep_idx is None and cmd_sep_idx is None:
+        return [], []
+
+    # check if --pre-args or --post-args are the last ones in the command line
+    first_sep_idx = min(
+        [(options_sep_idx or total_args), (cmd_sep_idx or total_args)]
+    )
+    for sugar_arg in [
+        '--verbose',
+        '--version',
+        '--service-group',
+        '--group',
+        '--services',
+        '--service',
+        '--all',
+        '--config-file',
+    ]:
+        if sugar_arg not in args:
+            continue
+
+        if first_sep_idx < args.index(sugar_arg):
+            print(
+                '[EE] The parameters --options/--cmd should be the '
+                'last ones in the command line.'
+            )
+            os._exit(1)
+
+    for ind in range(first_sep_idx, total_args):
+        sys.argv.pop(first_sep_idx)
+
+    options_sep_idx = options_sep_idx or total_args
+    cmd_sep_idx = cmd_sep_idx or total_args
+
+    if options_sep_idx < cmd_sep_idx:
+        options_args = args[options_sep_idx + 1 : cmd_sep_idx]
+        cmd_args = args[cmd_sep_idx + 1 :]
+    else:
+        cmd_args = args[cmd_sep_idx + 1 : options_sep_idx]
+        options_args = args[options_sep_idx + 1 :]
+    return options_args, cmd_args
 
 
 def show_version():
@@ -85,10 +150,11 @@ def show_version():
 
 
 def app():
+    options_args, cmd_args = extract_options_and_cmd_args()
     args_parser = _get_args()
     args = args_parser.parse_args()
 
-    sugar = Sugar(args)
+    sugar = Sugar(args, options_args, cmd_args)
 
     if args.version:
         show_version()
