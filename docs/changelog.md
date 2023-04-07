@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.5.0](https://github.com/osl-incubator/containers-sugar/compare/1.4.4...1.5.0) (2023-04-07)
+
+
+### Features
+
+* Improve the usage of parameters --cmd and --options (formerly --extras)  ([#68](https://github.com/osl-incubator/containers-sugar/issues/68)) ([cebdfd8](https://github.com/osl-incubator/containers-sugar/commit/cebdfd808449a14982ca974b24fc36d0fed5eeb7))
+
 ## [1.4.4](https://github.com/osl-incubator/containers-sugar/compare/1.4.3...1.4.4) (2023-04-05)
 
 
