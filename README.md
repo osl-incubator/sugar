@@ -24,7 +24,7 @@ configuration file. So the command line would be very simple.
 
 * Free software: BSD 3 Clause
 * Documentation: https://osl-incubator.github.io/containers-sugar
-* ![ontributing Guide](https://github.com/osl-incubator/containers-sugar/blob/main/docs/contributing.md)
+* [ontributing Guide](https://github.com/osl-incubator/containers-sugar/blob/main/docs/contributing.md)
 
 
 ## Features
