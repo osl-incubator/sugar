@@ -1,6 +1,6 @@
-# containers-sugar
+# Containers-Sugar
 
-Simplify the usage of containers.
+An initiative to simplify the usage of containers.
 
 You may be thinking, why do I need a new library that wrap-up
 docker-compose or podman-compose if they are already really simple to use?
@@ -24,6 +24,7 @@ configuration file. So the command line would be very simple.
 
 * Free software: BSD 3 Clause
 * Documentation: https://osl-incubator.github.io/containers-sugar
+* ![ontributing Guide](https://github.com/osl-incubator/containers-sugar/blob/main/docs/contributing.md)
 
 
 ## Features
