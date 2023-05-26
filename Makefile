@@ -60,43 +60,43 @@ build:
 smoke-tests:
 	set -ex
 	# group 1
-	containers-sugar --help
-	containers-sugar --version
-	containers-sugar build --verbose --group group1 --all
-	containers-sugar build --verbose --group group1
-	containers-sugar build --verbose --group group1 --services service1-1
-	containers-sugar pull --verbose --group group1 --all
-	containers-sugar pull --verbose --group group1
-	containers-sugar pull --verbose --group group1 --services service1-1
-	containers-sugar start --verbose --group group1 --all --options -d
-	containers-sugar restart --verbose --group group1 --all --options -d
-	containers-sugar exec --verbose --group group1 --service service1-1 --options -T --cmd env
-	containers-sugar stop --verbose --group group1 --all
-	containers-sugar run --verbose --group group1 --service service1-1 --options -T --cmd env
-	containers-sugar down --verbose --group group1
+	kxgr --help
+	kxgr --version
+	kxgr build --verbose --group group1 --all
+	kxgr build --verbose --group group1
+	kxgr build --verbose --group group1 --services service1-1
+	kxgr pull --verbose --group group1 --all
+	kxgr pull --verbose --group group1
+	kxgr pull --verbose --group group1 --services service1-1
+	kxgr start --verbose --group group1 --all --options -d
+	kxgr restart --verbose --group group1 --all --options -d
+	kxgr exec --verbose --group group1 --service service1-1 --options -T --cmd env
+	kxgr stop --verbose --group group1 --all
+	kxgr run --verbose --group group1 --service service1-1 --options -T --cmd env
+	kxgr down --verbose --group group1
 	# group 2
-	containers-sugar build --verbose --group group2 --all
-	containers-sugar build --verbose --group group2
-	containers-sugar build --verbose --group group2 --services service2-1
-	containers-sugar pull --verbose --group group2 --all
-	containers-sugar pull --verbose --group group2
-	containers-sugar pull --verbose --group group2 --services service2-1
-	containers-sugar start --verbose --group group2 --all --options -d
-	containers-sugar restart --verbose --group group2 --all --options -d
-	containers-sugar exec --verbose --group group2 --service service2-1 --options -T --cmd env
-	containers-sugar stop --verbose --group group2 --all
-	containers-sugar run --verbose --group group2 --service service2-1 --options -T --cmd env
-	containers-sugar down --verbose --group group2
+	kxgr build --verbose --group group2 --all
+	kxgr build --verbose --group group2
+	kxgr build --verbose --group group2 --services service2-1
+	kxgr pull --verbose --group group2 --all
+	kxgr pull --verbose --group group2
+	kxgr pull --verbose --group group2 --services service2-1
+	kxgr start --verbose --group group2 --all --options -d
+	kxgr restart --verbose --group group2 --all --options -d
+	kxgr exec --verbose --group group2 --service service2-1 --options -T --cmd env
+	kxgr stop --verbose --group group2 --all
+	kxgr run --verbose --group group2 --service service2-1 --options -T --cmd env
+	kxgr down --verbose --group group2
 	# group mix
-	containers-sugar build --verbose --group group-mix --all
-	containers-sugar build --verbose --group group-mix
-	containers-sugar build --verbose --group group-mix --services service1-1,service2-1
-	containers-sugar pull --verbose --group group-mix --all
-	containers-sugar pull --verbose --group group-mix
-	containers-sugar pull --verbose --group group-mix --services service1-1,service2-1
-	containers-sugar start --verbose --group group-mix --all --options -d
-	containers-sugar restart --verbose --group group-mix --all --options -d
-	containers-sugar exec --verbose --group group-mix --service service2-1 --options -T --cmd env
-	containers-sugar stop --verbose --group group-mix --all
-	containers-sugar run --verbose --group group-mix --service service2-1 --options -T --cmd env
-	containers-sugar down --verbose --group group-mix
+	kxgr build --verbose --group group-mix --all
+	kxgr build --verbose --group group-mix
+	kxgr build --verbose --group group-mix --services service1-1,service2-1
+	kxgr pull --verbose --group group-mix --all
+	kxgr pull --verbose --group group-mix
+	kxgr pull --verbose --group group-mix --services service1-1,service2-1
+	kxgr start --verbose --group group-mix --all --options -d
+	kxgr restart --verbose --group group-mix --all --options -d
+	kxgr exec --verbose --group group-mix --service service2-1 --options -T --cmd env
+	kxgr stop --verbose --group group-mix --all
+	kxgr run --verbose --group group-mix --service service2-1 --options -T --cmd env
+	kxgr down --verbose --group group-mix

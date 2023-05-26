@@ -9,9 +9,9 @@ from containers_sugar import Sugar, __version__
 
 def _get_args():
     parser = argparse.ArgumentParser(
-        prog='Containers-Sugar',
+        prog='containers-sugar',
         description=(
-            'Containers-Sugar is a tool that help you to organize'
+            'containers-sugar (or kxgr) is a tool that help you to organize'
             "and simplify your containers' stack."
         ),
         epilog=(
