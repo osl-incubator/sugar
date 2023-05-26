@@ -34,6 +34,7 @@ docker-compose version [options]
 import argparse
 import os
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 import sh
@@ -57,21 +58,9 @@ class PrintPlugin:
         print(Fore.YELLOW, message, Fore.RESET)
 
 
-class Sugar(PrintPlugin):
-    ACTIONS = [
-        'build',
-        'config',
-        'down',
-        'exec',
-        'get-ip',
-        'logs',
-        'pull',
-        'run',
-        'restart',
-        'start',
-        'stop',
-        'wait',
-    ]
+@dataclass
+class SugarBase(PrintPlugin):
+    ACTIONS = []
 
     args: argparse.Namespace = argparse.Namespace()
     config_file: str = ''
@@ -252,6 +241,40 @@ class Sugar(PrintPlugin):
         elif 'default' in services and services['default']:
             self.service_names = services['default'].split(',')
 
+    def run(self):
+        return getattr(self, f'_{self.args.action.replace("-", "_")}')()
+
+
+@dataclass
+class SugarExt(SugarBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def _wait(self):
+        self._print_error('[EE] `wait` not implemented yet.')
+        os._exit(1)
+
+
+@dataclass
+class SugarMain(SugarBase):
+    ACTIONS = [
+        'build',
+        'config',
+        'down',
+        'exec',
+        'get-ip',
+        'logs',
+        'pull',
+        'run',
+        'restart',
+        'start',
+        'stop',
+        'wait',
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     # container commands
     def _config(self):
         self._call_compose_app('config')
@@ -314,13 +337,26 @@ class Sugar(PrintPlugin):
     def _stop(self):
         self._call_compose_app('stop', services=self.service_names)
 
-    def _wait(self):
-        self._print_error('[EE] `wait` not implemented yet.')
-        os._exit(1)
 
-    def _version(self):
-        self._print_error('Container App Path: ' + str(self.compose_app))
-        self._call_compose_app('--version')
+class Sugar(PrintPlugin):
+    plugins = {}
 
-    def run(self):
-        return getattr(self, f'_{self.args.action.replace("-", "_")}')()
+    def __init__(
+        self,
+        args: argparse.Namespace,
+        options_args: list = [],
+        cmd_args: list = [],
+    ):
+        for klass, name in (
+            (SugarMain, 'main'),
+            (SugarExt, 'ext'),
+        ):
+            self.plugins[name] = klass(
+                args,
+                options_args,
+                cmd_args,
+            )
+
+        def _version(self):
+            self._print_error('Container App Path: ' + str(self.compose_app))
+            self._call_compose_app('--version')

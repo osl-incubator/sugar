@@ -21,6 +21,13 @@ def _get_args():
     )
 
     parser.add_argument(
+        'ext',
+        dest='ext',
+        action='store_true',
+        default=False,
+        help='Specify the command to be performed.',
+    )
+    parser.add_argument(
         'action',
         choices=Sugar.ACTIONS,
         nargs='?',
@@ -150,9 +157,11 @@ def show_version():
 
 
 def app():
-    options_args, cmd_args = extract_options_and_cmd_args()
+    # options_args, cmd_args = extract_options_and_cmd_args()
     args_parser = _get_args()
     args = args_parser.parse_args()
+
+    breakpoint()
 
     sugar = Sugar(args, options_args, cmd_args)
 
