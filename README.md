@@ -30,7 +30,7 @@ configuration file. So the command line would be very simple.
 
 
 The commands availables now are:
-  `help`, `version`, `build`, `down`, `get-ip`,
+  `--help`, `--version`, `build`, `down`, `get-ip`,
   `logs`, `pull`, `restart`, `start`, `stop`, `wait`.
 
 > Note: `get-ip` and `wait` are not yet implemented.
@@ -71,23 +71,27 @@ service-groups:
           health-check: false
 ```
 
+**NOTE**: containers-sugar has an convenient alias `kxgr` that helps to
+keep the command line shorter, where **k** stands for *containers*,
+**x** stands for *su* (*shu* sound), and **gr** stands for *gar*.
+In another words, you can use `containers-sugar` or `kxgr` CLI.
 
 Some examples of how to use it:
 
 * build the defaults services (service1,service3) for group1:
-  `containers-sugar build --group group1`
+  `kxgr build --group group1`
 
 * build the all services (there is no default service defined) for group2:
-  `containers-sugar build --group group2`
+  `kxgr build --group group2`
 
 * build all services (ignore default) for group1:
-  `containers-sugar build --group group1 --all`
+  `kxgr build --group group1 --all`
 
 * start the default services for group1:
-  `containers-sugar start --group group1`
+  `kxgr start --group group1`
 
 * restart all services (ignore defaults) for group1:
-  `containers-sugar restart --group group1 --all`
+  `kxgr restart --group group1 --all`
 
 * restart service1 and service2 for group1:
-  `containers-sugar restart --group group1 --services service1,service2`
+  `kxgr restart --group group1 --services service1,service2`
