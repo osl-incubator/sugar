@@ -234,7 +234,6 @@ class SugarMain(SugarBase):
     This is the docker-compose commands that is implemented:
 
         build [options] [SERVICE...]
-        bundle [options]
         config [options]
         create [options] [SERVICE...]
         down [options] [--rmi type] [--volumes] [--remove-orphans]
@@ -252,7 +251,6 @@ class SugarMain(SugarBase):
         rm [options] [-f | -s] [SERVICE...]
         run [options] [-p TARGET...] [-v VOLUME...] [-e KEY=VAL...]
             [-l KEY=VAL...] SERVICE [COMMAND] [ARGS...]
-        scale [options] [SERVICE=NUM...]
         start [options] [SERVICE...]
         stop [options] [SERVICE...]
         top [options] [SERVICE...]
@@ -264,7 +262,6 @@ class SugarMain(SugarBase):
 
     actions: List[str] = [
         'build',
-        'bundle',
         'config',
         'create',
         'down',
@@ -281,7 +278,6 @@ class SugarMain(SugarBase):
         'restart',
         'rm',
         'run',
-        'scale',
         'start',
         'stop',
         'top',
@@ -296,9 +292,6 @@ class SugarMain(SugarBase):
     # container commands
     def _build(self):
         self._call_compose_app('build', services=self.service_names)
-
-    def _bundle(self):
-        self._call_compose_app('bundle')
 
     def _config(self):
         self._call_compose_app('config')
@@ -372,9 +365,6 @@ class SugarMain(SugarBase):
 
         self._call_compose_app('run', services=[self.args.get('service')])
 
-    def _scale(self):
-        self._call_compose_app('scale', services=self.service_names)
-
     def _start(self):
         self._call_compose_app('start', services=self.service_names)
 
@@ -391,7 +381,7 @@ class SugarMain(SugarBase):
         self._call_compose_app('up', services=self.service_names)
 
     def _version(self):
-        self._call_compose_app('stop', services=self.service_names)
+        self._call_compose_app('version', services=self.service_names)
 
 
 class SugarExt(SugarMain):
