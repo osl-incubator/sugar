@@ -46,5 +46,4 @@ def test_success(args):
     s = Sugar(args_obj)
 
     if not args_obj.version and not args_obj.help:
-        s.load_services()
         s.run()

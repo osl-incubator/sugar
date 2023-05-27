@@ -1,41 +1,11 @@
 """
-Sugar class for containers
-
-This is the docker-compose commands signature that should be considered:
-
-docker-compose build [options] [SERVICE...]
-docker-compose bundle [options]
-docker-compose config [options]
-docker-compose create [options] [SERVICE...]
-docker-compose down [options] [--rmi type] [--volumes] [--remove-orphans]
-docker-compose events [options] [SERVICE...]
-docker-compose exec [options] SERVICE COMMAND [ARGS...]
-docker-compose images [options] [SERVICE...]
-docker-compose kill [options] [SERVICE...]
-docker-compose logs [options] [SERVICE...]
-docker-compose pause [options] SERVICE...
-docker-compose port [options] SERVICE PRIVATE_PORT
-docker-compose ps [options] [SERVICE...]
-docker-compose pull [options] [SERVICE...]
-docker-compose push [options] [SERVICE...]
-docker-compose restart [options] [SERVICE...]
-docker-compose rm [options] [-f | -s] [SERVICE...]
-docker-compose run [options] [-p TARGET...] [-v VOLUME...] [-e KEY=VAL...]
-    [-l KEY=VAL...] SERVICE [COMMAND] [ARGS...]
-docker-compose scale [options] [SERVICE=NUM...]
-docker-compose start [options] [SERVICE...]
-docker-compose stop [options] [SERVICE...]
-docker-compose top [options] [SERVICE...]
-docker-compose unpause [options] SERVICE...
-docker-compose up [options] [--scale SERVICE=NUM...] [--no-color]
-    [--quiet-pull] [SERVICE...]
-docker-compose version [options]
+Sugar class for containers.
 """
-import argparse
 import os
 import sys
-from dataclasses import dataclass
+from copy import deepcopy
 from pathlib import Path
+from typing import Dict, List, Optional
 
 import sh
 import yaml
@@ -45,6 +15,8 @@ try:
     from sh import docker_compose
 except Exception:
     docker_compose = None
+
+from containers_sugar import __version__
 
 
 class PrintPlugin:
@@ -58,11 +30,9 @@ class PrintPlugin:
         print(Fore.YELLOW, message, Fore.RESET)
 
 
-@dataclass
 class SugarBase(PrintPlugin):
-    ACTIONS = []
-
-    args: argparse.Namespace = argparse.Namespace()
+    actions: List[str] = []
+    args: dict = {}
     config_file: str = ''
     config: dict = {}
     # starts with a simple command
@@ -75,19 +45,22 @@ class SugarBase(PrintPlugin):
 
     def __init__(
         self,
-        args: argparse.Namespace,
+        args: dict,
         options_args: list = [],
         cmd_args: list = [],
     ):
-        self.args = args
-        self.options_args = options_args
-        self.cmd_args = cmd_args
-        self.config_file = self.args.config_file
+        self.args = deepcopy(args)
+        self.options_args = deepcopy(options_args)
+        self.cmd_args = deepcopy(cmd_args)
+        self.config_file = self.args.get('config_file', '')
+        self.config = dict()
+        self.compose_args = list()
+        self.service_group = dict()
+        self.service_names = list()
+
         self._load_config()
         self._verify_args()
         self._load_compose_app()
-
-    def load_services(self):
         self._load_compose_args()
         self._verify_config()
         self._load_service_names()
@@ -115,7 +88,7 @@ class SugarBase(PrintPlugin):
             + self.cmd_args
         )
 
-        if self.args.verbose:
+        if self.args.get('verbose'):
             print('>>>', self.compose_app, *positional_parameters)
             print('-' * 80)
 
@@ -145,10 +118,13 @@ class SugarBase(PrintPlugin):
             )
             os._exit(1)
 
-        if self.args.action and self.args.action not in self.ACTIONS:
+        if (
+            self.args.get('action')
+            and self.args.get('action') not in self.actions
+        ):
             self._print_error(
-                '[EE] The given action is not valid. Use one of them: '
-                + ','.join(self.ACTIONS)
+                f'[EE] The given action `{self.args.get("action")}` is not '
+                f'valid. Use one of them: {",".join(self.actions)}.'
             )
             os._exit(1)
 
@@ -207,14 +183,14 @@ class SugarBase(PrintPlugin):
     def _filter_service_group(self):
         groups = self.config['service-groups']
 
-        if not self.args.service_group:
+        if not self.args.get('service_group'):
             if len(groups) > 1:
                 self._print_error('[EE] The service group was not defined.')
                 os._exit(1)
             self.service_group = groups[0]
             return
 
-        group_name = self.args.service_group
+        group_name = self.args.get('service_group')
         for g in groups:
             if g['name'] == group_name:
                 self.service_group = g
@@ -229,24 +205,33 @@ class SugarBase(PrintPlugin):
     def _load_service_names(self):
         services = self.service_group['services']
 
-        if self.args.all:
+        if self.args.get('all'):
             self.service_names = [
                 v['name']
                 for v in self.service_group.get('services', {}).get('list')
             ]
-        elif self.args.services == '':
-            pass
-        elif self.args.services:
-            self.service_names = self.args.services.split(',')
+        elif self.args.get('services') == '':
+            self._print_error(
+                'If you want to execute the operation for all services, '
+                'use --all parameter.'
+            )
+            os._exit(1)
+        elif self.args.get('services'):
+            self.service_names = self.args.get('services').split(',')
         elif 'default' in services and services['default']:
             self.service_names = services['default'].split(',')
 
     def run(self):
-        return getattr(self, f'_{self.args.action.replace("-", "_")}')()
+        action = self.args.get('action')
+        if not isinstance(action, str):
+            self._print_error('The given action is not valid.')
+            os._exit(1)
+        return getattr(self, f'_{action.replace("-", "_")}')()
 
 
-@dataclass
 class SugarExt(SugarBase):
+    actions: List[str] = []
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -255,9 +240,40 @@ class SugarExt(SugarBase):
         os._exit(1)
 
 
-@dataclass
 class SugarMain(SugarBase):
-    ACTIONS = [
+    """
+    This is the docker-compose commands that is implemented:
+
+    docker-compose build [options] [SERVICE...]
+    docker-compose bundle [options]
+    docker-compose config [options]
+    docker-compose create [options] [SERVICE...]
+    docker-compose down [options] [--rmi type] [--volumes] [--remove-orphans]
+    docker-compose events [options] [SERVICE...]
+    docker-compose exec [options] SERVICE COMMAND [ARGS...]
+    docker-compose images [options] [SERVICE...]
+    docker-compose kill [options] [SERVICE...]
+    docker-compose logs [options] [SERVICE...]
+    docker-compose pause [options] SERVICE...
+    docker-compose port [options] SERVICE PRIVATE_PORT
+    docker-compose ps [options] [SERVICE...]
+    docker-compose pull [options] [SERVICE...]
+    docker-compose push [options] [SERVICE...]
+    docker-compose restart [options] [SERVICE...]
+    docker-compose rm [options] [-f | -s] [SERVICE...]
+    docker-compose run [options] [-p TARGET...] [-v VOLUME...] [-e KEY=VAL...]
+        [-l KEY=VAL...] SERVICE [COMMAND] [ARGS...]
+    docker-compose scale [options] [SERVICE=NUM...]
+    docker-compose start [options] [SERVICE...]
+    docker-compose stop [options] [SERVICE...]
+    docker-compose top [options] [SERVICE...]
+    docker-compose unpause [options] SERVICE...
+    docker-compose up [options] [--scale SERVICE=NUM...] [--no-color]
+        [--quiet-pull] [SERVICE...]
+    docker-compose version [options]
+    """
+
+    actions: List[str] = [
         'build',
         'config',
         'down',
@@ -283,7 +299,7 @@ class SugarMain(SugarBase):
         self._call_compose_app('build', services=self.service_names)
 
     def _down(self):
-        if self.args.all or self.args.services:
+        if self.args.get('all') or self.args.get('services'):
             self._print_error(
                 "[EE] The `down` sub-command doesn't accept `--all` "
                 'neither `--services` parameters.'
@@ -297,13 +313,13 @@ class SugarMain(SugarBase):
         )
 
     def _exec(self):
-        if not self.args.service:
+        if not self.args.get('service'):
             self._print_error(
                 '[EE] `exec` sub-command expected --service parameter.'
             )
             os._exit(1)
 
-        self._call_compose_app('exec', services=[self.args.service])
+        self._call_compose_app('exec', services=[self.args.get('service')])
 
     def _get_ip(self):
         self._print_error('[EE] `get-ip` mot implemented yet.')
@@ -323,13 +339,13 @@ class SugarMain(SugarBase):
         self._start()
 
     def _run(self):
-        if not self.args.service:
+        if not self.args.get('service'):
             self._print_error(
                 '[EE] `run` sub-command expected --service parameter.'
             )
             os._exit(1)
 
-        self._call_compose_app('run', services=[self.args.service])
+        self._call_compose_app('run', services=[self.args.get('service')])
 
     def _start(self):
         self._call_compose_app('up', services=self.service_names)
@@ -338,25 +354,72 @@ class SugarMain(SugarBase):
         self._call_compose_app('stop', services=self.service_names)
 
 
-class Sugar(PrintPlugin):
-    plugins = {}
+class Sugar(SugarBase, PrintPlugin):
+    plugins_definition: Dict[str, type] = {'main': SugarMain, 'ext': SugarExt}
+    plugin: Optional[SugarBase] = None
 
     def __init__(
         self,
-        args: argparse.Namespace,
+        args: dict,
         options_args: list = [],
         cmd_args: list = [],
     ):
-        for klass, name in (
-            (SugarMain, 'main'),
-            (SugarExt, 'ext'),
-        ):
-            self.plugins[name] = klass(
-                args,
-                options_args,
-                cmd_args,
-            )
+        use_plugin = not (
+            args.get('plugin') == 'main' and not args.get('action')
+        )
 
-        def _version(self):
-            self._print_error('Container App Path: ' + str(self.compose_app))
-            self._call_compose_app('--version')
+        if (
+            args.get('plugin')
+            and args.get('plugin') not in self.plugins_definition
+            and not args.get('action')
+        ):
+            args['action'] = args.get('plugin')
+            args['plugin'] = 'main'
+
+        super().__init__(args, options_args, cmd_args)
+
+        if not use_plugin:
+            return
+
+        self.plugin = self.plugins_definition[args.get('plugin', '')](
+            args,
+            options_args,
+            cmd_args,
+        )
+
+    def _verify_args(self):
+        if self.args.get('plugin') not in self.plugins_definition:
+            plugins_name = [k for k in self.plugins_definition.keys()]
+
+            self._print_error(
+                f'[EE] `plugin` parameter `{ self.args.get("plugin") }` '
+                f'not found. Options: { plugins_name }.'
+            )
+            os._exit(1)
+
+    def get_actions(self):
+        actions = []
+
+        for k, v in self.plugins_definition.items():
+            actions.extend(v.actions)
+
+        return actions
+
+    def _load_compose_args(self):
+        pass
+
+    def _load_service_names(self):
+        pass
+
+    def run(self):
+        if self.args['version']:
+            return self._version()
+
+        return self.plugin.run()
+
+    # actions available
+
+    def _version(self):
+        self._print_info('containers-sugar version:' + str(__version__))
+        self._print_info('container program path: ' + str(self.compose_app))
+        self._call_compose_app('--version')
