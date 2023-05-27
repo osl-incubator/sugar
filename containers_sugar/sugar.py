@@ -364,24 +364,27 @@ class Sugar(SugarBase, PrintPlugin):
         options_args: list = [],
         cmd_args: list = [],
     ):
-        use_plugin = not (
-            args.get('plugin') == 'main' and not args.get('action')
-        )
+        plugin_name = args.get('plugin', '')
+
+        use_plugin = not (plugin_name == 'main' and not args.get('action'))
 
         if (
-            args.get('plugin')
-            and args.get('plugin') not in self.plugins_definition
+            plugin_name
+            and plugin_name not in self.plugins_definition
             and not args.get('action')
         ):
-            args['action'] = args.get('plugin')
+            args['action'] = plugin_name
             args['plugin'] = 'main'
+
+        # update plugin name
+        plugin_name = args.get('plugin', '')
 
         super().__init__(args, options_args, cmd_args)
 
         if not use_plugin:
             return
 
-        self.plugin = self.plugins_definition[args.get('plugin', '')](
+        self.plugin = self.plugins_definition[plugin_name](
             args,
             options_args,
             cmd_args,
