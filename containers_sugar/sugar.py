@@ -229,74 +229,75 @@ class SugarBase(PrintPlugin):
         return getattr(self, f'_{action.replace("-", "_")}')()
 
 
-class SugarExt(SugarBase):
-    actions: List[str] = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def _wait(self):
-        self._print_error('[EE] `wait` not implemented yet.')
-        os._exit(1)
-
-
 class SugarMain(SugarBase):
     """
     This is the docker-compose commands that is implemented:
 
-    docker-compose build [options] [SERVICE...]
-    docker-compose bundle [options]
-    docker-compose config [options]
-    docker-compose create [options] [SERVICE...]
-    docker-compose down [options] [--rmi type] [--volumes] [--remove-orphans]
-    docker-compose events [options] [SERVICE...]
-    docker-compose exec [options] SERVICE COMMAND [ARGS...]
-    docker-compose images [options] [SERVICE...]
-    docker-compose kill [options] [SERVICE...]
-    docker-compose logs [options] [SERVICE...]
-    docker-compose pause [options] SERVICE...
-    docker-compose port [options] SERVICE PRIVATE_PORT
-    docker-compose ps [options] [SERVICE...]
-    docker-compose pull [options] [SERVICE...]
-    docker-compose push [options] [SERVICE...]
-    docker-compose restart [options] [SERVICE...]
-    docker-compose rm [options] [-f | -s] [SERVICE...]
-    docker-compose run [options] [-p TARGET...] [-v VOLUME...] [-e KEY=VAL...]
-        [-l KEY=VAL...] SERVICE [COMMAND] [ARGS...]
-    docker-compose scale [options] [SERVICE=NUM...]
-    docker-compose start [options] [SERVICE...]
-    docker-compose stop [options] [SERVICE...]
-    docker-compose top [options] [SERVICE...]
-    docker-compose unpause [options] SERVICE...
-    docker-compose up [options] [--scale SERVICE=NUM...] [--no-color]
-        [--quiet-pull] [SERVICE...]
-    docker-compose version [options]
+        build [options] [SERVICE...]
+        config [options]
+        create [options] [SERVICE...]
+        down [options] [--rmi type] [--volumes] [--remove-orphans]
+        events [options] [SERVICE...]
+        exec [options] SERVICE COMMAND [ARGS...]
+        images [options] [SERVICE...]
+        kill [options] [SERVICE...]
+        logs [options] [SERVICE...]
+        pause [options] SERVICE...
+        port [options] SERVICE PRIVATE_PORT
+        ps [options] [SERVICE...]
+        pull [options] [SERVICE...]
+        push [options] [SERVICE...]
+        restart [options] [SERVICE...]
+        rm [options] [-f | -s] [SERVICE...]
+        run [options] [-p TARGET...] [-v VOLUME...] [-e KEY=VAL...]
+            [-l KEY=VAL...] SERVICE [COMMAND] [ARGS...]
+        start [options] [SERVICE...]
+        stop [options] [SERVICE...]
+        top [options] [SERVICE...]
+        unpause [options] SERVICE...
+        up [options] [--scale SERVICE=NUM...] [--no-color]
+            [--quiet-pull] [SERVICE...]
+        version [options]
     """
 
     actions: List[str] = [
         'build',
         'config',
+        'create',
         'down',
+        'events',
         'exec',
-        'get-ip',
+        'images',
+        'kill',
         'logs',
+        'pause',
+        'port',
+        'ps',
         'pull',
-        'run',
+        'push',
         'restart',
+        'rm',
+        'run',
         'start',
         'stop',
-        'wait',
+        'top',
+        'unpause',
+        'up',
+        'version',
     ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     # container commands
+    def _build(self):
+        self._call_compose_app('build', services=self.service_names)
+
     def _config(self):
         self._call_compose_app('config')
 
-    def _build(self):
-        self._call_compose_app('build', services=self.service_names)
+    def _create(self):
+        self._call_compose_app('create', services=self.service_names)
 
     def _down(self):
         if self.args.get('all') or self.args.get('services'):
@@ -312,6 +313,9 @@ class SugarMain(SugarBase):
             services=[],
         )
 
+    def _events(self):
+        self._call_compose_app('events', services=self.service_names)
+
     def _exec(self):
         if not self.args.get('service'):
             self._print_error(
@@ -321,22 +325,36 @@ class SugarMain(SugarBase):
 
         self._call_compose_app('exec', services=[self.args.get('service')])
 
-    def _get_ip(self):
-        self._print_error('[EE] `get-ip` mot implemented yet.')
-        os._exit(1)
+    def _images(self):
+        self._call_compose_app('images', services=self.service_names)
+
+    def _kill(self):
+        self._call_compose_app('kill', services=self.service_names)
 
     def _logs(self):
         self._call_compose_app('logs', services=self.service_names)
 
+    def _pause(self):
+        self._call_compose_app('pause', services=self.service_names)
+
+    def _port(self):
+        # TODO: check how private port could be passed
+        self._call_compose_app('port', services=self.service_names)
+
+    def _ps(self):
+        self._call_compose_app('ps', services=self.service_names)
+
     def _pull(self):
         self._call_compose_app('pull', services=self.service_names)
 
+    def _push(self):
+        self._call_compose_app('push', services=self.service_names)
+
     def _restart(self):
-        options_args = self.options_args
-        self.options_args = []
-        self._stop()
-        self.options_args = options_args
-        self._start()
+        self._call_compose_app('restart', services=self.service_names)
+
+    def _rm(self):
+        self._call_compose_app('rm', services=self.service_names)
 
     def _run(self):
         if not self.args.get('service'):
@@ -348,10 +366,44 @@ class SugarMain(SugarBase):
         self._call_compose_app('run', services=[self.args.get('service')])
 
     def _start(self):
-        self._call_compose_app('up', services=self.service_names)
+        self._call_compose_app('start', services=self.service_names)
 
     def _stop(self):
         self._call_compose_app('stop', services=self.service_names)
+
+    def _top(self):
+        self._call_compose_app('top', services=self.service_names)
+
+    def _unpause(self):
+        self._call_compose_app('unpause', services=self.service_names)
+
+    def _up(self):
+        self._call_compose_app('up', services=self.service_names)
+
+    def _version(self):
+        self._call_compose_app('version', services=self.service_names)
+
+
+class SugarExt(SugarMain):
+    def __init__(self, *args, **kwargs):
+        self.actions += [
+            'start',
+            'get-ip',
+            'wait',
+        ]
+
+        super().__init__(*args, **kwargs)
+
+    def _start(self):
+        self._up()
+
+    def _get_ip(self):
+        self._print_error('[EE] `get-ip` mot implemented yet.')
+        os._exit(1)
+
+    def _wait(self):
+        self._print_error('[EE] `wait` not implemented yet.')
+        os._exit(1)
 
 
 class Sugar(SugarBase, PrintPlugin):
