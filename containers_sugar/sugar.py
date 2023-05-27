@@ -418,6 +418,9 @@ class Sugar(SugarBase, PrintPlugin):
         if self.args['version']:
             return self._version()
 
+        if not self.args.get('action'):
+            return
+
         return self.plugin.run()
 
     # actions available

@@ -1,5 +1,5 @@
 """Tests for `containers-sugar` package."""
-from dataclasses import dataclass
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -7,20 +7,18 @@ import pytest
 from containers_sugar import Sugar
 
 CONFIG_PATH = Path(__file__).parent.parent / '.containers-sugar.yaml'
-
-
-@dataclass
-class Args:
-    action: str = ''
-    config_file: str = ''
-    service_group: str = ''
-    service: str = ''
-    services: str = ''
-    extras: str = ''
-    all: bool = False
-    version: bool = False
-    verbose: bool = False
-    help: bool = False
+DEFAULT_ARGS = {
+    'action': '',
+    'config_file': '',
+    'service_group': '',
+    'service': '',
+    'services': None,
+    'all': False,
+    'version': False,
+    'verbose': False,
+    'help': False,
+    'plugin': 'main',
+}
 
 
 @pytest.mark.parametrize(
@@ -28,7 +26,7 @@ class Args:
     [
         {'version': True},
         {'help': True},
-        {'action': 'config', 'service_group': 'group1', 'extras': ''},
+        {'action': 'config', 'service_group': 'group1'},
     ],
 )
 def test_success(args):
@@ -39,11 +37,9 @@ def test_success(args):
             'verbose': True,
         }
     )
-
-    args_obj = Args(**args)
+    args_obj = deepcopy(DEFAULT_ARGS)
+    args_obj.update(args)
     print(args_obj)
 
     s = Sugar(args_obj)
-
-    if not args_obj.version and not args_obj.help:
-        s.run()
+    s.run()

@@ -7,3 +7,4 @@ dependencies:
   - poetry
   - nodejs  # used by semantic-release
   - urllib3 <2  # conflicts with
+  - docker-compose
