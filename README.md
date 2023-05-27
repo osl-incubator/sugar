@@ -28,12 +28,42 @@ configuration file. So the command line would be very simple.
 
 ## Features
 
+The commands from docker-compose available are:
 
-The commands availables now are:
-  `--help`, `--version`, `build`, `down`, `get-ip`,
-  `logs`, `pull`, `restart`, `start`, `stop`, `wait`.
+* build
+* config
+* create
+* down
+* events
+* exec
+* images
+* kill
+* logs
+* pause
+* port
+* ps
+* pull
+* push
+* restart
+* rm
+* run
+* start
+* stop
+* top
+* unpause
+* up
+* version
 
-> Note: `get-ip` and `wait` are not yet implemented.
+These commands are available in the main profile/plugin, so
+you don't need to specify any extra parameter to access them.
+
+For extra commands, we are gathering them into a profile/plugin called
+`ext`, so you can access them using something like: `kxgr ext restart`.
+
+The current available **ext** commands are:
+
+* start -> alias for `up`
+* restart -> runs `stop` and `up`
 
 
 ## How to use it
@@ -88,10 +118,10 @@ Some examples of how to use it:
   `kxgr build --group group1 --all`
 
 * start the default services for group1:
-  `kxgr start --group group1`
+  `kxgr ext start --group group1`
 
 * restart all services (ignore defaults) for group1:
-  `kxgr restart --group group1 --all`
+  `kxgr ext restart --group group1 --all`
 
 * restart service1 and service2 for group1:
-  `kxgr restart --group group1 --services service1,service2`
+  `kxgr ext restart --group group1 --services service1,service2`
