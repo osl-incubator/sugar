@@ -229,7 +229,7 @@ class SugarBase(PrintPlugin):
         return getattr(self, f'_{action.replace("-", "_")}')()
 
 
-class SugarMain(SugarBase):
+class SugarDockerCompose(SugarBase):
     """
     This is the docker-compose commands that is implemented:
 
@@ -384,22 +384,30 @@ class SugarMain(SugarBase):
         self._call_compose_app('version', services=self.service_names)
 
 
-class SugarExt(SugarMain):
+class SugarExt(SugarDockerCompose):
     def __init__(self, *args, **kwargs):
         self.actions += [
-            'start',
             'get-ip',
+            'restart',
+            'start',
             'wait',
         ]
 
         super().__init__(*args, **kwargs)
 
-    def _start(self):
-        self._up()
-
     def _get_ip(self):
         self._print_error('[EE] `get-ip` mot implemented yet.')
         os._exit(1)
+
+    def _restart(self):
+        options = self.options_args
+        self.options_args = []
+        self._stop()
+        self.options_args = options
+        self._start()
+
+    def _start(self):
+        self._up()
 
     def _wait(self):
         self._print_error('[EE] `wait` not implemented yet.')
@@ -407,7 +415,10 @@ class SugarExt(SugarMain):
 
 
 class Sugar(SugarBase, PrintPlugin):
-    plugins_definition: Dict[str, type] = {'main': SugarMain, 'ext': SugarExt}
+    plugins_definition: Dict[str, type] = {
+        'main': SugarDockerCompose,
+        'ext': SugarExt,
+    }
     plugin: Optional[SugarBase] = None
 
     def __init__(
