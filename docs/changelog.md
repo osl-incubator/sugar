@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.6.1](https://github.com/osl-incubator/containers-sugar/compare/1.6.0...1.6.1) (2023-06-05)
+
+
+### Bug Fixes
+
+* **ext:** Fix restart and start ext commands ([#79](https://github.com/osl-incubator/containers-sugar/issues/79)) ([e9622c3](https://github.com/osl-incubator/containers-sugar/commit/e9622c3ac21e0e08de15263a82f77b3828aecaa9))
+
 # [1.6.0](https://github.com/osl-incubator/containers-sugar/compare/1.5.0...1.6.0) (2023-05-27)
 
 
