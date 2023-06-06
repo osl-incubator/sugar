@@ -43,6 +43,7 @@ sh = "^2.0.0"
 pyyaml = ">=5"
 colorama = "^0.4.6"
 urllib3 = "<2"
+python-dotenv = "^0.21.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7"

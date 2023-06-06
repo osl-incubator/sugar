@@ -72,33 +72,32 @@ First you need to place the config file `.containers-sugar.yaml` in the root
 of your project. This is an example of a configuration file:
 
 ```yaml
-version: 1.0.0
+version: 1.0
 compose-app: docker-compose
+default:
+  group: {{ env.ENV }}
 service-groups:
   - name: group1
-    project-name: project1  # optional
+    project-name: project1
     compose-path: containers/tests/group1/compose.yaml
     env-file: .env
     services:
-      default: service1,service3
-      list:
+      default:
+        - service1
+        - service3
+      available:
         - name: service1
-          health-check: true
         - name: service2
-          health-check: false
         - name: service3
-          health-check: true
   - name: group2
-    project-name: null  # optional
+    project-name: null
     compose-path: containers/tests/group2/compose.yaml
     env-file: .env
     services:
-      default: null
-      list:
+      # default: null
+      available:
         - name: service1
-          health-check: true
         - name: service1
-          health-check: false
 ```
 
 **NOTE**: containers-sugar has an convenient alias `kxgr` that helps to
@@ -125,3 +124,8 @@ Some examples of how to use it:
 
 * restart service1 and service2 for group1:
   `kxgr ext restart --group group1 --services service1,service2`
+
+
+**NOTE**: If you use: ```default: group: {{ env.ENV }}```, you don't need to
+give `--group <GROUP_NAME>`, except if you want a different group than the
+default one.

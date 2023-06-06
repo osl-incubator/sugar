@@ -1,5 +1,8 @@
-version: 1.0.0
+version: 1.0
 compose-app: docker-compose
+env-file: .env
+defaults:
+  group: {{ env.KXGR_GROUP }}
 service-groups:
   - name: group1
     project-name: project1  # optional
@@ -7,7 +10,7 @@ service-groups:
     env-file: .env
     services:
       default: service1-1,service1-3
-      list:
+      available:
         - name: service1-1
         - name: service1-2
         - name: service1-3
@@ -18,7 +21,7 @@ service-groups:
     env-file: .env
     services:
       default: null
-      list:
+      available:
         - name: service2-1
         - name: service2-2
 
@@ -30,7 +33,7 @@ service-groups:
     env-file: .env
     services:
       default: null
-      list:
+      available:
         - name: service1-1
         - name: service1-2
         - name: service2-1
