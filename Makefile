@@ -61,6 +61,10 @@ smoke-tests:
 	# note: don't change the order of the commands heres
 
 	set -ex
+
+	# test default group option
+	kxgr build --verbose
+
 	# group 1
 	kxgr --help
 	kxgr --version
