@@ -27,9 +27,6 @@ jobs:
         sed -i s/python\ 3\.8\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
         cat conda/dev.yaml
 
-    - name: create a dotenv file
-      run: touch .env
-
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
