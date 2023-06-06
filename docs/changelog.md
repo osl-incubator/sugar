@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.7.0](https://github.com/osl-incubator/containers-sugar/compare/1.6.1...1.7.0) (2023-06-06)
+
+
+### Features
+
+* Add support for default option configuration for group service ([#80](https://github.com/osl-incubator/containers-sugar/issues/80)) ([0045a4a](https://github.com/osl-incubator/containers-sugar/commit/0045a4aabcb6106f6ba145fa1edfd12e3fc5cb6a))
+
 ## [1.6.1](https://github.com/osl-incubator/containers-sugar/compare/1.6.0...1.6.1) (2023-06-05)
 
 
