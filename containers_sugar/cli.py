@@ -1,3 +1,4 @@
+"""Definition of the CLI structure."""
 import argparse
 import os
 import sys
@@ -8,6 +9,7 @@ from containers_sugar import Sugar
 
 
 def _get_args():
+    """Define and return the arguments used by the CLI."""
     parser = argparse.ArgumentParser(
         prog='containers-sugar',
         description=(
@@ -96,6 +98,7 @@ def _get_args():
 
 
 def extract_options_and_cmd_args() -> Tuple[list, list]:
+    """Extract arg `options` and `cmd` from the CLI calling."""
     args = list(sys.argv)
     total_args = len(args)
 
@@ -152,6 +155,7 @@ def extract_options_and_cmd_args() -> Tuple[list, list]:
 
 
 def app():
+    """Run container-sugar app."""
     options_args, cmd_args = extract_options_and_cmd_args()
     args_parser = _get_args()
     args = args_parser.parse_args()
