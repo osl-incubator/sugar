@@ -47,7 +47,6 @@ repos:
       types:
         - python
 
-
     - id: bandit
       name: bandit
       entry: bandit
