@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.7.1](https://github.com/osl-incubator/containers-sugar/compare/1.7.0...1.7.1) (2023-06-15)
+
+
+### Bug Fixes
+
+* **linter:** Refactor linter options and fixes issues pointed by linter tools and add new alias to the app ([#81](https://github.com/osl-incubator/containers-sugar/issues/81)) ([b6e13df](https://github.com/osl-incubator/containers-sugar/commit/b6e13dfa2f72e97cc22ea49ec512f8e8f00c5c70))
+
 # [1.7.0](https://github.com/osl-incubator/containers-sugar/compare/1.6.1...1.7.0) (2023-06-06)
 
 
