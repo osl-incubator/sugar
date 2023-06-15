@@ -1,16 +1,14 @@
-"""
-Sugar class for containers.
-"""
+"""Sugar class for containers."""
 import io
 import os
 import sys
 from copy import deepcopy
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Type
 
 import dotenv
 import sh
-import yaml
+import yaml  # type: ignore
 from jinja2 import Template
 
 try:
@@ -23,14 +21,18 @@ from containers_sugar.logs import KxgrErrorType, KxgrLogs
 
 
 def escape_template_tag(v: str) -> str:
+    """Escape template tags for template rendering."""
     return v.replace('{{', r'\{\{').replace('}}', r'\}\}')
 
 
 def unescape_template_tag(v: str) -> str:
+    """Unescape template tags for template rendering."""
     return v.replace(r'\{\{', '{{').replace(r'\}\}', '}}')
 
 
 class SugarBase:
+    """SugarBase defined the base structure for the Sugar classes."""
+
     actions: List[str] = []
     args: dict = {}
     config_file: str = ''
@@ -52,6 +54,7 @@ class SugarBase:
         options_args: list = [],
         cmd_args: list = [],
     ):
+        """Initialize SugarBase instance."""
         self.args = deepcopy(args)
         self.options_args = deepcopy(options_args)
         self.cmd_args = deepcopy(cmd_args)
@@ -276,6 +279,7 @@ class SugarBase:
             )
 
     def run(self):
+        """Run the given sugar command."""
         action = self.args.get('action')
         if not isinstance(action, str):
             KxgrLogs.raise_error(
@@ -287,7 +291,9 @@ class SugarBase:
 
 class SugarDockerCompose(SugarBase):
     """
-    This is the docker-compose commands that is implemented:
+    SugarDockerCompose provides the docker compose commands.
+
+    This are the commands that is currently provided:
 
         build [options] [SERVICE...]
         config [options]
@@ -343,6 +349,7 @@ class SugarDockerCompose(SugarBase):
     ]
 
     def __init__(self, *args, **kwargs):
+        """Initialize SugarDockerCompose instance."""
         super().__init__(*args, **kwargs)
 
     # container commands
@@ -441,7 +448,10 @@ class SugarDockerCompose(SugarBase):
 
 
 class SugarExt(SugarDockerCompose):
+    """SugarExt provides special commands not available on docker-compose."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize the SugarExt class."""
         self.actions += [
             'get-ip',
             'restart',
@@ -475,7 +485,9 @@ class SugarExt(SugarDockerCompose):
 
 
 class Sugar(SugarBase):
-    plugins_definition: Dict[str, type] = {
+    """Sugar main class."""
+
+    plugins_definition: Dict[str, Type[SugarBase]] = {
         'main': SugarDockerCompose,
         'ext': SugarExt,
     }
@@ -487,6 +499,7 @@ class Sugar(SugarBase):
         options_args: list = [],
         cmd_args: list = [],
     ):
+        """Initialize the Sugar object according to the plugin used."""
         plugin_name = args.get('plugin', '')
 
         use_plugin = not (plugin_name == 'main' and not args.get('action'))
@@ -519,11 +532,13 @@ class Sugar(SugarBase):
 
             KxgrLogs.raise_error(
                 f'`plugin` parameter `{ self.args.get("plugin") }` '
-                f'not found. Options: { plugins_name }.'
+                f'not found. Options: { plugins_name }.',
+                KxgrLogs.KXGR_INVALID_PARAMETER,
             )
             os._exit(1)
 
-    def get_actions(self):
+    def get_actions(self) -> list:
+        """Get a list of the available actions."""
         actions = []
 
         for k, v in self.plugins_definition.items():
@@ -538,6 +553,7 @@ class Sugar(SugarBase):
         pass
 
     def run(self):
+        """Run sugar command."""
         if self.args['version']:
             return self._version()
 

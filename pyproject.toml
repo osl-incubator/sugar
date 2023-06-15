@@ -35,6 +35,7 @@ exclude = [
 [tool.poetry.scripts]
 "containers-sugar" = "containers_sugar.__main__:app"
 "kxgr" = "containers_sugar.__main__:app"
+"sugar" = "containers_sugar.__main__:app"
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
@@ -49,9 +50,12 @@ python-dotenv = "^0.21.1"
 pytest = "^7"
 blue = "^0.9.1"
 isort = "^5"
-pre-commit = "2"
-flake8 = "^4"
-mypy = "^0.931"
+pre-commit = "^2"
+mypy = "^1"
+ruff = "^0.0.272"
+bandit = "^1.7.5"
+vulture = "^2.7"
+pydocstyle = "^6.3.0"
 pytest-cov = "^3.0.0"
 mkdocs = ">=1.2.3,<2"
 mkdocs-exclude = ">=1.0.2,<2"
@@ -60,7 +64,6 @@ mkdocs-literate-nav = ">=0.4.1,<1"
 mkdocs-macros-plugin = ">=0.6.3,<1"
 mkdocs-material = ">=8.2.1,<9"
 mkdocstrings = ">=0.17.0,<0.18.0"
-types-pyyaml = "^6.0.12.10"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -83,3 +86,24 @@ skip_glob = ["docs/*", "*.egg-info"]
 
 [tool.mypy]
 ignore_missing_imports = true
+
+
+[tool.ruff]
+line-length = 79
+exclude = [
+  "docs",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+targets = "containers_sugar/"
+
+[tool.vulture]
+exclude = ["tests"]
+ignore_decorators = []
+ignore_names = []
+make_whitelist = true
+min_confidence = 80
+paths = ["containers_sugar/"]
+sort_by_size = true
+verbose = false
