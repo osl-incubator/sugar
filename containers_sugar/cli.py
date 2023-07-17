@@ -13,7 +13,7 @@ def _get_args():
     parser = argparse.ArgumentParser(
         prog='containers-sugar',
         description=(
-            'containers-sugar (or kxgr) is a tool that help you to organize'
+            'containers-sugar (or sugar) is a tool that help you to organize'
             "and simplify your containers' stack."
         ),
         epilog=(

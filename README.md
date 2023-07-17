@@ -58,7 +58,7 @@ These commands are available in the main profile/plugin, so
 you don't need to specify any extra parameter to access them.
 
 For extra commands, we are gathering them into a profile/plugin called
-`ext`, so you can access them using something like: `kxgr ext restart`.
+`ext`, so you can access them using something like: `sugar ext restart`.
 
 The current available **ext** commands are:
 
@@ -100,30 +100,30 @@ service-groups:
         - name: service1
 ```
 
-**NOTE**: containers-sugar has an convenient alias `kxgr` that helps to
+**NOTE**: containers-sugar has an convenient alias `sugar` that helps to
 keep the command line shorter, where **k** stands for *containers*,
 **x** stands for *su* (*shu* sound), and **gr** stands for *gar*.
-In another words, you can use `containers-sugar` or `kxgr` CLI.
+In another words, you can use `containers-sugar` or `sugar` CLI.
 
 Some examples of how to use it:
 
 * build the defaults services (service1,service3) for group1:
-  `kxgr build --group group1`
+  `sugar build --group group1`
 
 * build the all services (there is no default service defined) for group2:
-  `kxgr build --group group2`
+  `sugar build --group group2`
 
 * build all services (ignore default) for group1:
-  `kxgr build --group group1 --all`
+  `sugar build --group group1 --all`
 
 * start the default services for group1:
-  `kxgr ext start --group group1`
+  `sugar ext start --group group1`
 
 * restart all services (ignore defaults) for group1:
-  `kxgr ext restart --group group1 --all`
+  `sugar ext restart --group group1 --all`
 
 * restart service1 and service2 for group1:
-  `kxgr ext restart --group group1 --services service1,service2`
+  `sugar ext restart --group group1 --services service1,service2`
 
 
 **NOTE**: If you use: ```default: group: {{ env.ENV }}```, you don't need to

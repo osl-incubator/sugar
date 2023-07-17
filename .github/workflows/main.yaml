@@ -19,6 +19,9 @@ jobs:
       group: ci-tests-${{ matrix.python_version }}-${{ github.ref }}
       cancel-in-progress: true
 
+    env:
+      KXGR_PROJECT_NAME: ${{ matrix.python_version }}-${{ github.ref }}
+
     steps:
     - uses: actions/checkout@v3
 
