@@ -136,8 +136,21 @@ class SugarBase:
         else:
             group_name = self.args.get('service_group')
 
+        default_project_name = self.defaults.get('project-name')
+
         for g in groups:
             if g['name'] == group_name:
+                if default_project_name and 'project-name' not in g:
+                    # just use default value if "project-name" is not set
+                    g['project-name'] = default_project_name
+                if not g.get('services', {}).get('default'):
+                    # if default is not given or it is empty or null,
+                    # use as default all the services available
+                    default_services = [
+                        service['name']
+                        for service in g.get('services', {}).get('available')
+                    ]
+                    g['services']['default'] = ','.join(default_services)
                 self.service_group = g
                 return
 

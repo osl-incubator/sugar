@@ -3,6 +3,7 @@ compose-app: docker-compose
 env-file: .env
 defaults:
   group: {{ env.KXGR_GROUP }}
+  project-name: sugar-{{ env.KXGR_PROJECT_NAME }}
 service-groups:
   - name: group1
     project-name: project1  # optional
@@ -38,3 +39,13 @@ service-groups:
         - name: service1-2
         - name: service2-1
         - name: service2-2
+
+  - name: group-defaults
+    compose-path:
+      - tests/containers/group1/compose.yaml
+    env-file: .env
+    services:
+      # default: service1-1,service1-2
+      available:
+        - name: service1-1
+        - name: service1-2
