@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.8.0](https://github.com/osl-incubator/containers-sugar/compare/1.7.1...1.8.0) (2023-07-17)
+
+
+### Features
+
+* Add default config for project-name ([#82](https://github.com/osl-incubator/containers-sugar/issues/82)) ([1dab380](https://github.com/osl-incubator/containers-sugar/commit/1dab3802439695396d94e3e1cfce3aeff686e6c6))
+
 ## [1.7.1](https://github.com/osl-incubator/containers-sugar/compare/1.7.0...1.7.1) (2023-06-15)
 
 
