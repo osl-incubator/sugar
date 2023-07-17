@@ -27,7 +27,7 @@
 
 ### Features
 
-* Add the alias sugar to containers-sugar ([#75](https://github.com/osl-incubator/containers-sugar/issues/75)) ([67a9d5c](https://github.com/osl-incubator/containers-sugar/commit/67a9d5cd96c308be0d447a5a9cfb3406d1166336))
+* Add the alias kxgr to containers-sugar ([#75](https://github.com/osl-incubator/containers-sugar/issues/75)) ([67a9d5c](https://github.com/osl-incubator/containers-sugar/commit/67a9d5cd96c308be0d447a5a9cfb3406d1166336))
 * Implement the missing docker-compose commands ([#77](https://github.com/osl-incubator/containers-sugar/issues/77)) ([bafbc1d](https://github.com/osl-incubator/containers-sugar/commit/bafbc1d307a0e07385978863724ab3487f7939bc))
 
 # [1.5.0](https://github.com/osl-incubator/containers-sugar/compare/1.4.4...1.5.0) (2023-04-07)
