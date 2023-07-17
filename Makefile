@@ -59,12 +59,14 @@ build:
 
 .ONESHELL:
 .PHONY: docker-killall
-docker-kiallall:
+docker-killall:
+	set -ex
 	docker kill `docker ps -q` || true
+	set +ex
 
 .ONESHELL:
 .PHONY: smoke-test-group-1
-smoke-test-group-1: docker-kiallall
+smoke-test-group-1: docker-killall
 	set -ex
 	# group 1
 	sugar build --verbose
@@ -84,7 +86,7 @@ smoke-test-group-1: docker-kiallall
 
 .ONESHELL:
 .PHONY: smoke-test-group-2
-smoke-test-group-2: docker-kiallall
+smoke-test-group-2: docker-killall
 	set -ex
 	# group 2
 	sugar build --verbose --group group2 --all
@@ -103,7 +105,7 @@ smoke-test-group-2: docker-kiallall
 
 .ONESHELL:
 .PHONY: smoke-test-group-mix
-smoke-test-group-mix: docker-kiallall
+smoke-test-group-mix: docker-killall
 	set -ex
 	# group mix
 	sugar build --verbose --group group-mix --all
@@ -122,7 +124,7 @@ smoke-test-group-mix: docker-kiallall
 
 .ONESHELL:
 .PHONY: smoke-test-main
-smoke-test-main: docker-kiallall
+smoke-test-main: docker-killall
 	set -ex
 	# general tests main profile/plugins
 	sugar build --verbose --group group1
@@ -147,9 +149,10 @@ smoke-test-main: docker-kiallall
 
 .ONESHELL:
 .PHONY: smoke-test-defaults
-smoke-test-defaults: docker-kiallall
+smoke-test-defaults: docker-killall
+	$(MAKE) docker-killall
 	set -ex
-	export KXGR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex)'`"
+	export KXGR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
 	echo $$KXGR_PROJECT_NAME
 	sugar build --verbose --group group-defaults
 	sugar ext restart --verbose --group group-defaults --options -d
@@ -158,7 +161,7 @@ smoke-test-defaults: docker-kiallall
 
 .ONESHELL:
 .PHONY: smoke-final-tests
-smoke-final-tests: docker-kiallall
+smoke-final-tests: docker-killall
 	# keep these ones at the end
 	sugar ext restart --verbose --group group-defaults --options -d
 	sugar pause --verbose --group group1
