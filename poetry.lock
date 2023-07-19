@@ -361,6 +361,23 @@ files = [
 ]
 
 [[package]]
+name = "compose-go"
+version = "2.20.1"
+description = "Docker Compose v2 (GoLang) wrapped in a Python Package"
+optional = false
+python-versions = ">=3.7.0,<4.0.0"
+files = [
+    {file = "compose_go-2.20.1.tar.gz", hash = "sha256:4f81fc5e048822c5eae31c7710788fc3ec716173040672d21ad0c0849e8a8137"},
+]
+
+[package.dependencies]
+click = ">=6"
+
+[package.source]
+type = "url"
+url = "https://github.com/osl-package-recipes/compose-go/releases/download/v2.20.1/compose_go-2.20.1.tar.gz"
+
+[[package]]
 name = "coverage"
 version = "7.2.7"
 description = "Code coverage measurement for Python"
@@ -2202,4 +2219,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "e5a28a69ee02b9f96d2682377e947a88ef4869c89f61731cf1f4a1b2511c7750"
+content-hash = "103176b606dbaec5b450502db2d8042a8e6cd3a6c3cf76be384a9ce790a5fdfc"

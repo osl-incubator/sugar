@@ -34,8 +34,9 @@ jobs:
       with:
         miniconda-version: "latest"
         environment-file: conda/dev.yaml
-        channels: conda-forge,nodefaults
-        activate-environment: containers-sugar
+        channels: nodefaults,conda-forge
+        channel-priority: strict
+        activate-environment: sugar
         use-mamba: true
         miniforge-variant: Mambaforge
 
@@ -67,8 +68,9 @@ jobs:
       with:
         miniconda-version: "latest"
         environment-file: conda/dev.yaml
-        channels: conda-forge,nodefaults
-        activate-environment: containers-sugar
+        channels: nodefaults,conda-forge
+        channel-priority: strict
+        activate-environment: sugar
         use-mamba: true
         miniforge-variant: Mambaforge
 

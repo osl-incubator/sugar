@@ -64,6 +64,7 @@ mkdocs-literate-nav = ">=0.4.1,<1"
 mkdocs-macros-plugin = ">=0.6.3,<1"
 mkdocs-material = ">=8.2.1,<9"
 mkdocstrings = ">=0.17.0,<0.18.0"
+compose-go = {url = "https://github.com/osl-package-recipes/compose-go/releases/download/v2.20.1/compose_go-2.20.1.tar.gz"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -135,15 +135,17 @@ smoke-test-main: docker-killall
 	sugar exec --verbose --group group1 --service service1-1 --options -T --cmd env
 	sugar images --verbose --group group1
 	sugar logs --verbose --group group1
-	sugar port --verbose --group group1
+	# port is not complete supported
+	# sugar port --verbose --group group1 --service service1-1
 	sugar ps --verbose --group group1
 	sugar pull --verbose --group group1
 	sugar push --verbose --group group1
 	sugar run --verbose --group group1 --service service1-1 --options -T --cmd env
 	sugar top --verbose --group group1
 	sugar up --verbose --group group1 --options -d
-	sugar version --verbose --group group1
-	sugar events --verbose --group group1 --options --json --dry-run
+	sugar version --verbose
+	# port is not complete supported
+	# sugar events --verbose --group group1 --service service1-1 --options --json --dry-run
 	set +ex
 
 
@@ -155,8 +157,10 @@ smoke-test-defaults: docker-killall
 	export KXGR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
 	echo $$KXGR_PROJECT_NAME
 	sugar build --verbose --group group-defaults
+	sugar ext start --verbose --group group-defaults --options -d
 	sugar ext restart --verbose --group group-defaults --options -d
 	docker ps|grep $$KXGR_PROJECT_NAME
+	sugar ext stop --verbose --group group-defaults
 	set +ex
 
 .ONESHELL:

@@ -1,4 +1,4 @@
-name: containers-sugar
+name: sugar
 channels:
   - nodefaults
   - conda-forge
