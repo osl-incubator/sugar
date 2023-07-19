@@ -8,6 +8,7 @@ from containers_sugar import Sugar
 
 CONFIG_PATH = Path(__file__).parent.parent / '.containers-sugar.yaml'
 DEFAULT_ARGS = {
+    'compose-app': 'docker compose',
     'action': '',
     'config_file': '',
     'service_group': '',

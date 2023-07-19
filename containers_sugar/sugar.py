@@ -11,11 +11,6 @@ import sh
 import yaml  # type: ignore
 from jinja2 import Template
 
-try:
-    from sh import docker_compose
-except Exception:
-    docker_compose = None
-
 from containers_sugar import __version__
 from containers_sugar.logs import KxgrErrorType, KxgrLogs
 
@@ -168,19 +163,18 @@ class SugarBase:
             self.config = yaml.safe_load(f)
 
     def _load_compose_app(self):
-        if self.config['compose-app'] != 'docker-compose':
+        compose_app = self.config.get('compose-app', '')
+        if compose_app.replace(' ', '-') != 'docker-compose':
             KxgrLogs.raise_error(
                 f'"{self.config["compose-app"]}" not supported yet.',
                 KxgrErrorType.KXGR_COMPOSE_APP_NOT_SUPPORTED,
             )
 
-        self.compose_app = docker_compose
-
-        if self.compose_app is None:
-            KxgrLogs.raise_error(
-                f'"{self.config["compose-app"]}" not found.',
-                KxgrErrorType.KXGR_COMPOSE_APP_NOT_FOUNDED,
-            )
+        if compose_app == 'docker-compose':
+            self.compose_app = sh.docker_compose
+        else:
+            self.compose_app = sh.docker
+            self.compose_args.append(['compose'])
 
     def _load_compose_args(self):
         self._filter_service_group()
