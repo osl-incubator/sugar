@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.9.0](https://github.com/osl-incubator/containers-sugar/compare/1.8.0...1.9.0) (2023-07-19)
+
+
+### Features
+
+* Add support for compose v2 ([#84](https://github.com/osl-incubator/containers-sugar/issues/84)) ([907b3ad](https://github.com/osl-incubator/containers-sugar/commit/907b3ad4fe35310f0e531b4cd3b9ee6dfb0173ac))
+
 # [1.8.0](https://github.com/osl-incubator/containers-sugar/compare/1.7.1...1.8.0) (2023-07-17)
 
 
