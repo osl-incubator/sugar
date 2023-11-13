@@ -117,7 +117,7 @@ class SugarBase:
         return Path(self.config_file).exists()
 
     def _filter_service_group(self):
-        groups = self.config['service-groups']
+        groups = self.config['groups']
 
         if not self.args.get('service_group'):
             default_group = self.defaults.get('group')
@@ -279,7 +279,7 @@ class SugarBase:
             )
 
     def _verify_config(self):
-        if not len(self.config['service-groups']):
+        if not len(self.config['groups']):
             KxgrLogs.raise_error(
                 'No service groups found.',
                 KxgrErrorType.KXGR_INVALID_CONFIGURATION,
