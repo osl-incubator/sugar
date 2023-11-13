@@ -76,7 +76,7 @@ version: 1.0
 compose-app: docker-compose
 default:
   group: {{ env.ENV }}
-service-groups:
+groups:
   - name: group1
     project-name: project1
     compose-path: containers/tests/group1/compose.yaml
