@@ -20,7 +20,7 @@ jobs:
       cancel-in-progress: true
 
     env:
-      KXGR_PROJECT_NAME: ${{ matrix.python_version }}-${{ github.ref }}
+      KXGR_PROJECT_NAME: ${{ matrix.python_version }}-${{ github.sha }}
 
     steps:
     - uses: actions/checkout@v3
