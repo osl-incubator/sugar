@@ -77,7 +77,7 @@ ignore_missing_imports = true
 [tool.ruff]
 line-length = 79
 force-exclude = true
-src = ["./makim", "./tests"]
+src = ["./containers_sugar", "./tests"]
 ignore = ["RUF012"]
 exclude = [
   "docs",
