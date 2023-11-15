@@ -1,0 +1,8 @@
+name: sugar
+channels:
+  - nodefaults
+  - conda-forge
+dependencies:
+  - python 3.10.*  # min version supported
+  - poetry >=1.7
+  - nodejs >=18.17  # used by semantic-release

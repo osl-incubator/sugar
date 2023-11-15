@@ -3,8 +3,6 @@ channels:
   - nodefaults
   - conda-forge
 dependencies:
+  - pip
   - python 3.8.1
-  - poetry
-  - nodejs  # used by semantic-release
-  - urllib3 <2  # conflicts with
-  - docker-compose
+  - poetry >=1.7

@@ -27,7 +27,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
-          environment-file: conda/dev.yaml
+          environment-file: conda/release.yaml
           channels: nodefaults,conda-forge
           channel-priority: strict
           activate-environment: sugar

@@ -2,6 +2,7 @@
 import io
 import os
 import sys
+
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional, Type
@@ -9,6 +10,7 @@ from typing import Dict, List, Optional, Type
 import dotenv
 import sh
 import yaml  # type: ignore
+
 from jinja2 import Template
 
 from containers_sugar import __version__
@@ -159,8 +161,8 @@ class SugarBase:
         with open(self.config_file, 'r') as f:
             # escape template tags
             content = escape_template_tag(f.read())
-            f = io.StringIO(content)
-            self.config = yaml.safe_load(f)
+            f_content = io.StringIO(content)
+            self.config = yaml.safe_load(f_content)
 
     def _load_compose_app(self):
         compose_cmd = self.config.get('compose-app', '')
