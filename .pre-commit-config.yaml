@@ -57,13 +57,3 @@ repos:
       pass_filenames: true
       types:
         - python
-
-    - id: pydocstyle
-      name: pydocstyle
-      entry: pydocstyle
-      exclude: ^$
-      files: "containers_sugar/"
-      language: system
-      pass_filenames: true
-      types:
-        - python
