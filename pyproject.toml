@@ -60,6 +60,7 @@ mkdocs-macros-plugin = ">=0.6.3"
 mkdocs-material = ">=8.2.1"
 mkdocstrings = ">=0.17.0"
 compose-go = ">=1.23.0"
+makim = "1.8.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
