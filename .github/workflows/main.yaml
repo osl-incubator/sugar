@@ -44,10 +44,10 @@ jobs:
       run: poetry install
 
     - name: run unit tests
-      run: make test
+      run: makim tests.unit
 
     - name: CLI tests
-      run: make smoke-tests
+      run: makim tests.smoke
 
   linter:
     runs-on: ubuntu-latest
