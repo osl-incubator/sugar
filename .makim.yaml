@@ -44,7 +44,9 @@ groups:
     targets:
       linter:
         help: Run lint checks
-        run: pre-commit run --all-files --verbose
+        run: |
+          pre-commit install
+          pre-commit run --all-files --verbose
 
       unit:
         help: Run tests
