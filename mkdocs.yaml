@@ -1,6 +1,6 @@
 site_name: ASTx
-site_url: https://arxlang.github.io/astx
-repo_url: https://github.com/arxlang/astx
+site_url: https://osl-incubator.github.io/containers-sugar
+repo_url: https://github.com/osl-incubator/containers-sugar
 docs_dir: ./docs
 site_dir: ./build
 # extra_css:
@@ -11,7 +11,7 @@ nav:
   - Installation: installation.md
   - Changelog: changelog.md
   - Contributing: contributing.md
-  - API: api/references.md
+#  - API: api/references.md
   - Notebook page: example.ipynb
 theme:
   name: material
@@ -27,7 +27,7 @@ theme:
   icon:
     repo: fontawesome/brands/github
   logo: images/logo.png
-  favicon: images/favicon.png
+  favicon: images/favicon.ico
   palette:
     scheme: slate
     primary: white
@@ -123,11 +123,12 @@ markdown_extensions:
   - tables
   - toc
 extra:
-  project_name: "ASTx"
+  project_name: "Containers-Sugar"
   team:
     - name: "Active maintainers"
       members:
         - xmnlab
+        - joel5vega
     - name: "Former maintainers"
       members:
         - xmnlab
@@ -135,7 +136,7 @@ extra:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/xmnlab
     - icon: fontawesome/brands/github
-      link: https://github.com/arxlang/astx
+      link: https://github.com/osl-incubator/containers-sugar
   support_levels:
     supported:
       icon: :material-check-decagram:{ .verified }
@@ -147,4 +148,4 @@ extra:
       icon: :material-cancel:{ .cancel }
       description: Unlikely to ever be supported or no upstream support.
 
-copyright: "Copyright &copy; 2022, ASTx Team"
+copyright: "Copyright &copy; 2023, Contaner-sugar Team"
