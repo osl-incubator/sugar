@@ -67,7 +67,7 @@ jobs:
           -p "@google/semantic-release-replace-plugin" \
           semantic-release --ci
 
-            - name: Generate documentation with changes from semantic-release
+      - name: Generate documentation with changes from semantic-release
         run: makim docs.build
 
       - name: GitHub Pages action
