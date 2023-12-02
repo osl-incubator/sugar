@@ -78,7 +78,7 @@ ignore_missing_imports = true
 [tool.ruff]
 line-length = 79
 force-exclude = true
-src = ["./containers_sugar", "./tests"]
+src = ["./src/containers_sugar", "./tests"]
 ignore = ["RUF012"]
 exclude = [
   "docs",
@@ -107,7 +107,7 @@ quote-style = "single"
 
 [tool.bandit]
 exclude_dirs = ["tests"]
-targets = "containers_sugar/"
+targets = "src/containers_sugar/"
 
 [tool.vulture]
 exclude = ["tests"]
@@ -115,6 +115,6 @@ ignore_decorators = []
 ignore_names = []
 make_whitelist = true
 min_confidence = 80
-paths = ["containers_sugar/"]
+paths = ["src/containers_sugar/"]
 sort_by_size = true
 verbose = false
