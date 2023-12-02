@@ -9,9 +9,9 @@ repos:
 
   - repo: local
     hooks:
-    - id: blue
-      name: blue
-      entry: blue
+    - id: ruff-format
+      name: ruff-format
+      entry: ruff format
       exclude: |
         (?x)(
           docs
@@ -21,19 +21,11 @@ repos:
       types:
         - python
 
-    - id: ruff
-      name: ruff
+    - id: ruff-linter
+      name: ruff-linter
       entry: ruff check
       language: system
       exclude: "docs/"
-      pass_filenames: true
-      types:
-        - python
-
-    - id: isort
-      name: isort
-      entry: isort
-      language: system
       pass_filenames: true
       types:
         - python
@@ -62,16 +54,6 @@ repos:
       language: system
       files: "containers_sugar/"
       description: Find unused Python code.
-      pass_filenames: true
-      types:
-        - python
-
-    - id: pydocstyle
-      name: pydocstyle
-      entry: pydocstyle
-      exclude: ^$
-      files: "containers_sugar/"
-      language: system
       pass_filenames: true
       types:
         - python

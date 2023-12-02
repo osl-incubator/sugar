@@ -1,5 +1,6 @@
 """Logs classes and function for containers-sugar system."""
 import os
+
 from enum import Enum
 
 from colorama import Fore

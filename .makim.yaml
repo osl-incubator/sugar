@@ -1,0 +1,186 @@
+version: 1.0.0
+shell: bash
+groups:
+  clean:
+    env-file: .env
+    targets:
+      all:
+        help: Remove build artifacts, compiled files, and cache
+        run: |
+          rm -fr build/
+          rm -fr dist/
+          rm -fr .eggs/
+          find . -name '*.egg-info' -exec rm -fr {} +
+          find . -name '*.egg' -exec rm -f {} +
+          find . -name '*.pyc' -exec rm -f {} +
+          find . -name '__pycache__' -exec rm -fr {} +
+          find . -name '*~' -exec rm -f {} +
+          rm -f .coverage
+          rm -fr htmlcov/
+          rm -fr .pytest_cache
+
+  docs:
+    help: Commands for building and previewing the documentation
+    targets:
+      build:
+        help: Build the documentation
+        run: mkdocs build --config-file docs/mkdocs.yaml
+
+      preview:
+        help: Preview the documentation
+        dependencies:
+          - target: docs-build
+        run: mkdocs serve --watch docs --config-file docs/mkdocs.yam
+
+  package:
+    help: helper commands for handling the package
+    targets:
+      build:
+        help: Build the project
+        run: poetry build
+
+  tests:
+    help: Test commands
+    targets:
+      linter:
+        help: Run lint checks
+        run: |
+          pre-commit install
+          pre-commit run --all-files --verbose
+
+      unit:
+        help: Run tests
+        args:
+          params:
+            help: Extra parameters for pytest
+            type: str
+            default: "-vv"
+        run: pytest -s {{ args.params }} tests
+
+      smoke-1:
+        help: Run smoke tests for group 1
+        dependencies:
+          - target: docker.killall
+        run: |
+          sugar build --verbose
+          sugar build --verbose --group group1 --all
+          sugar build --verbose --group group1
+          sugar build --verbose --group group1 --services service1-1
+          sugar pull --verbose --group group1 --all
+          sugar pull --verbose --group group1
+          sugar pull --verbose --group group1 --services service1-1
+          sugar ext start --verbose --group group1 --all --options -d
+          sugar ext restart --verbose --group group1 --all --options -d
+          sugar exec --verbose --group group1 --service service1-1 --options -T --cmd env
+          sugar stop --verbose --group group1 --all
+          sugar run --verbose --group group1 --service service1-1 --options -T --cmd env
+          sugar down --verbose --group group1
+
+      smoke-2:
+        help: Run smoke tests for group 2
+        dependencies:
+          - target: docker.killall
+        run: |
+          sugar build --verbose --group group2 --all
+          sugar build --verbose --group group2
+          sugar build --verbose --group group2 --services service2-1
+          sugar pull --verbose --group group2 --all
+          sugar pull --verbose --group group2
+          sugar pull --verbose --group group2 --services service2-1
+          sugar ext start --verbose --group group2 --all --options -d
+          sugar ext restart --verbose --group group2 --all --options -d
+          sugar exec --verbose --group group2 --service service2-1 --options -T --cmd env
+          sugar stop --verbose --group group2 --all
+          sugar run --verbose --group group2 --service service2-1 --options -T --cmd env
+          sugar down --verbose --group group2
+
+      smoke-mix:
+        help: Run smoke tests for group mix
+        dependencies:
+          - target: docker.killall
+        run: |
+          sugar build --verbose --group group-mix --all
+          sugar build --verbose --group group-mix
+          sugar build --verbose --group group-mix --services service1-1,service2-1
+          sugar pull --verbose --group group-mix --all
+          sugar pull --verbose --group group-mix
+          sugar pull --verbose --group group-mix --services service1-1,service2-1
+          sugar ext start --verbose --group group-mix --all --options -d
+          sugar ext restart --verbose --group group-mix --all --options -d
+          sugar exec --verbose --group group-mix --service service2-1 --options -T --cmd env
+          sugar stop --verbose --group group-mix --all
+          sugar run --verbose --group group-mix --service service2-1 --options -T --cmd env
+          sugar down --verbose --group group-mix
+
+      smoke-main:
+        help: Run smoke tests for group main
+        dependencies:
+          - target: docker.killall
+        run: |
+          # general tests main profile/plugins
+          sugar build --verbose --group group1
+          sugar config --verbose --group group1
+          sugar create --verbose --group group1
+          sugar ext start --verbose --group group1 --options -d
+          sugar ext restart --verbose --group group1 --options -d
+          sugar exec --verbose --group group1 --service service1-1 --options -T --cmd env
+          sugar images --verbose --group group1
+          sugar logs --verbose --group group1
+          # port is not complete supported
+          # sugar port --verbose --group group1 --service service1-1
+          sugar ps --verbose --group group1
+          sugar pull --verbose --group group1
+          sugar push --verbose --group group1
+          sugar run --verbose --group group1 --service service1-1 --options -T --cmd env
+          sugar top --verbose --group group1
+          sugar up --verbose --group group1 --options -d
+          sugar version --verbose
+          # port is not complete supported
+          # sugar events --verbose --group group1 --service service1-1 --options --json --dry-run
+
+      smoke-defaults:
+        help: Run smoke tests for group defaults
+        dependencies:
+          - target: docker.killall
+        run: |
+          export KXGR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
+          echo $KXGR_PROJECT_NAME
+          sugar build --verbose --group group-defaults
+          sugar ext start --verbose --group group-defaults --options -d
+          sugar ext restart --verbose --group group-defaults --options -d
+          docker ps|grep $KXGR_PROJECT_NAME
+          sugar ext stop --verbose --group group-defaults
+
+      smoke-final:
+        help: Run final smoke tests
+        dependencies:
+          - target: docker.killall
+        run: |
+          sugar ext restart --verbose --group group-defaults --options -d
+          sugar pause --verbose --group group1
+          sugar unpause --verbose --group group1
+          sugar kill --verbose --group group1
+          sugar stop --verbose --group group1
+          sugar rm --verbose --group group1 --options --force
+          sugar down --verbose --group group1
+
+      smoke:
+        help: Run final smoke tests
+        dependencies:
+          - target: docker.killall
+          - target: tests.smoke-1
+          - target: tests.smoke-2
+          - target: tests.smoke-mix
+          - target: tests.smoke-main
+          - target: tests.smoke-defaults
+          - target: tests.smoke-final
+        run: |
+          sugar --help
+          sugar --version
+
+  docker:
+    help: Commands for docker
+    targets:
+      killall:
+        help: Kill all running Docker containers
+        run: docker kill `docker ps -q` || true

@@ -75,8 +75,8 @@ Ready to contribute? Here’s how to set up `containers-sugar` for local develop
 5.  When you’re done making changes, check that your changes pass flake8
     and the tests, including testing other Python versions with tox::
 
-    $ make lint
-    $ make test
+    $ makim tests.linter
+    $ makim tests.unit
 
     To get flake8 and tox, just pip install them into your virtualenv.
 

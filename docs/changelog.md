@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.9.1](https://github.com/osl-incubator/containers-sugar/compare/1.9.0...1.9.1) (2023-11-15)
+
+
+### Bug Fixes
+
+* **refactor:** Change "service-groups" to "groups" ([#86](https://github.com/osl-incubator/containers-sugar/issues/86)) ([98bd82c](https://github.com/osl-incubator/containers-sugar/commit/98bd82c647e87e9f0a6bae5703b7d8631977517e)), closes [#60](https://github.com/osl-incubator/containers-sugar/issues/60)
+
 # [1.9.0](https://github.com/osl-incubator/containers-sugar/compare/1.8.0...1.9.0) (2023-07-19)
 
 

@@ -20,7 +20,7 @@ jobs:
       cancel-in-progress: true
 
     env:
-      KXGR_PROJECT_NAME: ${{ matrix.python_version }}-${{ github.ref }}
+      KXGR_PROJECT_NAME: ${{ github.run_id }}-${{ github.sha }}
 
     steps:
     - uses: actions/checkout@v3
@@ -44,10 +44,10 @@ jobs:
       run: poetry install
 
     - name: run unit tests
-      run: make test
+      run: makim tests.unit --verbose
 
     - name: CLI tests
-      run: make smoke-tests
+      run: makim tests.smoke --verbose
 
   linter:
     runs-on: ubuntu-latest
@@ -78,6 +78,4 @@ jobs:
       run: poetry install
 
     - name: Run style checks
-      run: |
-        pre-commit install
-        pre-commit run --all
+      run: makim tests.linter
