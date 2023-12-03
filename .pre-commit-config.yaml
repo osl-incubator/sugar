@@ -42,7 +42,7 @@ repos:
       name: mypy
       entry: mypy
       language: system
-      files: "containers_sugar/"
+      files: "src/containers_sugar/"
       pass_filenames: true
       types:
         - python
@@ -60,7 +60,7 @@ repos:
       name: vulture
       entry: vulture
       language: system
-      files: "containers_sugar/"
+      files: "src/containers_sugar/"
       description: Find unused Python code.
       pass_filenames: true
       types:
@@ -70,7 +70,7 @@ repos:
       name: pydocstyle
       entry: pydocstyle
       exclude: ^$
-      files: "containers_sugar/"
+      files: "src/containers_sugar/"
       language: system
       pass_filenames: true
       types:
