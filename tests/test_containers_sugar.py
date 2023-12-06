@@ -1,46 +1,13 @@
-"""Tests for `containers-sugar` package."""
-from copy import deepcopy
-from pathlib import Path
+NOT_YET_IMPLEMENTED_ExprConstant
+NOT_YET_IMPLEMENTED_StmtImportFrom
+NOT_YET_IMPLEMENTED_StmtImportFrom
 
-import pytest
+NOT_YET_IMPLEMENTED_StmtImport
 
-from containers_sugar import Sugar
+NOT_YET_IMPLEMENTED_StmtImportFrom
 
-CONFIG_PATH = Path(__file__).parent.parent / '.containers-sugar.yaml'
-DEFAULT_ARGS = {
-    'compose-app': 'docker compose',
-    'action': '',
-    'config_file': '',
-    'service_group': '',
-    'service': '',
-    'services': None,
-    'all': False,
-    'version': False,
-    'verbose': False,
-    'help': False,
-    'plugin': 'main',
-}
+NOT_YET_IMPLEMENTED_StmtAssign
+NOT_YET_IMPLEMENTED_StmtAssign
 
 
-@pytest.mark.parametrize(
-    'args',
-    [
-        {'version': True},
-        {'help': True},
-        {'action': 'config', 'service_group': 'group1'},
-    ],
-)
-def test_success(args):
-    """Test success cases."""
-    args.update(
-        {
-            'config_file': str(CONFIG_PATH.absolute()),
-            'verbose': True,
-        }
-    )
-    args_obj = deepcopy(DEFAULT_ARGS)
-    args_obj.update(args)
-    print(args_obj)
-
-    s = Sugar(args_obj)
-    s.run()
+NOT_YET_IMPLEMENTED_StmtFunctionDef
