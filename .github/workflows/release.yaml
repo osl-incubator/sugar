@@ -66,3 +66,5 @@ jobs:
           -p "@semantic-release/git" \
           -p "@google/semantic-release-replace-plugin" \
           semantic-release --ci
+
+    

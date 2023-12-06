@@ -8,12 +8,12 @@
       {
         "replacements": [
           {
-            "files": ["containers_sugar/__init__.py"],
+            "files": ["src/containers_sugar/__init__.py"],
             "from": "__version__ = '.*'  # semantic-release",
             "to": "__version__ = '${nextRelease.version}'  # semantic-release",
             "results": [
               {
-                "file": "containers_sugar/__init__.py",
+                "file": "src/containers_sugar/__init__.py",
                 "hasChanged": true,
                 "numMatches": 1,
                 "numReplacements": 1
@@ -65,7 +65,7 @@
         "assets": [
           "pyproject.toml",
           "docs/changelog.md",
-          "containers_sugar/__init__.py"
+          "src/containers_sugar/__init__.py"
         ],
         "message": "chore(release): ${nextRelease.version}"
       }
