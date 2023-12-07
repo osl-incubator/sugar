@@ -6,3 +6,5 @@ dependencies:
   - pip
   - python 3.8.1
   - poetry >=1.7
+  - pip:
+    - distlib >=0.3.7  # fix an issue in virtual env
