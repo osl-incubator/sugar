@@ -43,12 +43,9 @@ mkdocs-jupyter = ">=0.24.1"
 mkdocs-literate-nav = ">=0.6.0"
 mkdocs-macros-plugin = ">=0.7.0,<1"
 mkdocs-material = ">=9.1.15"
-mkdocstrings = ">=0.21.2"
-mkdocstrings-python = ">=1.1.2"
-jupyterlab = ">=4.0.5"
+mkdocstrings = {version=">=0.19.0", extras=["python"]}
 makim = "1.8.3"
 compose-go = ">=1.23.0"
-distlib = ">=0.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
