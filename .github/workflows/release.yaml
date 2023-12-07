@@ -35,7 +35,9 @@ jobs:
           miniforge-variant: Mambaforge
 
       - name: Install deps
-        run: poetry install
+        run: |
+          poetry config virtualenvs.create false
+          poetry install
 
       - name: Run semantic release (for tests)
         if: ${{ github.event_name != 'workflow_dispatch' }}
@@ -76,4 +78,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3.5.9
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build   
+          publish_dir: ./build

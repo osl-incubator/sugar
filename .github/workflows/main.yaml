@@ -75,7 +75,9 @@ jobs:
         miniforge-variant: Mambaforge
 
     - name: Install dependencies
-      run: poetry install
+      run: |
+        poetry config virtualenvs.create false
+        poetry install
 
     - name: Run style checks
       run: makim tests.linter
