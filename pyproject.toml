@@ -4,29 +4,10 @@ version = "1.9.1"  # semantic-release
 description = "Simplify the usage of containers"
 authors = ["Ivan Ogasawara <ivan.ogasawara@gmail.com>"]
 license = "BSD 3 Clause"
-include = [
-  "*.cfg",
-  "*.ini",
-  "*.js",
-  "*.json",
-  "*.lock",
-  "*.md",
-  "*.py",
-  "*.sh",
-  "*.rst",
-  "*.txt",
-  "*.toml",
-  "*.yml",
-  "*.yaml",
-  ".github",
-  "conda",
-  "docker",
-  "docs",
-  ".dockerignore",
-  ".env.tpl",
-  ".gitignore",
-  "Makefile",
+packages = [
+  {include = "containers_sugar", from="src"},
 ]
+include = ["src/containers_sugar/py.typed"]
 exclude = [
   ".git/*",
   ".env*",
@@ -45,22 +26,26 @@ colorama = ">=0.4.6"
 python-dotenv = ">=0.21.1"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = ">=3"
-mypy = ">=1.6"
+pytest = ">=7.3.2"
+pytest-cov = ">=4.1.0"
+coverage = ">=7.2.7"
+pre-commit = ">=3.3.2"
 ruff = ">=0.1.5"
+mypy = ">=1.6.0"
 bandit = ">=1.7.5"
-vulture = ">=2.7"
-pytest = ">=7"
-pytest-cov = ">=3.0.0"
-mkdocs = ">=1.2.3,<2"
+vulture = ">=2.9.1"
+mccabe = ">=0.6.1"
+ipykernel = ">=6.0.0"
+ipython = ">=7.0.0"
+mkdocs = ">=1.4.3"
 mkdocs-exclude = ">=1.0.2"
-mkdocs-jupyter = ">=0.20.0"
-mkdocs-literate-nav = ">=0.4.1"
-mkdocs-macros-plugin = ">=0.6.3"
-mkdocs-material = ">=8.2.1"
-mkdocstrings = ">=0.17.0"
-compose-go = ">=1.23.0"
+mkdocs-jupyter = ">=0.24.1"
+mkdocs-literate-nav = ">=0.6.0"
+mkdocs-macros-plugin = ">=0.7.0,<1"
+mkdocs-material = ">=9.1.15"
+mkdocstrings = {version=">=0.19.0", extras=["python"]}
 makim = "1.8.3"
+compose-go = ">=1.23.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

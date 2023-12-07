@@ -5,4 +5,4 @@ channels:
 dependencies:
   - pip
   - python 3.8.1
-  - poetry >=1.7
+  - poetry 1.5.1
