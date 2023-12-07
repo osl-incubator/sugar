@@ -473,6 +473,17 @@ traitlets = ">=4"
 test = ["pytest"]
 
 [[package]]
+name = "compose-go"
+version = "2.23.3"
+description = "Docker Compose v2 (GoLang) wrapped in a Python Package"
+optional = false
+python-versions = ">=3.7.0,<4.0.0"
+files = [
+    {file = "compose_go-2.23.3-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:102c81555deb2c0d2cc938615290f771af4751011134cd37be5f12f2dac83052"},
+    {file = "compose_go-2.23.3.tar.gz", hash = "sha256:a98cf7411615f1d5a0bafd04674ff54a28e22cc04b07958d9faec537479efe73"},
+]
+
+[[package]]
 name = "coverage"
 version = "7.3.2"
 description = "Code coverage measurement for Python"
@@ -3168,4 +3179,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<3.12"
-content-hash = "226fc5bdbac79f4698c3e37134f8c3859f43f5315a0a2da8a90e82aedd3727a6"
+content-hash = "7336ddffb2181a0375a98a8c35c91823c74a6a4f4fcec22b395e2023fd5b20bf"
