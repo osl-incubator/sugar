@@ -1,4 +1,4 @@
-# containers-sugar
+# sugar
 
 Simplify the usage of containers.
 
@@ -23,7 +23,7 @@ configuration file. So the command line would be very simple.
 
 
 * Free software: BSD 3 Clause
-* Documentation: https://osl-incubator.github.io/containers-sugar
+* Documentation: https://osl-incubator.github.io/sugar
 
 
 ## Features
@@ -68,7 +68,7 @@ The current available **ext** commands are:
 
 ## How to use it
 
-First you need to place the config file `.containers-sugar.yaml` in the root
+First you need to place the config file `.sugar.yaml` in the root
 of your project. This is an example of a configuration file:
 
 ```yaml
@@ -100,10 +100,10 @@ groups:
         - name: service1
 ```
 
-**NOTE**: containers-sugar has an convenient alias `sugar` that helps to
+**NOTE**: sugar has an convenient alias `sugar` that helps to
 keep the command line shorter, where **k** stands for *containers*,
 **x** stands for *su* (*shu* sound), and **gr** stands for *gar*.
-In another words, you can use `containers-sugar` or `sugar` CLI.
+In another words, you can use `sugar` or `sugar` CLI.
 
 Some examples of how to use it:
 

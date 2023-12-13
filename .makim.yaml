@@ -24,13 +24,13 @@ groups:
     targets:
       build:
         help: Build the documentation
-        run: mkdocs build --config-file docs/mkdocs.yaml
+        run: mkdocs build --config-file mkdocs.yaml
 
       preview:
         help: Preview the documentation
         dependencies:
-          - target: docs-build
-        run: mkdocs serve --watch docs --config-file docs/mkdocs.yam
+          - target: docs.build
+        run: mkdocs serve --watch docs --config-file mkdocs.yaml
 
   package:
     help: helper commands for handling the package

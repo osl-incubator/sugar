@@ -1,5 +1,4 @@
-![LOGO](/images/logo.png)
-# containers-sugar
+# Get Started
 
 Simplify the usage of containers.
 
@@ -23,8 +22,8 @@ gathering some useful scripts and keeping this information centralized in a
 configuration file. So the command line would be very simple.
 
 
-* Free software: BSD 3 Clause
-* Documentation: https://osl-incubator.github.io/containers-sugar
+* License: BSD 3 Clause
+* Documentation: https://osl-incubator.github.io/sugar
 
 
 ## Features
@@ -69,14 +68,14 @@ The current available **ext** commands are:
 
 ## How to use it
 
-First you need to place the config file `.containers-sugar.yaml` in the root
+First you need to place the config file `.sugar.yaml` in the root
 of your project. This is an example of a configuration file:
 
 ```yaml
 version: 1.0
 compose-app: docker-compose
 default:
-  group: {{ env.ENV }}
+  group: {{ "{{ env.ENV }}" }}
 groups:
   - name: group1
     project-name: project1
@@ -101,10 +100,10 @@ groups:
         - name: service1
 ```
 
-**NOTE**: containers-sugar has an convenient alias `sugar` that helps to
+**NOTE**: sugar has an convenient alias `sugar` that helps to
 keep the command line shorter, where **k** stands for *containers*,
 **x** stands for *su* (*shu* sound), and **gr** stands for *gar*.
-In another words, you can use `containers-sugar` or `sugar` CLI.
+In another words, you can use `sugar` or `sugar` CLI.
 
 Some examples of how to use it:
 
@@ -127,6 +126,6 @@ Some examples of how to use it:
   `sugar ext restart --group group1 --services service1,service2`
 
 
-**NOTE**: If you use: ```default: group: {{ env.ENV }}```, you don't need to
+**NOTE**: If you use: ```default: group: {{ "{{ env.ENV }}" }}```, you don't need to
 give `--group <GROUP_NAME>`, except if you want a different group than the
 default one.

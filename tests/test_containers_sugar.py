@@ -1,12 +1,12 @@
-"""Tests for `containers-sugar` package."""
+"""Tests for `sugar` package."""
 from copy import deepcopy
 from pathlib import Path
 
 import pytest
 
-from containers_sugar import Sugar
+from sugar import Sugar
 
-CONFIG_PATH = Path(__file__).parent.parent / '.containers-sugar.yaml'
+CONFIG_PATH = Path(__file__).parent.parent / '.sugar.yaml'
 DEFAULT_ARGS = {
     'compose-app': 'docker compose',
     'action': '',
