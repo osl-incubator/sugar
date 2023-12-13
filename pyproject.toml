@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sugar"
+name = "containers-sugar"
 version = "1.9.1"  # semantic-release
 description = "Simplify the usage of containers"
 authors = ["Ivan Ogasawara <ivan.ogasawara@gmail.com>"]

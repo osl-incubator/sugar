@@ -5,13 +5,13 @@
 To install sugar, run this command in your terminal:
 
 ```bash
-$ pip install sugar
+$ pip install containers-sugar
 ```
 
 Sugar is also available on conda-forge
 
 ```bash
-$ conda install -c conda-forge sugar
+$ conda install -c conda-forge containers-sugar
 ```
 
 This is the preferred method to install sugar,
