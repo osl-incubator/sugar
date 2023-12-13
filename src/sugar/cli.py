@@ -6,20 +6,20 @@ import sys
 from pathlib import Path
 from typing import Tuple
 
-from containers_sugar import Sugar
+from sugar import Sugar
 
 
 def _get_args():
     """Define and return the arguments used by the CLI."""
     parser = argparse.ArgumentParser(
-        prog='containers-sugar',
+        prog='sugar',
         description=(
-            'containers-sugar (or sugar) is a tool that help you to organize'
+            'sugar (or sugar) is a tool that help you to organize'
             "and simplify your containers' stack."
         ),
         epilog=(
             'If you have any problem, open an issue at: '
-            'https://github.com/osl-incubator/containers-sugar'
+            'https://github.com/osl-incubator/sugar'
         ),
     )
 
@@ -44,7 +44,7 @@ def _get_args():
     parser.add_argument(
         '--version',
         action='store_true',
-        help='Show the version of containers-sugar.',
+        help='Show the version of sugar.',
     )
     parser.add_argument(
         '--service-group',
@@ -74,7 +74,7 @@ def _get_args():
     parser.add_argument(
         '--config-file',
         type=str,
-        default=str(Path(os.getcwd()) / '.containers-sugar.yaml'),
+        default=str(Path(os.getcwd()) / '.sugar.yaml'),
         help='Specify a custom location for the config file.',
     )
     parser.add_argument(

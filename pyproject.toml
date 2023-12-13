@@ -1,21 +1,20 @@
 [tool.poetry]
-name = "containers-sugar"
+name = "sugar"
 version = "1.9.1"  # semantic-release
 description = "Simplify the usage of containers"
 authors = ["Ivan Ogasawara <ivan.ogasawara@gmail.com>"]
 license = "BSD 3 Clause"
 packages = [
-  {include = "containers_sugar", from="src"},
+  {include = "sugar", from="src"},
 ]
-include = ["src/containers_sugar/py.typed"]
+include = ["src/sugar/py.typed"]
 exclude = [
   ".git/*",
   ".env*",
 ]
 
 [tool.poetry.scripts]
-"containers-sugar" = "containers_sugar.__main__:app"
-"sugar" = "containers_sugar.__main__:app"
+"sugar" = "sugar.__main__:app"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<3.12"
@@ -63,7 +62,7 @@ ignore_missing_imports = true
 [tool.ruff]
 line-length = 79
 force-exclude = true
-src = ["./src/containers_sugar", "./tests"]
+src = ["./src/sugar", "./tests"]
 ignore = ["RUF012"]
 exclude = [
   "docs",
@@ -92,7 +91,7 @@ quote-style = "single"
 
 [tool.bandit]
 exclude_dirs = ["tests"]
-targets = "src/containers_sugar/"
+targets = "src/sugar/"
 
 [tool.vulture]
 exclude = ["tests"]
@@ -100,6 +99,6 @@ ignore_decorators = []
 ignore_names = []
 make_whitelist = true
 min_confidence = 80
-paths = ["src/containers_sugar/"]
+paths = ["src/sugar/"]
 sort_by_size = true
 verbose = false

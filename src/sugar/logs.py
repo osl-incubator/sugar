@@ -1,4 +1,4 @@
-"""Logs classes and function for containers-sugar system."""
+"""Logs classes and function for sugar system."""
 import os
 
 from enum import Enum

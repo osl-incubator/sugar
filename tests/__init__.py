@@ -1,1 +1,1 @@
-"""Unit test package for containers-sugar."""
+"""Unit test package for sugar."""

@@ -1,4 +1,4 @@
 {
-  "python.formatting.blackPath": "/home/xmn/mambaforge/envs/containers-sugar/bin/blue",
+  "python.formatting.blackPath": "/home/xmn/mambaforge/envs/sugar/bin/blue",
   "python.formatting.provider": "black"
 }

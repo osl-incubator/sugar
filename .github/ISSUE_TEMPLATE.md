@@ -1,4 +1,4 @@
-* containers-sugar version:
+* sugar version:
 * Python version:
 * Operating System:
 

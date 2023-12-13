@@ -1,6 +1,6 @@
-site_name: containers-sugar
-site_url: https://github.com/osl-incubator/containers-sugar
-repo_url: https://github.com/osl-incubator/containers-sugar.git
+site_name: sugar
+site_url: https://github.com/osl-incubator/sugar
+repo_url: https://github.com/osl-incubator/sugar.git
 docs_dir: ./
 site_dir: ../build
 # extra_css:
@@ -113,7 +113,7 @@ markdown_extensions:
   - tables
   - toc
 extra:
-  project_name: "containers-sugar"
+  project_name: "sugar"
   team:
     - name: "Active maintainers"
       members:
@@ -125,11 +125,11 @@ extra:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/xmnlab
     - icon: fontawesome/brands/github
-      link: https://github.com/osl-incubator/containers-sugar.git
+      link: https://github.com/osl-incubator/sugar.git
   support_levels:
     supported:
       icon: :material-check-decagram:{ .verified }
-      description: Tested in CI. If this doesn't work for you, please [file an issue](https://github.com/osl-incubator/containers-sugar.git/issues/new).
+      description: Tested in CI. If this doesn't work for you, please [file an issue](https://github.com/osl-incubator/sugar.git/issues/new).
     bug:
       icon: :material-bug:{ .bug }
       description: Should work but doesn't because upstream is broken. Supported on a best-effort basis.
@@ -137,4 +137,4 @@ extra:
       icon: :material-cancel:{ .cancel }
       description: Unlikely to ever be supported or no upstream support.
 
-copyright: "Copyright &copy; 2022, containers-sugar Team"
+copyright: "Copyright &copy; 2022, sugar Team"

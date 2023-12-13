@@ -13,8 +13,8 @@ import yaml  # type: ignore
 
 from jinja2 import Template
 
-from containers_sugar import __version__
-from containers_sugar.logs import KxgrErrorType, KxgrLogs
+from sugar import __version__
+from sugar.logs import KxgrErrorType, KxgrLogs
 
 
 def escape_template_tag(v: str) -> str:
@@ -231,7 +231,7 @@ class SugarBase:
             return
 
         if not env_file.startswith('/'):
-            # use .containers-sugar file as reference for the working
+            # use .sugar file as reference for the working
             # directory for the .env file
             env_file = str(Path(self.config_file).parent / env_file)
 
@@ -266,7 +266,7 @@ class SugarBase:
     def _verify_args(self):
         if not self._check_config_file():
             KxgrLogs.raise_error(
-                'Config file .containers-sugar.yaml not found.',
+                'Config file .sugar.yaml not found.',
                 KxgrErrorType.KXGR_INVALID_CONFIGURATION,
             )
 
@@ -586,6 +586,6 @@ class Sugar(SugarBase):
     # actions available
 
     def _version(self):
-        KxgrLogs.print_info('containers-sugar version:' + str(__version__))
+        KxgrLogs.print_info('sugar version:' + str(__version__))
         KxgrLogs.print_info('container program path: ' + str(self.compose_app))
         self._call_compose_app('--version')

@@ -9,7 +9,7 @@ You can contribute in many ways:
 
 ### Report Bugs
 
-Report bugs at https://github.com/osl-incubator/containers-sugar.git/issues.
+Report bugs at https://github.com/osl-incubator/sugar.git/issues.
 
 If you are reporting a bug, please include:
 
@@ -31,14 +31,14 @@ it.
 
 ### Write Documentation
 
-containers-sugar could always use more documentation,
-whether as part of the official containers-sugar docs,
+sugar could always use more documentation,
+whether as part of the official sugar docs,
 in docstrings, or even on the web in blog posts, articles, and such.
 
 ### Submit Feedback
 
 The best way to send feedback is to file an issue at
-https://github.com/osl-incubator/containers-sugar.git/issues.
+https://github.com/osl-incubator/sugar.git/issues.
 
 If you are proposing a feature:
 
@@ -50,20 +50,20 @@ If you are proposing a feature:
 
 ## Get Started!
 
-Ready to contribute? Here’s how to set up `containers-sugar` for local development.
+Ready to contribute? Here’s how to set up `sugar` for local development.
 
-1.  Fork the `containers-sugar` repo on GitHub.
+1.  Fork the `sugar` repo on GitHub.
 
 2.  Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/containers-sugar.git
+    $ git clone git@github.com:your_name_here/sugar.git
 
 3.  Install your local copy into a virtualenv. Assuming you have
     virtualenvwrapper installed, this is how you set up your fork for
     local development::
 
-    $ mkvirtualenv containers-sugar
-    $ cd containers-sugar/
+    $ mkvirtualenv sugar
+    $ cd sugar/
     $ python setup.py develop
 
 4.  Create a branch for local development::
