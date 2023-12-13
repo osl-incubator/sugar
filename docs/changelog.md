@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.9.2](https://github.com/osl-incubator/sugar/compare/1.9.1...1.9.2) (2023-12-13)
+
+
+### Bug Fixes
+
+* Rename project from containers-sugar to sugar and improve docs ([#98](https://github.com/osl-incubator/sugar/issues/98)) ([45c51bb](https://github.com/osl-incubator/sugar/commit/45c51bb630ac1375bfd6515dc0567e87d1d206c7))
+
 ## [1.9.1](https://github.com/osl-incubator/sugar/compare/1.9.0...1.9.1) (2023-11-15)
 
 
