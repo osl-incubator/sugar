@@ -1,5 +1,4 @@
-![LOGO](/images/logo.png)
-# sugar
+# Get Started
 
 Simplify the usage of containers.
 
@@ -23,7 +22,7 @@ gathering some useful scripts and keeping this information centralized in a
 configuration file. So the command line would be very simple.
 
 
-* Free software: BSD 3 Clause
+* License: BSD 3 Clause
 * Documentation: https://osl-incubator.github.io/sugar
 
 
@@ -76,7 +75,7 @@ of your project. This is an example of a configuration file:
 version: 1.0
 compose-app: docker-compose
 default:
-  group: {{ env.ENV }}
+  group: {{ "{{ env.ENV }}" }}
 groups:
   - name: group1
     project-name: project1
@@ -127,6 +126,6 @@ Some examples of how to use it:
   `sugar ext restart --group group1 --services service1,service2`
 
 
-**NOTE**: If you use: ```default: group: {{ env.ENV }}```, you don't need to
+**NOTE**: If you use: ```default: group: {{ "{{ env.ENV }}" }}```, you don't need to
 give `--group <GROUP_NAME>`, except if you want a different group than the
 default one.

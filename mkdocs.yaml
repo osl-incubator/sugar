@@ -11,8 +11,8 @@ nav:
   - Installation: installation.md
   - Changelog: changelog.md
   - Contributing: contributing.md
-#  - API: api/references.md
-  - Notebook page: example.ipynb
+  # - API: api/references.md
+  # - Notebook page: example.ipynb
 theme:
   name: material
   features:
@@ -81,6 +81,7 @@ plugins:
               - "!^table_expr_class"
               - "!^translator_class"
               - "!^Options$"
+          rendering:
             show_category_heading: true
             show_root_full_path: false
             show_root_heading: true
@@ -140,7 +141,7 @@ extra:
   support_levels:
     supported:
       icon: :material-check-decagram:{ .verified }
-      description: Tested in CI. If this doesn't work for you, please [file an issue](https://github.com/arxlang/astx/issues/new).
+      description: Tested in CI. If this doesn't work for you, please [file an issue](https://github.com/osl-incubator/sugar/issues/new).
     bug:
       icon: :material-bug:{ .bug }
       description: Should work but doesn't because upstream is broken. Supported on a best-effort basis.
