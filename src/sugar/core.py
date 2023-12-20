@@ -13,7 +13,7 @@ import yaml  # type: ignore
 
 from jinja2 import Template
 
-from sugar import __version__
+from core import __version__
 from sugar.logs import KxgrErrorType, KxgrLogs
 
 
