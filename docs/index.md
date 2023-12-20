@@ -77,7 +77,7 @@ compose-app: docker-compose
 default:
   group: {{ "{{ env.ENV }}" }}
 groups:
-  - name: group1
+  group1:
     project-name: project1
     compose-path: containers/tests/group1/compose.yaml
     env-file: .env
@@ -89,7 +89,7 @@ groups:
         - name: service1
         - name: service2
         - name: service3
-  - name: group2
+  group2:
     project-name: null
     compose-path: containers/tests/group2/compose.yaml
     env-file: .env

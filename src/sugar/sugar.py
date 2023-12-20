@@ -129,26 +129,30 @@ class SugarBase:
                     "group configuration weren't defined.",
                     KxgrErrorType.KXGR_INVALID_PARAMETER,
                 )
-            group_name = default_group
+            selected_group_name = default_group
         else:
-            group_name = self.args.get('service_group')
+            selected_group_name = self.args.get('service_group')
 
         default_project_name = self.defaults.get('project-name')
 
-        for g in groups:
-            if g['name'] == group_name:
-                if default_project_name and 'project-name' not in g:
+        for group_name, group_data in groups.items():
+            if group_name == selected_group_name:
+                if default_project_name and 'project-name' not in group_data:
                     # just use default value if "project-name" is not set
-                    g['project-name'] = default_project_name
-                if not g.get('services', {}).get('default'):
+                    group_data['project-name'] = default_project_name
+                if not group_data.get('services', {}).get('default'):
                     # if default is not given or it is empty or null,
                     # use as default all the services available
                     default_services = [
                         service['name']
-                        for service in g.get('services', {}).get('available')
+                        for service in group_data.get('services', {}).get(
+                            'available'
+                        )
                     ]
-                    g['services']['default'] = ','.join(default_services)
-                self.service_group = g
+                    group_data['services']['default'] = ','.join(
+                        default_services
+                    )
+                self.service_group = group_data
                 return
 
         KxgrLogs.raise_error(

@@ -5,7 +5,7 @@ defaults:
   group: {{ env.KXGR_GROUP }}
   project-name: sugar-{{ env.KXGR_PROJECT_NAME }}
 groups:
-  - name: group1
+  group1:
     project-name: project1  # optional
     compose-path: tests/containers/group1/compose.yaml
     env-file: .env
@@ -16,7 +16,7 @@ groups:
         - name: service1-2
         - name: service1-3
 
-  - name: group2
+  group2:
     project-name: null  # optional
     compose-path: tests/containers/group2/compose.yaml
     env-file: .env
@@ -26,7 +26,7 @@ groups:
         - name: service2-1
         - name: service2-2
 
-  - name: group-mix
+  group-mix:
     project-name: null  # optional
     compose-path:
       - tests/containers/group1/compose.yaml
@@ -40,7 +40,7 @@ groups:
         - name: service2-1
         - name: service2-2
 
-  - name: group-defaults
+  group-defaults:
     compose-path:
       - tests/containers/group1/compose.yaml
     env-file: .env
