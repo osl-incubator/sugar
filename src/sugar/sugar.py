@@ -121,7 +121,6 @@ class SugarBase:
     def _filter_service_group(self):
         groups = self.config['groups']
 
-
         if not self.args.get('service_group'):
             default_group = self.defaults.get('group')
             if not default_group:
@@ -136,8 +135,7 @@ class SugarBase:
 
         default_project_name = self.defaults.get('project-name')
 
-        for group_name,group_data in groups.items():
-
+        for group_name, group_data in groups.items():
             if group_name == selected_group_name:
                 if default_project_name and 'project-name' not in group_data:
                     # just use default value if "project-name" is not set
@@ -147,9 +145,13 @@ class SugarBase:
                     # use as default all the services available
                     default_services = [
                         service['name']
-                        for service in group_data.get('services', {}).get('available')
+                        for service in group_data.get('services', {}).get(
+                            'available'
+                        )
                     ]
-                    group_data['services']['default'] = ','.join(default_services)
+                    group_data['services']['default'] = ','.join(
+                        default_services
+                    )
                 self.service_group = group_data
                 return
 
