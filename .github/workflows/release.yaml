@@ -31,8 +31,8 @@ jobs:
           channels: nodefaults,conda-forge
           channel-priority: strict
           activate-environment: sugar
-          use-mamba: true
-          miniforge-variant: Mambaforge
+          auto-update-conda: true
+          conda-solver: libmamba
 
       - name: Install deps
         run: |
