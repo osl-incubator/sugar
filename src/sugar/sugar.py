@@ -370,7 +370,7 @@ class SugarDockerCompose(SugarBase):
         self._call_compose_app('build', services=self.service_names)
 
     def _config(self):
-        self._call_compose_app('config')
+        self._call_compose_app('config', services=self.service_names)
 
     def _create(self):
         self._call_compose_app('create', services=self.service_names)
