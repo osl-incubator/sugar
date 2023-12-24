@@ -1,6 +1,14 @@
 # Release Notes
 ---
 
+## [1.9.3](https://github.com/osl-incubator/sugar/compare/1.9.2...1.9.3) (2023-12-24)
+
+
+### Bug Fixes
+
+* Add services to the config command ([#104](https://github.com/osl-incubator/sugar/issues/104)) ([b338796](https://github.com/osl-incubator/sugar/commit/b338796e5ac0c90be0ddd6ffd36692797f79b68c))
+* Fix distlib installation failure ([#102](https://github.com/osl-incubator/sugar/issues/102)) ([1b3d79f](https://github.com/osl-incubator/sugar/commit/1b3d79f50f5f117379e29c737114966f55208782))
+
 ## [1.9.2](https://github.com/osl-incubator/sugar/compare/1.9.1...1.9.2) (2023-12-13)
 
 
