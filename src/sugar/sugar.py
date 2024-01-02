@@ -136,6 +136,7 @@ class SugarBase:
         # Verify if project-name is not null
         if 'project-name' not in self.defaults or self.defaults.get('project-name') == "null" or self.defaults.get('project-name') == None:
             default_project_name = ''
+            self.defaults['project-name'] = ''
         else:
             default_project_name = self.defaults.get('project-name')
 
