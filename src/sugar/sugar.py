@@ -134,11 +134,7 @@ class SugarBase:
             selected_group_name = self.args.get('service_group')
         
         # Verify if project-name is not null
-        if 'project-name' not in self.defaults or self.defaults.get('project-name') == "null" or self.defaults.get('project-name') == None:
-            default_project_name = ''
-            self.defaults['project-name'] = ''
-        else:
-            default_project_name = self.defaults.get('project-name')
+        default_project_name = self.defaults.get('project-name', '') or ''
 
         for group_name, group_data in groups.items():
             if group_name == selected_group_name:
