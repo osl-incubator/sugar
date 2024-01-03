@@ -558,7 +558,7 @@ class Sugar(SugarBase):
             KxgrLogs.raise_error(
                 f'`plugin` parameter `{ self.args.get("plugin") }` '
                 f'not found. Options: { plugins_name }.',
-                KxgrLogs.KXGR_INVALID_PARAMETER,
+                KxgrErrorType.KXGR_INVALID_PARAMETER,
             )
             os._exit(1)
 
