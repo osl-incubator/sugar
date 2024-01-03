@@ -2,7 +2,9 @@
 <!-- Describe the purpose of your PR and the changes you have made. -->
 
 <!-- Which issue this PR aims to resolve or fix? E.g.:
-Solving issue #004
+Solve #4
+
+Note: for more information check: https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue
 -->
 
 ## How to test these changes
