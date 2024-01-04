@@ -6,3 +6,5 @@ dependencies:
   - pip
   - python 3.8.1
   - poetry
+  - pip:
+    - paginate >=0.5  # tries to fix the distlib issue

@@ -6,3 +6,5 @@ dependencies:
   - python 3.10.*  # min version supported
   - poetry
   - nodejs >=18.17  # used by semantic-release
+  - pip:
+    - paginate >=0.5  # tries to fix the distlib issue

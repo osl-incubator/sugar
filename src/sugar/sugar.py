@@ -132,7 +132,7 @@ class SugarBase:
             selected_group_name = default_group
         else:
             selected_group_name = self.args.get('service_group')
-        
+
         # Verify if project-name is not null
         default_project_name = self.defaults.get('project-name', '') or ''
 

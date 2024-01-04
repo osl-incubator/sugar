@@ -36,8 +36,7 @@ jobs:
 
       - name: Install deps
         run: |
-          poetry config virtualenvs.create false
-          poetry install
+          poetry install --verbose
 
       - name: Run semantic release (for tests)
         if: ${{ github.event_name != 'workflow_dispatch' }}
