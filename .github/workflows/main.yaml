@@ -72,7 +72,7 @@ jobs:
         conda-solver: libmamba
 
     - name: Install dependencies
-      run: poetry install
+      run: poetry install --verbose
 
     - name: run unit tests
       run: makim tests.unit --verbose
@@ -112,8 +112,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        poetry config virtualenvs.create false
-        poetry install
+        poetry install --verbose
 
     - name: Run style checks
       run: makim tests.linter
