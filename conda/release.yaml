@@ -6,4 +6,5 @@ dependencies:
   - python 3.10.*  # min version supported
   - poetry
   - nodejs >=18.17  # used by semantic-release
-  - virtualenv >= 20.25.0
+  - pip:
+    - paginate >=0.5

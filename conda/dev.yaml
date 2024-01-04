@@ -6,4 +6,5 @@ dependencies:
   - pip
   - python 3.8.1
   - poetry
-  - virtualenv >= 20.25.0
+  - pip:
+    - paginate >=0.5
