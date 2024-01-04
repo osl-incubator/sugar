@@ -45,7 +45,6 @@ mkdocs-material = ">=9.1.15"
 mkdocstrings = {version=">=0.19.0", extras=["python"]}
 makim = "1.8.3"
 compose-go = ">=1.23.0"
-virtualenv = ">=20.25.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
