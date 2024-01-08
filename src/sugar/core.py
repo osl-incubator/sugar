@@ -231,6 +231,8 @@ class SugarBase:
         self.compose_args.append('compose')
 
     def _load_compose_args(self):
+        self._filter_service_group()
+
         if 'env-file' in self.service_group:
             self.compose_args.extend(
                 ['--env-file', self.service_group['env-file']]
