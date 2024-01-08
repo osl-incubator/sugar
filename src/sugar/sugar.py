@@ -121,7 +121,18 @@ class SugarBase:
     #Check if services item is given
     def _check_services_item(self):
         return bool(self.config.get('services'))
-
+    
+    # set default group main
+    def _set_default_group(self):
+        #must set the default group
+        self.config_data["groups"] = {
+            "main": self.config_data["services"]
+        }
+        self.config_group = self.config_data["groups"]["main"]
+        del self.config_data["services"]
+         
+        return
+    
     def _filter_service_group(self):
         groups = self.config['groups']
 
@@ -188,14 +199,20 @@ class SugarBase:
         self.compose_args.append('compose')
 
     def _load_compose_args(self):
-        if(self._check_services_item()):
-            if(bool(self.config.get('services'))):
-                KxgrLogs.raise_error(
-                    f'`services` and `groups` flag given. Just use one of them is allowed.',
-                    KxgrErrorType.KXGR_INVALID_CONFIGURATION,
-                )
-            else:
-                self._set_default_group()
+        #check if either  services or  groups are present
+        if not (self.config.get('services') and self.config.get('groups')):
+            KxgrLogs.raise_error(
+                f'either `services` OR  `groups` flag must be given',
+                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
+            )  
+        #check if both services and groups are present
+        if self.config.get('services') and  self.config.get('groups'):
+            KxgrLogs.raise_error(
+                f'`services` and `groups` flag given. Just use one of them is allowed.',
+                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
+            )
+        if self.config.get('services'):
+            self._set_default_group()
         else:    
             self._filter_service_group()
 
