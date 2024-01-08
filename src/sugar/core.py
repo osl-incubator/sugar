@@ -224,23 +224,6 @@ class SugarBase:
         self.compose_args.append('compose')
 
     def _load_compose_args(self):
-        #check if either  services or  groups are present
-        if not (self.config.get('services') and self.config.get('groups')):
-            KxgrLogs.raise_error(
-                f'either `services` OR  `groups` flag must be given',
-                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
-            )  
-        #check if both services and groups are present
-        if self.config.get('services') and  self.config.get('groups'):
-            KxgrLogs.raise_error(
-                f'`services` and `groups` flag given. Just use one of them is allowed.',
-                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
-            )
-        if self.config.get('services'):
-            self._set_default_group()
-        else:    
-            self._filter_service_group()
-
         if 'env-file' in self.service_group:
             self.compose_args.extend(
                 ['--env-file', self.service_group['env-file']]
