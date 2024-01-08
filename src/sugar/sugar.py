@@ -118,6 +118,10 @@ class SugarBase:
     def _check_config_file(self):
         return Path(self.config_file).exists()
 
+    #Check if services item is given
+    def _check_services_item(self):
+        return bool(self.config.get('services'))
+
     def _filter_service_group(self):
         groups = self.config['groups']
 
