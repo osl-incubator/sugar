@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from sugar import Sugar
+from sugar.core import Sugar
 
 CONFIG_PATH = Path(__file__).parent.parent / '.sugar.yaml'
 DEFAULT_ARGS = {

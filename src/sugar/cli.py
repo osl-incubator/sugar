@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from typing import Tuple
 
-from sugar import Sugar
+from sugar.core import Sugar
 
 
 def _get_args():
