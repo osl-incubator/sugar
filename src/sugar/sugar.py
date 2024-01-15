@@ -125,7 +125,19 @@ class SugarBase:
     # set default group main
     def _set_default_group(self):
         # must set the default group
-        self.config['groups'] = {'main': self.config['services']}
+        services = self.config.get('services', {})
+        self.config['groups'] = {
+            'main': {
+                'project-name': services.get('project-name'),
+                'compose-path': services.get('compose-path'),
+                'env-file': services.get('env-file'),
+                'services': {
+                    'default': services.get('default'),
+                    'available': services.get('available'),
+                },
+            }
+        }
+        self.defaults['group'] = 'main'
         self.config_group = self.config['groups']['main']
         del self.config['services']
 
@@ -194,8 +206,8 @@ class SugarBase:
             )
         if self.config.get('services'):
             self._set_default_group()
-        else:
-            self._filter_service_group()
+
+        self._filter_service_group()
 
     def _load_compose_app(self):
         compose_cmd = self.config.get('compose-app', '')

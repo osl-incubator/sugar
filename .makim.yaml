@@ -93,7 +93,13 @@ groups:
           sugar stop --verbose --group group2 --all
           sugar run --verbose --group group2 --service service2-1 --options -T --cmd env
           sugar down --verbose --group group2
-
+      smoke-services:
+        help:
+        dependencies:
+          - target: docker.killall
+        run: |
+          sugar build --verbose --config-file tests/containers/.services.sugar.yaml
+          
       smoke-mix:
         help: Run smoke tests for group mix
         dependencies:
@@ -174,6 +180,7 @@ groups:
           - target: tests.smoke-main
           - target: tests.smoke-defaults
           - target: tests.smoke-final
+          - target: tests.smoke-services
         run: |
           sugar --help
           sugar --version
