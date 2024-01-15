@@ -6,4 +6,4 @@ __email__ = 'ivan.ogasawara@gmail.com'
 __version__ = '1.9.3'  # semantic-release
 
 
-from sugar.sugar import Sugar  # noqa: F401
+from sugar.core import Sugar  # noqa: F401
