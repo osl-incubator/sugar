@@ -118,6 +118,7 @@ class SugarBase:
     def _check_config_file(self):
         return Path(self.config_file).exists()
 
+
     # Check if services item is given
     def _check_services_item(self):
         return bool(self.config.get('services'))
@@ -140,6 +141,7 @@ class SugarBase:
         self.defaults['group'] = 'main'
         self.config_group = self.config['groups']['main']
         del self.config['services']
+
 
     def _filter_service_group(self):
         groups = self.config['groups']
@@ -192,6 +194,7 @@ class SugarBase:
             f_content = io.StringIO(content)
             self.config = yaml.safe_load(f_content)
 
+
         # check if either  services or  groups are present
         if not (self.config.get('services') or self.config.get('groups')):
             KxgrLogs.raise_error(
@@ -209,6 +212,7 @@ class SugarBase:
 
         self._filter_service_group()
 
+
     def _load_compose_app(self):
         compose_cmd = self.config.get('compose-app', '')
         if compose_cmd.replace(' ', '-') != 'docker-compose':
@@ -224,6 +228,10 @@ class SugarBase:
         self.compose_args.append('compose')
 
     def _load_compose_args(self):
+
+        self._filter_service_group()
+
+
         if 'env-file' in self.service_group:
             self.compose_args.extend(
                 ['--env-file', self.service_group['env-file']]
