@@ -1,6 +1,20 @@
 # Release Notes
 ---
 
+# [1.10.0](https://github.com/osl-incubator/sugar/compare/1.9.3...1.10.0) (2024-01-25)
+
+
+### Bug Fixes
+
+* change usage KxgrLogs for KxgrErrorType ([#107](https://github.com/osl-incubator/sugar/issues/107)) ([d8d38b2](https://github.com/osl-incubator/sugar/commit/d8d38b216b1baebc10d65b8a7830d5d3910bdea2))
+* Check if project-name is null ([#106](https://github.com/osl-incubator/sugar/issues/106)) ([82a93df](https://github.com/osl-incubator/sugar/commit/82a93dfc491136151ff63b943a6812811498153b))
+
+
+### Features
+
+* Add a new key in the root of the config file for services ([#110](https://github.com/osl-incubator/sugar/issues/110)) ([7e6eabc](https://github.com/osl-incubator/sugar/commit/7e6eabc81e755bb96863e49cae7e47109f918fc0))
+* Rename from sugar to core module name ([#101](https://github.com/osl-incubator/sugar/issues/101)) ([40dace1](https://github.com/osl-incubator/sugar/commit/40dace1be838aaaa31ed989cb20a331b84a97f5d))
+
 ## [1.9.3](https://github.com/osl-incubator/sugar/compare/1.9.2...1.9.3) (2023-12-24)
 
 
