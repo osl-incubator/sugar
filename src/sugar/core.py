@@ -124,7 +124,8 @@ class SugarBase:
         return hasattr(self.config, 'services')
 
     # set default group main
-    def _set_default_group(self) -> None:
+    def _load_root_services(self) -> None:
+        """Load services attribute in the root of the configuration."""
         # must set the default group
         services = self.config.get('services', {})
 
@@ -209,12 +210,6 @@ class SugarBase:
                 '`services` and `groups` flags given, only 1 is allowed.',
                 KxgrErrorType.KXGR_INVALID_CONFIGURATION,
             )
-
-    def _load_root_services(self) -> None:
-        """Load services attribute in the root of the configuration."""
-        if self.config.get('services'):
-            self._set_default_group()
-        # self._filter_service_group()
 
     def _load_compose_app(self):
         compose_cmd = self.config.get('compose-app', '')
