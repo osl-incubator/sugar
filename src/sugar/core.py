@@ -66,6 +66,7 @@ class SugarBase:
         self._load_config()
         self._load_env()
         self._load_defaults()
+        self._load_root_services()
         self._verify_args()
         self._load_compose_app()
         self._load_compose_args()
@@ -120,12 +121,16 @@ class SugarBase:
 
     # Check if services item is given
     def _check_services_item(self):
-        return bool(self.config.get('services'))
+        return hasattr(self.config, 'services')
 
     # set default group main
-    def _set_default_group(self):
+    def _set_default_group(self) -> None:
         # must set the default group
         services = self.config.get('services', {})
+
+        if not services:
+            return
+
         self.config['groups'] = {
             'main': {
                 'project-name': services.get('project-name'),
@@ -138,7 +143,7 @@ class SugarBase:
             }
         }
         self.defaults['group'] = 'main'
-        self.config_group = self.config['groups']['main']
+        self.service_group = deepcopy(self.config['groups']['main'])
         del self.config['services']
 
     def _filter_service_group(self):
@@ -195,19 +200,21 @@ class SugarBase:
         # check if either  services or  groups are present
         if not (self.config.get('services') or self.config.get('groups')):
             KxgrLogs.raise_error(
-                'either `services` OR  `groups` flag must be given',
+                'Either `services` OR  `groups` flag must be given',
                 KxgrErrorType.KXGR_INVALID_CONFIGURATION,
             )
         # check if both services and groups are present
         if self.config.get('services') and self.config.get('groups'):
             KxgrLogs.raise_error(
-                '`services` and `groups` flag given, only 1 is allowed.',
+                '`services` and `groups` flags given, only 1 is allowed.',
                 KxgrErrorType.KXGR_INVALID_CONFIGURATION,
             )
+
+    def _load_root_services(self) -> None:
+        """Load services attribute in the root of the configuration."""
         if self.config.get('services'):
             self._set_default_group()
-
-        self._filter_service_group()
+        # self._filter_service_group()
 
     def _load_compose_app(self):
         compose_cmd = self.config.get('compose-app', '')
@@ -226,7 +233,7 @@ class SugarBase:
     def _load_compose_args(self):
         self._filter_service_group()
 
-        if 'env-file' in self.service_group:
+        if self.service_group.get('env-file'):
             self.compose_args.extend(
                 ['--env-file', self.service_group['env-file']]
             )
