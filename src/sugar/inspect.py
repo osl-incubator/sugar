@@ -1,4 +1,6 @@
 """Functions for inspecting and retrieving information from containers."""
+from __future__ import annotations
+
 import re
 import subprocess  # nosec B404
 

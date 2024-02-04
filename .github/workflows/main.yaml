@@ -71,6 +71,9 @@ jobs:
         auto-update-conda: true
         conda-solver: libmamba
 
+    - name: check poetry lock
+      run: poetry check
+
     - name: Install dependencies
       run: poetry install --verbose
 
