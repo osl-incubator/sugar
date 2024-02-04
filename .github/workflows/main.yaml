@@ -71,14 +71,17 @@ jobs:
         auto-update-conda: true
         conda-solver: libmamba
 
+    - name: check poetry lock
+      run: poetry check
+
     - name: Install dependencies
       run: poetry install --verbose
 
     - name: run unit tests
-      run: makim tests.unit --verbose
+      run: makim --verbose tests.unit
 
     - name: CLI tests
-      run: makim tests.smoke --verbose
+      run: makim --verbose tests.smoke
 
     - name: Setup tmate session
       if: "${{ failure() && (contains(github.event.pull_request.labels.*.name, 'ci:enable-debugging')) }}"

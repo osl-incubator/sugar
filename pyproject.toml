@@ -46,7 +46,7 @@ mkdocs-literate-nav = ">=0.6.0"
 mkdocs-macros-plugin = ">=0.7.0,<1"
 mkdocs-material = ">=9.1.15"
 mkdocstrings = {version=">=0.19.0", extras=["python"]}
-makim = "1.8.3"
+makim = "1.12.0"
 compose-go = ">=1.23.0"
 
 [build-system]
@@ -66,10 +66,13 @@ ignore_missing_imports = true
 line-length = 79
 force-exclude = true
 src = ["./src/sugar", "./tests"]
-ignore = ["RUF012"]
 exclude = [
   "docs",
 ]
+fix = true
+
+[tool.ruff.lint]
+ignore = ["RUF012"]
 select = [
   "E",   # pycodestyle
   "F",   # pyflakes
@@ -79,13 +82,11 @@ select = [
   "RUF", # Ruff-specific rules
   "I001", # isort
 ]
-# fixable = ["I001"]
-fix = true
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 # Use a single line between direct and from import
 lines-between-types = 1
 
