@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.11.0](https://github.com/osl-incubator/sugar/compare/1.10.0...1.11.0) (2024-02-04)
+
+
+### Features
+
+* Add stats plot command ([#113](https://github.com/osl-incubator/sugar/issues/113)) ([15d92cc](https://github.com/osl-incubator/sugar/commit/15d92ccca17375c77460ac732cf25e9e627c32f6))
+
 # [1.10.0](https://github.com/osl-incubator/sugar/compare/1.9.3...1.10.0) (2024-01-25)
 
 
