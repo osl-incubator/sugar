@@ -15,6 +15,7 @@ from textual.reactive import Reactive
 from textual.widget import Widget
 from textual.widgets import Header
 
+from sugar.console import get_terminal_size
 from sugar.inspect import get_container_name, get_container_stats
 from sugar.logs import KxgrErrorType, KxgrLogs
 from sugar.plugins.base import SugarDockerCompose
@@ -54,11 +55,9 @@ class StatsPlot:
     def create_chart(self):
         """Create a new chart."""
         self.fig_mem = plotille.Figure()
-        self.fig_mem.width = 50
-        self.fig_mem.height = 5
         self.fig_cpu = plotille.Figure()
-        self.fig_cpu.width = 50
-        self.fig_cpu.height = 5
+
+        self.resize_chart()
 
         self.chart_colors: tuple[Iterable, Iterable] = {
             'mem': tee(self.fig_mem._color_seq),
@@ -84,6 +83,18 @@ class StatsPlot:
                 label=name,
             )
 
+    def resize_chart(self):
+        """Resize chart."""
+        console_width, console_height = get_terminal_size()
+
+        chart_height = min((console_height - 20) // 2, 10)
+        chart_width = console_width - 30
+
+        self.fig_mem.width = chart_width
+        self.fig_mem.height = chart_height
+        self.fig_cpu.width = chart_width
+        self.fig_cpu.height = chart_height
+
     def reset_chart(self):
         """Reset chart state."""
         self.fig_mem._plots.clear()
@@ -91,6 +102,8 @@ class StatsPlot:
 
         self.fig_mem._color_seq = tee(self.chart_colors['mem'][0])[1]
         self.fig_cpu._color_seq = tee(self.chart_colors['cpu'][0])[1]
+
+        self.resize_chart()
 
     def reset_data(self):
         """Generate a clean data."""
