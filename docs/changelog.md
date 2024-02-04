@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.11.1](https://github.com/osl-incubator/sugar/compare/1.11.0...1.11.1) (2024-02-04)
+
+
+### Bug Fixes
+
+* Fix initial configuration for stats plot ([#114](https://github.com/osl-incubator/sugar/issues/114)) ([4faef7c](https://github.com/osl-incubator/sugar/commit/4faef7c423ab39655c89dde94175eb3e84e0e3e5))
+
 # [1.11.0](https://github.com/osl-incubator/sugar/compare/1.10.0...1.11.0) (2024-02-04)
 
 
