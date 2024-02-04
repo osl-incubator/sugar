@@ -23,11 +23,6 @@ CHART_WINDOW_DURATION = 60
 CHART_TIME_INTERVAL = 1
 
 
-# def _date_formatter(value, value_delta):
-#     """Format X axis for date format."""
-#     return time.strftime("%H:%M:%S", time.gmtime(value_delta))
-
-
 class StatsPlot:
     """Plot containers statistic data."""
 
