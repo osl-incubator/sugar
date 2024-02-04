@@ -133,7 +133,6 @@ class StatsPlot:
         time in a single chart for each metric.
         """
         current_time = datetime.datetime.now()
-        # self.create_chart()
 
         for name in self.container_names:
             mem_usage, cpu_usage = get_container_stats(name)
