@@ -324,7 +324,7 @@ class SugarBase:
             )
         elif self.args.get('services'):
             self.service_names = self.args.get('services').split(',')
-        elif 'default' in services and services['default']:
+        elif services.get('default'):
             self.service_names = services['default'].split(',')
 
     def _verify_args(self):
