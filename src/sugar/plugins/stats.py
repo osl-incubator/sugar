@@ -1,10 +1,11 @@
 """Sugar Plugin for Containers Statics."""
 from __future__ import annotations
 
+import datetime
 import io
-import re
-import subprocess  # nosec B404
-import time
+
+from itertools import tee
+from typing import Iterable
 
 import plotille
 
@@ -14,40 +15,17 @@ from textual.reactive import Reactive
 from textual.widget import Widget
 from textual.widgets import Header
 
-from sugar.inspect import get_container_name
+from sugar.inspect import get_container_name, get_container_stats
 from sugar.logs import KxgrErrorType, KxgrLogs
 from sugar.plugins.base import SugarDockerCompose
 
+CHART_WINDOW_DURATION = 60
+CHART_TIME_INTERVAL = 1
 
-def get_container_stats(container_name: str) -> tuple[float, float]:
-    """
-    Fetch the current memory and CPU usage of a given Docker container.
 
-    Parameters
-    ----------
-        container_name (str): Name of the Docker container.
-
-    Returns
-    -------
-    tuple:
-        The current memory usage of the container in MB and CPU usage as
-        a percentage.
-    """
-    command = (
-        f'docker stats {container_name} --no-stream --format '
-        f"'{{{{.MemUsage}}}} {{{{.CPUPerc}}}}'"
-    )
-    result = subprocess.run(  # nosec B602, B603
-        command, capture_output=True, text=True, shell=True, check=False
-    )
-    output = result.stdout.strip().split()
-    mem_usage_str = output[0].split('/')[0].strip()
-    cpu_usage_str = output[-1].strip('%')
-
-    mem_usage = float(re.sub(r'[^\d.]', '', mem_usage_str))
-    cpu_usage = float(cpu_usage_str)
-
-    return mem_usage, cpu_usage
+# def _date_formatter(value, value_delta):
+#     """Format X axis for date format."""
+#     return time.strftime("%H:%M:%S", time.gmtime(value_delta))
 
 
 class StatsPlot:
@@ -56,8 +34,8 @@ class StatsPlot:
     def __init__(
         self,
         container_names: list[str],
-        window_duration: int = 60,
-        interval: int = 1,
+        window_duration: int = CHART_WINDOW_DURATION,
+        interval: int = CHART_TIME_INTERVAL,
     ):
         """
         Initialize StatsPlot.
@@ -74,15 +52,83 @@ class StatsPlot:
         self.container_names = container_names
         self.window_duration = window_duration
         self.interval = interval
-        self.start_time = time.time()
 
+        self.create_chart()
+        self.reset_data()
+
+    def create_chart(self):
+        """Create a new chart."""
         self.fig_mem = plotille.Figure()
+        self.fig_mem.width = 50
+        self.fig_mem.height = 5
         self.fig_cpu = plotille.Figure()
+        self.fig_cpu.width = 50
+        self.fig_cpu.height = 5
+
+        self.chart_colors: tuple[Iterable, Iterable] = {
+            'mem': tee(self.fig_mem._color_seq),
+            'cpu': tee(self.fig_cpu._color_seq),
+        }
 
         self.stats: dict[str, dict[str, list[str]]] = {
             name: {'times': [], 'mem_usages': [], 'cpu_usages': []}
-            for name in container_names
+            for name in self.container_names
         }
+
+        for name in self.container_names:
+            container_stats = self.stats[name]
+            # Add data to plots
+            self.fig_mem.plot(
+                container_stats['times'],
+                container_stats['mem_usages'],
+                label=name,
+            )
+            self.fig_cpu.plot(
+                container_stats['times'],
+                container_stats['cpu_usages'],
+                label=name,
+            )
+
+    def reset_chart(self):
+        """Reset chart state."""
+        self.fig_mem._plots.clear()
+        self.fig_cpu._plots.clear()
+
+        self.fig_mem._color_seq = tee(self.chart_colors['mem'][0])[1]
+        self.fig_cpu._color_seq = tee(self.chart_colors['cpu'][0])[1]
+
+    def reset_data(self):
+        """Generate a clean data."""
+        current_time = datetime.datetime.now()
+
+        for name in self.container_names:
+            container_stats = self.stats[name]
+
+            container_stats['mem_usages'].clear()
+            container_stats['cpu_usages'].clear()
+            container_stats['times'].clear()
+
+            container_stats['mem_usages'].extend([0.0] * CHART_WINDOW_DURATION)
+            container_stats['cpu_usages'].extend([0.0] * CHART_WINDOW_DURATION)
+            container_stats['times'].extend(
+                [
+                    current_time
+                    - datetime.timedelta(seconds=i * CHART_TIME_INTERVAL)
+                    for i in range(CHART_WINDOW_DURATION)
+                ][::-1]
+            )
+
+            # Add data to plots
+            self.fig_mem.plot(
+                container_stats['times'],
+                container_stats['mem_usages'],
+                label=name,
+            )
+            self.fig_cpu.plot(
+                container_stats['times'],
+                container_stats['cpu_usages'],
+                label=name,
+            )
 
     def plot_stats(self):
         """
@@ -91,34 +137,29 @@ class StatsPlot:
         Plots the memory and CPU usage of multiple Docker containers over
         time in a single chart for each metric.
         """
-        self.fig_mem = plotille.Figure()
-        self.fig_mem.width = 50
-        self.fig_mem.height = 5
-        self.fig_cpu = plotille.Figure()
-        self.fig_cpu.width = 50
-        self.fig_cpu.height = 5
-
-        current_time = time.time() - self.start_time
+        current_time = datetime.datetime.now()
+        # self.create_chart()
 
         for name in self.container_names:
             mem_usage, cpu_usage = get_container_stats(name)
 
             # Update and maintain window for stats
             container_stats = self.stats[name]
-            container_stats['times'].append(round(current_time, 2))
+            container_stats['times'].append(current_time)
             container_stats['mem_usages'].append(round(mem_usage, 2))
             container_stats['cpu_usages'].append(round(cpu_usage, 2))
 
-            if len(container_stats['times']) > self.window_duration:
-                container_stats['times'] = container_stats['times'][
-                    -self.window_duration :
-                ]
-                container_stats['mem_usages'] = container_stats['mem_usages'][
-                    -self.window_duration :
-                ]
-                container_stats['cpu_usages'] = container_stats['cpu_usages'][
-                    -self.window_duration :
-                ]
+            container_stats['times'] = container_stats['times'][
+                -self.window_duration :
+            ]
+            container_stats['mem_usages'] = container_stats['mem_usages'][
+                -self.window_duration :
+            ]
+            container_stats['cpu_usages'] = container_stats['cpu_usages'][
+                -self.window_duration :
+            ]
+
+        self.reset_chart()
 
         for name in self.container_names:
             container_stats = self.stats[name]
@@ -155,13 +196,13 @@ class StatsPlotWidget(Widget):
     def on_mount(self) -> None:
         """Set up the widget."""
         # Set up a periodic update, adjust the interval as needed
-        interval_time = 1
+        interval_time = CHART_TIME_INTERVAL
         self.set_interval(
             interval_time, self.update_plot
         )  # Update every second
         self.stats_plot = StatsPlot(
             container_names=self.container_names,
-            window_duration=60,
+            window_duration=CHART_WINDOW_DURATION,
             interval=interval_time,
         )
 
@@ -183,7 +224,7 @@ class StatsPlotWidget(Widget):
 class StatsPlotApp(App[str]):
     """StatsPlotApp app class."""
 
-    TITLE = 'Containers Stats'
+    TITLE = 'Sugar Containers Stats'
     container_names: list[str]
 
     def __init__(self, container_names: list[str], *args, **kwargs) -> None:
