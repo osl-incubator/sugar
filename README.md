@@ -22,8 +22,14 @@ gathering some useful scripts and keeping this information centralized in a
 configuration file. So the command line would be very simple.
 
 
-* Free software: BSD 3 Clause
+* Software License: BSD 3 Clause
 * Documentation: https://osl-incubator.github.io/sugar
+
+## How to Install
+
+```bash
+$ pip install containers-sugar
+```
 
 
 ## Features
@@ -73,37 +79,30 @@ of your project. This is an example of a configuration file:
 
 ```yaml
 version: 1.0
-compose-app: docker-compose
+compose-app: docker compose
 default:
   group: {{ env.ENV }}
 groups:
-  - name: group1
+  group1:
     project-name: project1
-    compose-path: containers/tests/group1/compose.yaml
+    compose-path:
+      - containers/tests/group1/compose.yaml
     env-file: .env
     services:
-      default:
-        - service1
-        - service3
+      default: service1,service3
       available:
         - name: service1
         - name: service2
         - name: service3
-  - name: group2
+  group2:
     project-name: null
     compose-path: containers/tests/group2/compose.yaml
     env-file: .env
     services:
-      # default: null
       available:
         - name: service1
-        - name: service1
+        - name: service3
 ```
-
-**NOTE**: sugar has an convenient alias `sugar` that helps to
-keep the command line shorter, where **k** stands for *containers*,
-**x** stands for *su* (*shu* sound), and **gr** stands for *gar*.
-In another words, you can use `sugar` or `sugar` CLI.
 
 Some examples of how to use it:
 

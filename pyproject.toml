@@ -2,6 +2,7 @@
 name = "containers-sugar"
 version = "1.11.1"  # semantic-release
 description = "Simplify the usage of containers"
+readme = "README.md"
 authors = ["Ivan Ogasawara <ivan.ogasawara@gmail.com>"]
 license = "BSD 3 Clause"
 packages = [
