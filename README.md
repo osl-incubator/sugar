@@ -31,7 +31,6 @@ configuration file. So the command line would be very simple.
 $ pip install containers-sugar
 ```
 
-
 ## Features
 
 The commands from docker-compose available are:
