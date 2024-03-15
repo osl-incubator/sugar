@@ -276,6 +276,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#how-to-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to Install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
       Features
@@ -388,6 +397,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#how-to-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to Install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
       Features
@@ -442,6 +460,9 @@ configuration file. So the command line would be very simple.</p>
 <li>License: BSD 3 Clause</li>
 <li>Documentation: <a href="https://osl-incubator.github.io/sugar">https://osl-incubator.github.io/sugar</a></li>
 </ul>
+<h2 id="how-to-install">How to Install</h2>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>containers-sugar
+</code></pre></div>
 <h2 id="features">Features</h2>
 <p>The commands from docker-compose available are:</p>
 <ul>
@@ -482,13 +503,14 @@ you don't need to specify any extra parameter to access them.</p>
 <p>First you need to place the config file <code>.sugar.yaml</code> in the root
 of your project. This is an example of a configuration file:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
-<span class="nt">compose-app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker-compose</span>
+<span class="nt">compose-app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose</span>
 <span class="nt">default</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.ENV</span><span class="w"> </span><span class="p p-Indicator">}}</span>
 <span class="nt">groups</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">group1</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">project-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project1</span>
-<span class="w">    </span><span class="nt">compose-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">containers/tests/group1/compose.yaml</span>
+<span class="w">    </span><span class="nt">compose-path</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">containers/tests/group1/compose.yaml</span>
 <span class="w">    </span><span class="nt">env-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
 <span class="w">    </span><span class="nt">services</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">default</span><span class="p">:</span>
@@ -506,12 +528,8 @@ of your project. This is an example of a configuration file:</p>
 <span class="w">      </span><span class="c1"># default: null</span>
 <span class="w">      </span><span class="nt">available</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service2</span>
 </code></pre></div>
-<p><strong>NOTE</strong>: sugar has an convenient alias <code>sugar</code> that helps to
-keep the command line shorter, where <strong>k</strong> stands for <em>containers</em>,
-<strong>x</strong> stands for <em>su</em> (<em>shu</em> sound), and <strong>gr</strong> stands for <em>gar</em>.
-In another words, you can use <code>sugar</code> or <code>sugar</code> CLI.</p>
 <p>Some examples of how to use it:</p>
 <ul>
 <li>
