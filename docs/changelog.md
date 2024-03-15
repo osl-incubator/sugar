@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.11.2](https://github.com/osl-incubator/sugar/compare/1.11.1...1.11.2) (2024-03-15)
+
+
+### Bug Fixes
+
+* Fix package description ([#116](https://github.com/osl-incubator/sugar/issues/116)) ([e78f5a5](https://github.com/osl-incubator/sugar/commit/e78f5a500a0dab3f51a65d2353657527a55d5c5a))
+
 ## [1.11.1](https://github.com/osl-incubator/sugar/compare/1.11.0...1.11.1) (2024-02-04)
 
 
