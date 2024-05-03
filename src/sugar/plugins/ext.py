@@ -14,6 +14,7 @@ class SugarExt(SugarDockerCompose):
             'get-ip',
             'restart',
             'start',
+            'stop',
             'wait',
         ]
 

@@ -83,9 +83,6 @@ class Sugar(SugarBase):
 
     def run(self):
         """Run sugar command."""
-        if self.args['version']:
-            return self._version()
-
         if not self.args.get('action'):
             return
 
