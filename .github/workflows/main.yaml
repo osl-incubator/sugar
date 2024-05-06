@@ -16,7 +16,7 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         if: ${{ github.event_name == 'pull_request' }}
         with:
           fetch-depth: 0
@@ -29,7 +29,6 @@ jobs:
           pr_sha: ${{ github.event.pull_request.head.sha }}
 
   tests:
-    needs: check-branch
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -40,7 +39,7 @@ jobs:
     strategy:
       matrix:
         python_version:
-        - "3.8.1"
+        - "3.8"
         - "3.9"
         - "3.10"
         - "3.11"
@@ -54,12 +53,7 @@ jobs:
       KXGR_PROJECT_NAME: ${{ github.run_id }}-${{ github.sha }}
 
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Prepare conda environment
-      run: |
-        sed -i s/python\ 3\.8\.1/python\ ${{ matrix.python_version }}/ conda/dev.yaml
-        cat conda/dev.yaml
+    - uses: actions/checkout@v4
 
     - uses: conda-incubator/setup-miniconda@v3
       with:
@@ -70,6 +64,7 @@ jobs:
         activate-environment: sugar
         auto-update-conda: true
         conda-solver: libmamba
+        python-version: ${{ matrix.python_version }}
 
     - name: check poetry lock
       run: poetry check
@@ -88,7 +83,6 @@ jobs:
       uses: mxschmitt/action-tmate@v3
 
   linter:
-    needs: check-branch
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -101,7 +95,7 @@ jobs:
       cancel-in-progress: true
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - uses: conda-incubator/setup-miniconda@v3
       with:

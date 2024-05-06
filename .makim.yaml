@@ -3,7 +3,7 @@ shell: bash
 groups:
   clean:
     env-file: .env
-    targets:
+    tasks:
       all:
         help: Remove build artifacts, compiled files, and cache
         run: |
@@ -21,7 +21,7 @@ groups:
 
   docs:
     help: Commands for building and previewing the documentation
-    targets:
+    tasks:
       build:
         help: Build the documentation
         run: mkdocs build --config-file mkdocs.yaml
@@ -29,19 +29,19 @@ groups:
       preview:
         help: Preview the documentation
         dependencies:
-          - target: docs.build
+          - task: docs.build
         run: mkdocs serve --watch docs --config-file mkdocs.yaml
 
   package:
     help: helper commands for handling the package
-    targets:
+    tasks:
       build:
         help: Build the project
         run: poetry build
 
   tests:
     help: Test commands
-    targets:
+    tasks:
       linter:
         help: Run lint checks
         run: |
@@ -60,7 +60,7 @@ groups:
       smoke-1:
         help: Run smoke tests for group 1
         dependencies:
-          - target: docker.killall
+          - task: docker.killall
         run: |
           sugar build --verbose
           sugar build --verbose --group group1 --all
@@ -79,7 +79,7 @@ groups:
       smoke-2:
         help: Run smoke tests for group 2
         dependencies:
-          - target: docker.killall
+          - task: docker.killall
         run: |
           sugar build --verbose --group group2 --all
           sugar build --verbose --group group2
@@ -96,14 +96,14 @@ groups:
       smoke-services:
         help:
         dependencies:
-          - target: docker.killall
+          - task: docker.killall
         run: |
           sugar build --verbose --config-file tests/containers/.services.sugar.yaml
-          
+
       smoke-mix:
         help: Run smoke tests for group mix
         dependencies:
-          - target: docker.killall
+          - task: docker.killall
         run: |
           sugar build --verbose --group group-mix --all
           sugar build --verbose --group group-mix
@@ -121,7 +121,7 @@ groups:
       smoke-main:
         help: Run smoke tests for group main
         dependencies:
-          - target: docker.killall
+          - task: docker.killall
         run: |
           # general tests main profile/plugins
           sugar build --verbose --group group1
@@ -147,7 +147,7 @@ groups:
       smoke-defaults:
         help: Run smoke tests for group defaults
         dependencies:
-          - target: docker.killall
+          - task: docker.killall
         run: |
           export KXGR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
           echo $KXGR_PROJECT_NAME
@@ -160,7 +160,7 @@ groups:
       smoke-final:
         help: Run final smoke tests
         dependencies:
-          - target: docker.killall
+          - task: docker.killall
         run: |
           sugar ext restart --verbose --group group-defaults --options -d
           sugar pause --verbose --group group1
@@ -173,21 +173,46 @@ groups:
       smoke:
         help: Run final smoke tests
         dependencies:
-          - target: docker.killall
-          - target: tests.smoke-1
-          - target: tests.smoke-2
-          - target: tests.smoke-mix
-          - target: tests.smoke-main
-          - target: tests.smoke-defaults
-          - target: tests.smoke-final
-          - target: tests.smoke-services
+          - task: docker.killall
+          - task: tests.smoke-1
+          - task: tests.smoke-2
+          - task: tests.smoke-mix
+          - task: tests.smoke-main
+          - task: tests.smoke-defaults
+          - task: tests.smoke-final
+          - task: tests.smoke-services
         run: |
           sugar --help
           sugar --version
 
   docker:
     help: Commands for docker
-    targets:
+    tasks:
       killall:
         help: Kill all running Docker containers
         run: docker kill `docker ps -q` || true
+
+  release:
+    vars:
+      app: |
+        npx --yes \
+        -p semantic-release \
+        -p conventional-changelog-conventionalcommits@7.0.2 \
+        -p "@semantic-release/commit-analyzer" \
+        -p "@semantic-release/release-notes-generator" \
+        -p "@semantic-release/changelog" \
+        -p "@semantic-release/exec" \
+        -p "@semantic-release/github" \
+        -p "@semantic-release/git" \
+        -p "semantic-release-replace-plugin" \
+        semantic-release
+    tasks:
+      ci:
+        help: Run semantic-release on CI
+        run: |
+          {{ app }} --ci
+
+      dry:
+        help: Run semantic-release on CI
+        run: |
+          {{ app }} --dry-run
