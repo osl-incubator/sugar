@@ -55,7 +55,7 @@ groups:
             help: Extra parameters for pytest
             type: str
             default: "-vv"
-        run: pytest -s {{ args.params }} tests
+        run: pytest -s ${{ args.params }} tests
 
       smoke-1:
         help: Run smoke tests for group 1
@@ -210,9 +210,9 @@ groups:
       ci:
         help: Run semantic-release on CI
         run: |
-          {{ app }} --ci
+          ${{ app }} --ci
 
       dry:
         help: Run semantic-release on CI
         run: |
-          {{ app }} --dry-run
+          ${{ app }} --dry-run
