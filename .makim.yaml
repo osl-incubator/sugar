@@ -210,9 +210,9 @@ groups:
       ci:
         help: Run semantic-release on CI
         run: |
-          ${{ app }} --ci
+          ${{ vars.app }} --ci
 
       dry:
         help: Run semantic-release on CI
         run: |
-          ${{ app }} --dry-run
+          ${{ vars.app }} --dry-run
