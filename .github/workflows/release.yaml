@@ -33,7 +33,7 @@ jobs:
           activate-environment: sugar
           auto-update-conda: true
           conda-solver: libmamba
-          python-version: "${{ 3.10 }}"
+          python-version: "3.10"
 
       - name: Install deps
         run: |
