@@ -1,6 +1,14 @@
 # Release Notes
 ---
 
+## [1.11.3](https://github.com/osl-incubator/sugar/compare/1.11.2...1.11.3) (2024-05-07)
+
+
+### Bug Fixes
+
+* Change rich lower bound pin to >=10.11.0 ([#118](https://github.com/osl-incubator/sugar/issues/118)) ([eaa9a55](https://github.com/osl-incubator/sugar/commit/eaa9a55f858c126e55604de2ca6a58c5fb833048))
+* Fix typo in the release workflow ([#119](https://github.com/osl-incubator/sugar/issues/119)) ([16b910b](https://github.com/osl-incubator/sugar/commit/16b910b97fbeb912e15f4026edec9b2de7b767cf))
+
 ## [1.11.2](https://github.com/osl-incubator/sugar/compare/1.11.1...1.11.2) (2024-03-15)
 
 
