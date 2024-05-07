@@ -4,13 +4,18 @@ from __future__ import annotations
 
 import os
 
-from typing import Dict, Optional, Type
+from typing import Dict, Optional, Type, cast
 
 from sugar import __version__
 from sugar.logs import KxgrErrorType, KxgrLogs
 from sugar.plugins.base import SugarBase, SugarDockerCompose
 from sugar.plugins.ext import SugarExt
-from sugar.plugins.stats import SugarStats
+
+try:
+    from sugar.plugins.stats import SugarStats
+except ImportError:
+    # SugarStats is optional (extras=tui)
+    SugarStats = cast(Optional[Type[SugarBase]], None)  # type: ignore
 
 
 class Sugar(SugarBase):
@@ -19,7 +24,7 @@ class Sugar(SugarBase):
     plugins_definition: Dict[str, Type[SugarBase]] = {
         'main': SugarDockerCompose,
         'ext': SugarExt,
-        'stats': SugarStats,
+        **{'stats': SugarStats for i in range(1) if SugarStats is not None},
     }
     plugin: Optional[SugarBase] = None
 
