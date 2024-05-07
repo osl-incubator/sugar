@@ -7,17 +7,19 @@ groups:
       all:
         help: Remove build artifacts, compiled files, and cache
         run: |
+          rm -f .coverage
           rm -fr build/
           rm -fr dist/
           rm -fr .eggs/
+          rm -fr htmlcov/
+          rm -fr .pytest_cache
+          rm -fr .ruff_cache
+          rm -fr .mypy_cache
           find . -name '*.egg-info' -exec rm -fr {} +
           find . -name '*.egg' -exec rm -f {} +
           find . -name '*.pyc' -exec rm -f {} +
           find . -name '__pycache__' -exec rm -fr {} +
           find . -name '*~' -exec rm -f {} +
-          rm -f .coverage
-          rm -fr htmlcov/
-          rm -fr .pytest_cache
 
   docs:
     help: Commands for building and previewing the documentation

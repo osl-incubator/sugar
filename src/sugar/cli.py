@@ -1,4 +1,5 @@
 """Definition of the CLI structure."""
+
 import argparse
 import os
 import sys
