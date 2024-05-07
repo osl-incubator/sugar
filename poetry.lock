@@ -1035,7 +1035,7 @@ rapidfuzz = ">=3.8.0,<4.0.0"
 name = "linkify-it-py"
 version = "2.0.3"
 description = "Links recognition library with FULL unicode support."
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "linkify-it-py-2.0.3.tar.gz", hash = "sha256:68cda27e162e9215c17d786649d1da0021a451bdc436ef9e0fa0ba5234b9b048"},
@@ -1053,13 +1053,13 @@ test = ["coverage", "pytest", "pytest-cov"]
 
 [[package]]
 name = "makim"
-version = "1.15.1"
+version = "1.15.2"
 description = "Simplify the usage of containers"
 optional = false
 python-versions = "<4,>=3.8.1"
 files = [
-    {file = "makim-1.15.1-py3-none-any.whl", hash = "sha256:c5e9b8f09b2f8287679ac865bcb54d42d321bb0c8ea0225fe1464147de79afa5"},
-    {file = "makim-1.15.1.tar.gz", hash = "sha256:1dd3b4e93a10902772b9f0072f70660a041a835cf2212e95336d08239fc84ec5"},
+    {file = "makim-1.15.2-py3-none-any.whl", hash = "sha256:c9e629f2adf01092cb5cb173864ecf41210f31c8f886247b566e45310445b480"},
+    {file = "makim-1.15.2.tar.gz", hash = "sha256:3d2bcae46343452300387a5b4b6f0e91d447eb7ee063f68f1b2005ee691aac0e"},
 ]
 
 [package.dependencies]
@@ -1068,7 +1068,7 @@ jinja2 = ">=2.0"
 python-dotenv = ">=0.21.1"
 python-levenshtein = ">=0.23.0"
 pyyaml = ">=5.0"
-rich = ">=13.7.0"
+rich = ">=10.11.0"
 sh = ">=2.0.0"
 shellingham = ">=1.5.4"
 typer = ">=0.9.0"
@@ -1767,7 +1767,7 @@ type = ["mypy (>=1.8)"]
 name = "plotille"
 version = "5.0.0"
 description = "Plot in the terminal using braille dots."
-optional = false
+optional = true
 python-versions = ">=3.7,<4.0"
 files = [
     {file = "plotille-5.0.0.tar.gz", hash = "sha256:99e5ca51a2e4c922ead3a3b0863cc2c6a9a4b3f701944589df10f42ce02ab3dc"},
@@ -2696,7 +2696,7 @@ tests = ["pytest", "pytest-cov"]
 name = "textual"
 version = "0.58.1"
 description = "Modern Text User Interface framework"
-optional = false
+optional = true
 python-versions = "<4.0,>=3.8"
 files = [
     {file = "textual-0.58.1-py3-none-any.whl", hash = "sha256:9902ebb4b00481f6fdb0e7db821c007afa45797d81e1d0651735a07de25ece87"},
@@ -2807,7 +2807,7 @@ files = [
 name = "uc-micro-py"
 version = "1.0.3"
 description = "Micro subset of unicode data files for linkify-it-py projects."
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "uc-micro-py-1.0.3.tar.gz", hash = "sha256:d321b92cff673ec58027c04015fcaa8bb1e005478643ff4a500882eaab88c48a"},
@@ -2986,7 +2986,10 @@ files = [
 docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
 testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
 
+[extras]
+tui = ["plotille", "rich", "textual"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4"
-content-hash = "86b0882429064806a77d8b1fddf01b86755889bbc695ef0f0b7788453698d19c"
+content-hash = "0655d622e3b2bca68591305faa7cbdffccfe99b6ad4eb3445769ea7df8c1062b"
