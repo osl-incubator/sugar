@@ -29,7 +29,7 @@ textual = { version = ">=0.48", optional = true }
 plotille = { version = ">=5", optional = true }
 
 [tool.poetry.extras]
-stats = [
+tui = [
   "textual",
   "plotille",
 ]

@@ -2987,9 +2987,9 @@ docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.link
 testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
 
 [extras]
-stats = ["plotille", "textual"]
+tui = ["plotille", "textual"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4"
-content-hash = "fd7869d12a802b73c82388afbdc3d0783247c8e5c67718d20fdd1987acdcaa80"
+content-hash = "56acea24dfa859a93291024b6f80c7db3252a56d5ad354d53d9ef93360400a1c"
