@@ -64,7 +64,7 @@ jobs:
         activate-environment: sugar
         auto-update-conda: true
         conda-solver: libmamba
-        python-version: ${{ matrix.python_version }}
+        python-version: "${{ matrix.python_version }}"
 
     - name: check poetry lock
       run: poetry check
