@@ -1,4 +1,5 @@
 """Tests for `sugar` package."""
+
 from copy import deepcopy
 from pathlib import Path
 

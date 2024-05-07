@@ -1,4 +1,5 @@
 """Sugar Plugin for Containers Statics."""
+
 from __future__ import annotations
 
 import datetime
