@@ -4,7 +4,8 @@ channels:
   - conda-forge
 dependencies:
   - pip
-  - python 3.8.1
-  - poetry
+  - python
+  - poetry >=1.5
   - pip:
-    - paginate >=0.5  # tries to fix the distlib issue
+    # fix the distlib issue
+    - paginate >=0.5

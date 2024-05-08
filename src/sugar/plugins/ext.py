@@ -1,4 +1,5 @@
 """SugarExt Plugin class for containers."""
+
 from __future__ import annotations
 
 from sugar.logs import KxgrErrorType, KxgrLogs
