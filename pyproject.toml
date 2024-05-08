@@ -74,7 +74,7 @@ exclude = [
 fix = true
 
 [tool.ruff.lint]
-ignore = ["RUF012"]
+ignore = ["RUF012", "PLR0913", "PLR0915"]
 select = [
   "E",   # pycodestyle
   "F",   # pyflakes
