@@ -107,7 +107,7 @@ exclude_dirs = ["tests"]
 targets = "src/sugar/"
 
 [tool.vulture]
-exclude = ["tests"]
+exclude = ["tests", "src/sugar/cli.py"]
 ignore_decorators = []
 ignore_names = []
 make_whitelist = true
