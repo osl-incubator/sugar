@@ -1,6 +1,18 @@
 # Release Notes
 ---
 
+# [1.12.0](https://github.com/osl-incubator/sugar/compare/1.11.4...1.12.0) (2024-05-10)
+
+
+### Bug Fixes
+
+* Improve the usage of flags for the CLI ([#121](https://github.com/osl-incubator/sugar/issues/121)) ([c070bde](https://github.com/osl-incubator/sugar/commit/c070bde90178453d3c710c0b0a0c408195a95005))
+
+
+### Features
+
+* Implement typer as CLI ([#117](https://github.com/osl-incubator/sugar/issues/117)) ([b9def08](https://github.com/osl-incubator/sugar/commit/b9def082789ce012b78959d2db27b577477ac992))
+
 ## [1.11.4](https://github.com/osl-incubator/sugar/compare/1.11.3...1.11.4) (2024-05-07)
 
 
