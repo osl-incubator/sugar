@@ -1124,10 +1124,30 @@ def create_main_group(sugar_app: typer.Typer):
     @sugar_app.command()
     def version(
         ctx: typer.Context,
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
     ):
         args = ctx.params
         args['plugin'] = 'main'
         args['action'] = 'version'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
 
         cmd_args: list[Any] = opt_state['cmd']
         opts_args: list[Any] = opt_state['options']

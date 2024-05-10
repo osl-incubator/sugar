@@ -142,7 +142,7 @@ groups:
           sugar run --verbose --group group1 --service service1-1 --options -T --cmd env
           sugar top --verbose --group group1
           sugar up --verbose --group group1 --options -d
-          sugar version --verbose
+          sugar version
           # port is not complete supported
           # sugar events --verbose --group group1 --service service1-1 --options --json --dry-run
 
