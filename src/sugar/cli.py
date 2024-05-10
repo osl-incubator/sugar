@@ -105,9 +105,6 @@ def create_main_group(sugar_app: typer.Typer):
                 " Use comma to separate the services's name"
             ),
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help=(
@@ -124,13 +121,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help=(
-                'Specify the COMMAND for some docker-compose command. '
-                'E.g.: --cmd python -c print(1)'
-            ),
         ),
         verbose: bool = Option(
             False,
@@ -168,9 +158,6 @@ def create_main_group(sugar_app: typer.Typer):
                 " Use comma to separate the services's name"
             ),
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command. \
@@ -180,11 +167,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command. \
-                  E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -220,9 +202,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call. \
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command. \
@@ -237,11 +216,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command. \
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -272,37 +246,15 @@ def create_main_group(sugar_app: typer.Typer):
             '--group',
             help='Specify the group name of the services you want to use',
         ),
-        services: str = Option(
-            None,
-            help="Set the services for the container call. \
-                Use comma to separate the services's name",
-        ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command. \
                 E.g.: --options -d',
         ),
-        rmi: str = Option(
-            None,
-        ),
-        remove_orphans: str = Option(
-            None,
-        ),
-        volumes: str = Option(
-            None,
-        ),
         config_file: str = Option(
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -340,9 +292,6 @@ def create_main_group(sugar_app: typer.Typer):
                 " Use comma to separate the services's name"
             ),
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help=(
@@ -359,13 +308,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help=(
-                'Specify the COMMAND for some docker-compose command. '
-                'E.g.: --cmd python -c print(1)'
-            ),
         ),
     ):
         args = ctx.params
@@ -438,9 +380,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call. \
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -455,11 +394,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -495,9 +429,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -512,11 +443,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -552,9 +478,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -569,11 +492,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -609,9 +527,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Argument(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -626,11 +541,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -658,9 +568,6 @@ def create_main_group(sugar_app: typer.Typer):
         service: str = Option(
             None, help='Set the service for the container call.'
         ),
-        private_port: str = Argument(
-            None, help='Specify the service private port'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -670,11 +577,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
     ):
         args = ctx.params
@@ -700,9 +602,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -717,11 +616,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -757,9 +651,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -774,11 +665,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -814,9 +700,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -831,11 +714,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -871,9 +749,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -888,11 +763,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -928,9 +798,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for rm command: --options [-f | -s]',
@@ -944,11 +811,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -983,14 +845,6 @@ def create_main_group(sugar_app: typer.Typer):
             None,
             help='Specify the options for docker-compose command.\
                 E.g.: --options -d',
-        ),
-        target: str = Option(None, '-p', help='Specify the target option.'),
-        volume: str = Option(None, '-v', help='Specify the volume option.'),
-        env_vars: str = Option(
-            None,
-            '-e',
-            '-l',
-            help='Specify the environment variables. [-e KEY=VAL...]',
         ),
         config_file: str = Option(
             str(Path(os.getcwd()) / '.sugar.yaml'),
@@ -1036,9 +890,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -1053,11 +904,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -1093,9 +939,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -1110,11 +953,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -1150,9 +988,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -1167,11 +1002,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -1207,9 +1037,6 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Argument(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -1224,11 +1051,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -1264,24 +1086,10 @@ def create_main_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
                 E.g.: --options -d',
-        ),
-        scale: str = Option(
-            None,
-            help='Specify the service scale as an option\
-                [--scale SERVICE=NUM...]',
-        ),
-        no_color: str = Option(
-            None, help='Specify the no-color as an option.'
-        ),
-        quiet_pull: str = Option(
-            None, help='Specify the quiet-pull as an option.'
         ),
         all: bool = Option(
             False,
@@ -1292,11 +1100,6 @@ def create_main_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -1321,54 +1124,10 @@ def create_main_group(sugar_app: typer.Typer):
     @sugar_app.command()
     def version(
         ctx: typer.Context,
-        service_group: str = Option(
-            None,
-            '--service-group',
-            '--group',
-            help='Specify the group name of the services you want to use',
-        ),
-        services: str = Option(
-            None,
-            help="Set the services for the container call.\
-                Use comma to separate the services's name",
-        ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
-        options: str = Option(
-            None,
-            help='Specify the options for docker-compose command.\
-                E.g.: --options -d',
-        ),
-        all: bool = Option(
-            False,
-            help='Use all services for the command.',
-            is_flag=True,
-        ),
-        config_file: str = Option(
-            str(Path(os.getcwd()) / '.sugar.yaml'),
-            help='Specify a custom location for the config file.',
-            is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
-        ),
-        verbose: bool = Option(
-            False,
-            '--verbose',
-            is_flag=True,
-            is_eager=True,
-            help='Show the command executed.',
-        ),
     ):
         args = ctx.params
         args['plugin'] = 'main'
         args['action'] = 'version'
-
-        if verbose or flags_state['verbose']:
-            args['verbose'] = True
 
         cmd_args: list[Any] = opt_state['cmd']
         opts_args: list[Any] = opt_state['options']
@@ -1398,33 +1157,13 @@ def create_ext_group(sugar_app: typer.Typer):
             '--group',
             help='Specify the group name of the services you want to use',
         ),
-        services: str = Option(
-            None,
-            help="Set the services for the container call.\
-                Use comma to separate the services's name",
-        ),
         service: str = Option(
             None, help='Set the service for the container call.'
-        ),
-        options: str = Option(
-            None,
-            help='Specify the options for docker-compose command.\
-                E.g.: --options -d',
-        ),
-        all: bool = Option(
-            False,
-            help='Use all services for the command.',
-            is_flag=True,
         ),
         config_file: str = Option(
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
     ):
         args = ctx.params
@@ -1450,9 +1189,6 @@ def create_ext_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -1467,11 +1203,6 @@ def create_ext_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -1507,9 +1238,6 @@ def create_ext_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -1524,11 +1252,6 @@ def create_ext_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -1564,9 +1287,6 @@ def create_ext_group(sugar_app: typer.Typer):
             help="Set the services for the container call.\
                 Use comma to separate the services's name",
         ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
         options: str = Option(
             None,
             help='Specify the options for docker-compose command.\
@@ -1581,11 +1301,6 @@ def create_ext_group(sugar_app: typer.Typer):
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,
@@ -1616,33 +1331,13 @@ def create_ext_group(sugar_app: typer.Typer):
             '--group',
             help='Specify the group name of the services you want to use',
         ),
-        services: str = Option(
-            None,
-            help="Set the services for the container call.\
-                Use comma to separate the services's name",
-        ),
-        service: str = Option(
-            None, help='Set the service for the container call.'
-        ),
-        options: str = Option(
-            None,
-            help='Specify the options for docker-compose command.\
-                E.g.: --options -d',
-        ),
-        all: bool = Option(
-            False,
-            help='Use all services for the command.',
-            is_flag=True,
+        timeout: str = Option(
+            None, help='Set the timeout for waiting for the service'
         ),
         config_file: str = Option(
             str(Path(os.getcwd()) / '.sugar.yaml'),
             help='Specify a custom location for the config file.',
             is_flag=True,
-        ),
-        cmd: str = Option(
-            None,
-            help='Specify the COMMAND for some docker-compose command.\
-                E.g.: --cmd python -c print(1)',
         ),
         verbose: bool = Option(
             False,

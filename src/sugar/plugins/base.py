@@ -370,7 +370,7 @@ class SugarDockerCompose(SugarBase):
     This are the commands that is currently provided:
 
         build [options] [SERVICE...]
-        config [options]
+        config [options] [SERVICE...]
         create [options] [SERVICE...]
         down [options] [--rmi type] [--volumes] [--remove-orphans]
         events [options] [SERVICE...]
@@ -390,7 +390,7 @@ class SugarDockerCompose(SugarBase):
         start [options] [SERVICE...]
         stop [options] [SERVICE...]
         top [options] [SERVICE...]
-        unpause [options] SERVICE...
+        unpause [options] [SERVICE...]
         up [options] [--scale SERVICE=NUM...] [--no-color]
             [--quiet-pull] [SERVICE...]
         version [options]
