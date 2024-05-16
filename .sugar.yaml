@@ -1,5 +1,5 @@
 version: 1.0
-compose-app: docker compose
+compose-app: docker-compose
 env-file: .env
 defaults:
   group: {{ env.KXGR_GROUP }}

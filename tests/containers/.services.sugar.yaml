@@ -1,5 +1,5 @@
 version: 1.0
-compose-app: docker compose
+compose-app: docker-compose
 defaults:
   project-name: sugar-{{ env.KXGR_PROJECT_NAME }}
 services:
