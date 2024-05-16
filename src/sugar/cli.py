@@ -1764,14 +1764,14 @@ def create_app():
     sugar_app = typer.Typer(
         name='sugar',
         help=(
-            'sugar (or sugar) is a tool that help you to organize'
+            'Sugar is a tool that help you to organize'
             "and simplify your containers' stack."
         ),
         epilog=(
             'If you have any problem, open an issue at: '
             'https://github.com/osl-incubator/sugar'
         ),
-        short_help="sugar (or sugar) is a tool that help you \
+        short_help="Sugar is a tool that help you \
           to organize containers' stack",
     )
 
