@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.13.0](https://github.com/osl-incubator/sugar/compare/1.12.0...1.13.0) (2024-05-16)
+
+
+### Features
+
+* **experimental:** Add new docker compose commands: attach, cp, ls, scale, wait, watch ([#122](https://github.com/osl-incubator/sugar/issues/122)) ([4a28eee](https://github.com/osl-incubator/sugar/commit/4a28eeed3bc279c0e0ca9cb21a9b4fa2c2e1767a))
+
 # [1.12.0](https://github.com/osl-incubator/sugar/compare/1.11.4...1.12.0) (2024-05-10)
 
 
