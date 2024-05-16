@@ -172,6 +172,18 @@ groups:
           sugar rm --verbose --group group1 --options --force
           sugar down --verbose --group group1
 
+      smoke-experimental:
+        help: Run simple text for experimental commands
+        dependencies:
+          - task: docker.killall
+        run: |
+          sugar attach --options --help
+          sugar cp --options --help
+          sugar ls --options --help
+          sugar scale --options --help
+          sugar wait --options --help
+          sugar watch --options --help
+
       smoke:
         help: Run final smoke tests
         dependencies:
@@ -183,6 +195,7 @@ groups:
           - task: tests.smoke-defaults
           - task: tests.smoke-final
           - task: tests.smoke-services
+          - task: tests.smoke-experimental
         run: |
           sugar --help
           sugar --version

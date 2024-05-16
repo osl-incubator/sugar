@@ -90,6 +90,57 @@ def create_main_group(sugar_app: typer.Typer):
     # -- Main commands --
 
     @sugar_app.command()
+    def attach(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        service: str = Option(
+            None, help='Set the service for the container call.'
+        ),
+        options: str = Option(
+            None,
+            help=(
+                'Specify the options for docker-compose command. '
+                'E.g.: --options -d'
+            ),
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """
+        Attach to a service's running container.
+
+        Attach local standard input, output, and error streams to a service's
+        running container.
+
+        Note: This is an experimental feature.
+        """
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'attach'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
+
+    @sugar_app.command()
     def build(
         ctx: typer.Context,
         service_group: str = Option(
@@ -189,6 +240,51 @@ def create_main_group(sugar_app: typer.Typer):
         opts_args: list[Any] = opt_state['options']
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
+
+    @sugar_app.command()
+    def cp(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        options: str = Option(
+            None,
+            help=(
+                'Specify the options for docker-compose command. '
+                'E.g.: --options -d'
+            ),
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """
+        Copy files/folders between a services and local filesystem.
+
+        Note: This is an experimental feature.
+        """
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'cp'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
 
     @sugar_app.command()
     def create(
@@ -521,6 +617,49 @@ def create_main_group(sugar_app: typer.Typer):
         opts_args: list[Any] = opt_state['options']
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
+
+    @sugar_app.command()
+    def ls(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """
+        List running compose projects.
+
+        Note: This is an experimental feature.
+        """
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'ls'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
 
     @sugar_app.command()
     def pause(
@@ -902,6 +1041,49 @@ def create_main_group(sugar_app: typer.Typer):
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
     @sugar_app.command()
+    def scale(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """
+        Scale services.
+
+        Note: This is an experimental feature.
+        """
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'scale'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
+
+    @sugar_app.command()
     def start(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1184,6 +1366,115 @@ def create_main_group(sugar_app: typer.Typer):
         opts_args: list[Any] = opt_state['options']
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
+
+    @sugar_app.command()
+    def wait(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        services: str = Option(
+            None,
+            help="Set the services for the container call.\
+                Use comma to separate the services's name",
+        ),
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        all: bool = Option(
+            False,
+            help='Use all services for the command.',
+            is_flag=True,
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """
+        Block until the first service container stops.
+
+        Note: This is an experimental feature.
+        """
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'wait'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
+
+    @sugar_app.command()
+    def watch(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        services: str = Option(
+            None,
+            help="Set the services for the container call.\
+                Use comma to separate the services's name",
+        ),
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        all: bool = Option(
+            False,
+            help='Use all services for the command.',
+            is_flag=True,
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """
+        Watch build context.
+
+        Watch build context for service and rebuild/refresh containers when
+        files are updated.
+
+        Note: This is an experimental feature.
+        """
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'watch'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
 
 
 def create_ext_group(sugar_app: typer.Typer):
@@ -1473,14 +1764,14 @@ def create_app():
     sugar_app = typer.Typer(
         name='sugar',
         help=(
-            'sugar (or sugar) is a tool that help you to organize'
+            'Sugar is a tool that help you to organize'
             "and simplify your containers' stack."
         ),
         epilog=(
             'If you have any problem, open an issue at: '
             'https://github.com/osl-incubator/sugar'
         ),
-        short_help="sugar (or sugar) is a tool that help you \
+        short_help="Sugar is a tool that help you \
           to organize containers' stack",
     )
 
