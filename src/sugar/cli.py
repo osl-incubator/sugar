@@ -90,6 +90,50 @@ def create_main_group(sugar_app: typer.Typer):
     # -- Main commands --
 
     @sugar_app.command()
+    def attach(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        service: str = Option(
+            None, help='Set the service for the container call.'
+        ),
+        options: str = Option(
+            None,
+            help=(
+                'Specify the options for docker-compose command. '
+                'E.g.: --options -d'
+            ),
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """Build or rebuild services."""
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'attach'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
+
+    @sugar_app.command()
     def build(
         ctx: typer.Context,
         service_group: str = Option(
@@ -189,6 +233,47 @@ def create_main_group(sugar_app: typer.Typer):
         opts_args: list[Any] = opt_state['options']
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
+
+    @sugar_app.command()
+    def cp(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        options: str = Option(
+            None,
+            help=(
+                'Specify the options for docker-compose command. '
+                'E.g.: --options -d'
+            ),
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """Build or rebuild services."""
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'cp'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
 
     @sugar_app.command()
     def create(
@@ -521,6 +606,45 @@ def create_main_group(sugar_app: typer.Typer):
         opts_args: list[Any] = opt_state['options']
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
+
+    @sugar_app.command()
+    def ls(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """View output from containers."""
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'ls'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
 
     @sugar_app.command()
     def pause(
@@ -902,6 +1026,45 @@ def create_main_group(sugar_app: typer.Typer):
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
     @sugar_app.command()
+    def scale(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """View output from containers."""
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'scale'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
+
+    @sugar_app.command()
     def start(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1184,6 +1347,104 @@ def create_main_group(sugar_app: typer.Typer):
         opts_args: list[Any] = opt_state['options']
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
+
+    @sugar_app.command()
+    def wait(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        services: str = Option(
+            None,
+            help="Set the services for the container call.\
+                Use comma to separate the services's name",
+        ),
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        all: bool = Option(
+            False,
+            help='Use all services for the command.',
+            is_flag=True,
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """Stop services."""
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'wait'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
+
+    @sugar_app.command()
+    def watch(
+        ctx: typer.Context,
+        service_group: str = Option(
+            None,
+            '--service-group',
+            '--group',
+            help='Specify the group name of the services you want to use',
+        ),
+        services: str = Option(
+            None,
+            help="Set the services for the container call.\
+                Use comma to separate the services's name",
+        ),
+        options: str = Option(
+            None,
+            help='Specify the options for docker-compose command.\
+                E.g.: --options -d',
+        ),
+        all: bool = Option(
+            False,
+            help='Use all services for the command.',
+            is_flag=True,
+        ),
+        config_file: str = Option(
+            str(Path(os.getcwd()) / '.sugar.yaml'),
+            help='Specify a custom location for the config file.',
+            is_flag=True,
+        ),
+        verbose: bool = Option(
+            False,
+            '--verbose',
+            is_flag=True,
+            is_eager=True,
+            help='Show the command executed.',
+        ),
+    ):
+        """Stop services."""
+        args = ctx.params
+        args['plugin'] = 'main'
+        args['action'] = 'watch'
+
+        if verbose or flags_state['verbose']:
+            args['verbose'] = True
+
+        opts_args: list[Any] = opt_state['options']
+
+        Sugar(args, options_args=opts_args).run()
 
 
 def create_ext_group(sugar_app: typer.Typer):

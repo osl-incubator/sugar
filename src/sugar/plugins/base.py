@@ -369,8 +369,12 @@ class SugarDockerCompose(SugarBase):
 
     This are the commands that is currently provided:
 
+        attach [options] SERVICE
         build [options] [SERVICE...]
         config [options] [SERVICE...]
+        cp:
+          - cp [options] SERVICE:SRC_PATH DEST_PATH|-
+          - cp [options] SRC_PATH|- SERVICE:DEST_PATH
         create [options] [SERVICE...]
         down [options] [--rmi type] [--volumes] [--remove-orphans]
         events [options] [SERVICE...]
@@ -378,6 +382,7 @@ class SugarDockerCompose(SugarBase):
         images [options] [SERVICE...]
         kill [options] [SERVICE...]
         logs [options] [SERVICE...]
+        ls [options]
         pause [options] SERVICE...
         port [options] SERVICE PRIVATE_PORT
         ps [options] [SERVICE...]
@@ -387,18 +392,25 @@ class SugarDockerCompose(SugarBase):
         rm [options] [-f | -s] [SERVICE...]
         run [options] [-p TARGET...] [-v VOLUME...] [-e KEY=VAL...]
             [-l KEY=VAL...] SERVICE [COMMAND] [ARGS...]
+        scale [SERVICE=REPLICAS...]
         start [options] [SERVICE...]
+        # todo: implement stats
+        # stats [options] [SERVICE]
         stop [options] [SERVICE...]
         top [options] [SERVICE...]
         unpause [options] [SERVICE...]
         up [options] [--scale SERVICE=NUM...] [--no-color]
             [--quiet-pull] [SERVICE...]
         version [options]
+        wait SERVICE [SERVICE...] [options]
+        watch [SERVICE...]
     """
 
     actions: list[str] = [
+        'attach',
         'build',
         'config',
+        'cp',
         'create',
         'down',
         'events',
@@ -414,12 +426,16 @@ class SugarDockerCompose(SugarBase):
         'restart',
         'rm',
         'run',
+        'scale',
         'start',
+        'stats',
         'stop',
         'top',
         'unpause',
         'up',
         'version',
+        'wait',
+        'watch',
     ]
 
     def __init__(self, *args, **kwargs):
@@ -427,11 +443,17 @@ class SugarDockerCompose(SugarBase):
         super().__init__(*args, **kwargs)
 
     # container commands
+    def _attach(self):
+        self._call_compose_app('attach', services=[self.args.get('service')])
+
     def _build(self):
         self._call_compose_app('build', services=self.service_names)
 
     def _config(self):
         self._call_compose_app('config', services=self.service_names)
+
+    def _cp(self):
+        self._call_compose_app('cp', services=[])
 
     def _create(self):
         self._call_compose_app('create', services=self.service_names)
@@ -477,6 +499,9 @@ class SugarDockerCompose(SugarBase):
     def _logs(self):
         self._call_compose_app('logs', services=self.service_names)
 
+    def _ls(self):
+        self._call_compose_app('ls', services=[])
+
     def _pause(self):
         self._call_compose_app('pause', services=self.service_names)
 
@@ -514,6 +539,9 @@ class SugarDockerCompose(SugarBase):
 
         self._call_compose_app('run', services=[self.args.get('service')])
 
+    def _scale(self):
+        self._call_compose_app('ls', services=[])
+
     def _start(self):
         self._call_compose_app('start', services=self.service_names)
 
@@ -531,3 +559,9 @@ class SugarDockerCompose(SugarBase):
 
     def _version(self):
         self._call_compose_app('version', services=[])
+
+    def _wait(self):
+        self._call_compose_app('wait', services=self.service_names)
+
+    def _watch(self):
+        self._call_compose_app('watch', services=self.service_names)
