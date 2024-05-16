@@ -417,6 +417,7 @@ class SugarDockerCompose(SugarBase):
         'exec',
         'images',
         'kill',
+        'ls',
         'logs',
         'pause',
         'port',
