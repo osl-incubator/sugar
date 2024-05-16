@@ -65,7 +65,6 @@ groups:
           - task: docker.killall
         run: |
           sugar build --verbose
-          sugar ls
           sugar build --verbose --group group1 --all
           sugar build --verbose --group group1
           sugar build --verbose --group group1 --services service1-1

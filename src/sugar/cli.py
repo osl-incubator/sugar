@@ -121,7 +121,14 @@ def create_main_group(sugar_app: typer.Typer):
             help='Show the command executed.',
         ),
     ):
-        """Build or rebuild services."""
+        """
+        Attach to a service's running container.
+
+        Attach local standard input, output, and error streams to a service's
+        running container.
+
+        Note: This is an experimental feature.
+        """
         args = ctx.params
         args['plugin'] = 'main'
         args['action'] = 'attach'
@@ -263,7 +270,11 @@ def create_main_group(sugar_app: typer.Typer):
             help='Show the command executed.',
         ),
     ):
-        """Build or rebuild services."""
+        """
+        Copy files/folders between a services and local filesystem.
+
+        Note: This is an experimental feature.
+        """
         args = ctx.params
         args['plugin'] = 'main'
         args['action'] = 'cp'
@@ -634,7 +645,11 @@ def create_main_group(sugar_app: typer.Typer):
             help='Show the command executed.',
         ),
     ):
-        """View output from containers."""
+        """
+        List running compose projects.
+
+        Note: This is an experimental feature.
+        """
         args = ctx.params
         args['plugin'] = 'main'
         args['action'] = 'ls'
@@ -1052,7 +1067,11 @@ def create_main_group(sugar_app: typer.Typer):
             help='Show the command executed.',
         ),
     ):
-        """View output from containers."""
+        """
+        Scale services.
+
+        Note: This is an experimental feature.
+        """
         args = ctx.params
         args['plugin'] = 'main'
         args['action'] = 'scale'
@@ -1385,7 +1404,11 @@ def create_main_group(sugar_app: typer.Typer):
             help='Show the command executed.',
         ),
     ):
-        """Stop services."""
+        """
+        Block until the first service container stops.
+
+        Note: This is an experimental feature.
+        """
         args = ctx.params
         args['plugin'] = 'main'
         args['action'] = 'wait'
@@ -1434,7 +1457,14 @@ def create_main_group(sugar_app: typer.Typer):
             help='Show the command executed.',
         ),
     ):
-        """Stop services."""
+        """
+        Watch build context.
+
+        Watch build context for service and rebuild/refresh containers when
+        files are updated.
+
+        Note: This is an experimental feature.
+        """
         args = ctx.params
         args['plugin'] = 'main'
         args['action'] = 'watch'
