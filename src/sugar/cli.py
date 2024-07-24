@@ -1484,7 +1484,7 @@ def create_ext_group(sugar_app: typer.Typer):
     The function also associate the group to sugar app.
     """
     ext_group = typer.Typer(
-        help='(PLUGIN) Use the `ext` plugin.',
+        help='Use the `ext` plugin.',
         invoke_without_command=True,
     )
 
@@ -1706,13 +1706,13 @@ def create_ext_group(sugar_app: typer.Typer):
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    sugar_app.add_typer(ext_group, name='ext')
+    sugar_app.add_typer(ext_group, name='ext', rich_help_panel='Plugins')
 
 
 def create_stats_group(sugar_app: typer.Typer):
     """Instantiate the stats command group."""
     stats_group = typer.Typer(
-        help='(PLUGIN) Use the `stats` plugin.',
+        help='Use the `stats` plugin.',
         invoke_without_command=True,
     )
 
@@ -1752,7 +1752,7 @@ def create_stats_group(sugar_app: typer.Typer):
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    sugar_app.add_typer(stats_group, name='stats')
+    sugar_app.add_typer(stats_group, name='stats', rich_help_panel='Plugins')
 
 
 def create_app():
