@@ -1706,7 +1706,7 @@ def create_ext_group(sugar_app: typer.Typer):
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    sugar_app.add_typer(ext_group, name='ext', rich_help_panel='plugin')
+    sugar_app.add_typer(ext_group, name='ext', rich_help_panel='Plugins')
 
 
 def create_stats_group(sugar_app: typer.Typer):
@@ -1752,7 +1752,7 @@ def create_stats_group(sugar_app: typer.Typer):
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    sugar_app.add_typer(stats_group, name='stats', rich_help_panel='plugin')
+    sugar_app.add_typer(stats_group, name='stats', rich_help_panel='Plugins')
 
 
 def create_app():
