@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.14.0](https://github.com/osl-incubator/sugar/compare/1.13.0...1.14.0) (2024-07-24)
+
+
+### Features
+
+* **help:** Create a group for plugins in the help menu ([#123](https://github.com/osl-incubator/sugar/issues/123)) ([b8980cc](https://github.com/osl-incubator/sugar/commit/b8980cc190a0fc53de449593e35c1d121df5e1b3))
+
 # [1.13.0](https://github.com/osl-incubator/sugar/compare/1.12.0...1.13.0) (2024-05-16)
 
 
