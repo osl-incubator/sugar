@@ -14,19 +14,15 @@ import dotenv
 import sh
 import yaml  # type: ignore
 
-from jinja2 import Template
+from jinja2 import Environment
 
 from sugar.logs import KxgrErrorType, KxgrLogs
 
-
-def escape_template_tag(v: str) -> str:
-    """Escape template tags for template rendering."""
-    return v.replace('{{', r'\{\{').replace('}}', r'\}\}')
-
-
-def unescape_template_tag(v: str) -> str:
-    """Unescape template tags for template rendering."""
-    return v.replace(r'\{\{', '{{').replace(r'\}\}', '}}')
+TEMPLATE = Environment(
+    autoescape=False,
+    variable_start_string='${{',
+    variable_end_string='}}',
+)
 
 
 class SugarBase:
@@ -212,7 +208,7 @@ class SugarBase:
     def _load_config(self):
         with open(self.config_file, 'r') as f:
             # escape template tags
-            content = escape_template_tag(f.read())
+            content = f.read()
             f_content = io.StringIO(content)
             self.config = yaml.safe_load(f_content)
 
@@ -277,12 +273,10 @@ class SugarBase:
         _defaults = self.config.get('defaults', {})
 
         for k, v in _defaults.items():
-            unescaped_value = (
-                unescape_template_tag(v) if isinstance(v, str) else str(v)
-            )
+            unescaped_value = v if isinstance(v, str) else str(v)
 
             _defaults[k] = yaml.safe_load(
-                Template(unescaped_value).render(env=self.env)
+                TEMPLATE.from_string(unescaped_value).render(env=self.env)
             )
 
         self.defaults = _defaults
