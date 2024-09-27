@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.14.1](https://github.com/osl-incubator/sugar/compare/1.14.0...1.14.1) (2024-09-27)
+
+
+### Bug Fixes
+
+* fix the jinja2 template in the config file ([#125](https://github.com/osl-incubator/sugar/issues/125)) ([142b2b7](https://github.com/osl-incubator/sugar/commit/142b2b77662360fc4964a1c7e7f1c8eec7cbbb61))
+
 # [1.14.0](https://github.com/osl-incubator/sugar/compare/1.13.0...1.14.0) (2024-07-24)
 
 

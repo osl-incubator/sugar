@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#get-started" class="md-skip">
+        <a href="#macro-rendering-error" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Get Started
+              Macro Rendering Error
             
           </span>
         </div>
@@ -239,72 +239,15 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Get Started
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Get Started
+    Macro Rendering Error
   </span>
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-install" class="md-nav__link">
-    <span class="md-ellipsis">
-      How to Install
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-use-it" class="md-nav__link">
-    <span class="md-ellipsis">
-      How to use it
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -390,41 +333,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-install" class="md-nav__link">
-    <span class="md-ellipsis">
-      How to Install
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-use-it" class="md-nav__link">
-    <span class="md-ellipsis">
-      How to use it
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -441,125 +349,20 @@
   
 
 
-<h1 id="get-started">Get Started</h1>
-<p>Simplify the usage of containers.</p>
-<p>You may be thinking, why do I need a new library that wrap-up
-docker-compose or podman-compose if they are already really simple to use?</p>
-<p>Yes, they are simple to use, but if you have some other parameters to
-the compose command line, it could be very tedious to write them every time
-such as <code>--env-file</code>, <code>--project-name</code>, <code>--file</code>, etc.</p>
-<p>So, in this case we could use something like a script or <code>make</code>, right?</p>
-<p>Yes, and just for one project it would be good enough. But, if you maintain
-or collaborate a bunch of projects, it would be like a boiler plate.</p>
-<p>Additionally, if you are maintaining some extra scripts in order to improve
-your containers stack, these scripts would be like a boilerplate as well.</p>
-<p>So, the idea of this project is to organize your stack of containers,
-gathering some useful scripts and keeping this information centralized in a
-configuration file. So the command line would be very simple.</p>
-<ul>
-<li>License: BSD 3 Clause</li>
-<li>Documentation: <a href="https://osl-incubator.github.io/sugar">https://osl-incubator.github.io/sugar</a></li>
-</ul>
-<h2 id="how-to-install">How to Install</h2>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>containers-sugar
+<h1 id="macro-rendering-error"><em>Macro Rendering Error</em></h1>
+<p><strong>UndefinedError</strong>: 'env' is undefined</p>
+<div class="highlight"><pre><span></span><code>Traceback (most recent call last):
+  File &quot;/home/runner/miniconda3/envs/sugar/lib/python3.10/site-packages/mkdocs_macros/plugin.py&quot;, line 480, in render
+    return md_template.render(**page_variables)
+  File &quot;/home/runner/miniconda3/envs/sugar/lib/python3.10/site-packages/jinja2/environment.py&quot;, line 1304, in render
+    self.environment.handle_exception()
+  File &quot;/home/runner/miniconda3/envs/sugar/lib/python3.10/site-packages/jinja2/environment.py&quot;, line 939, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File &quot;&lt;template&gt;&quot;, line 126, in top-level template code
+  File &quot;/home/runner/miniconda3/envs/sugar/lib/python3.10/site-packages/jinja2/environment.py&quot;, line 487, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: &#39;env&#39; is undefined
 </code></pre></div>
-<h2 id="features">Features</h2>
-<p>The commands from docker-compose available are:</p>
-<ul>
-<li>build</li>
-<li>config</li>
-<li>create</li>
-<li>down</li>
-<li>events</li>
-<li>exec</li>
-<li>images</li>
-<li>kill</li>
-<li>logs</li>
-<li>pause</li>
-<li>port</li>
-<li>ps</li>
-<li>pull</li>
-<li>push</li>
-<li>restart</li>
-<li>rm</li>
-<li>run</li>
-<li>start</li>
-<li>stop</li>
-<li>top</li>
-<li>unpause</li>
-<li>up</li>
-<li>version</li>
-</ul>
-<p>These commands are available in the main profile/plugin, so
-you don't need to specify any extra parameter to access them.</p>
-<p>For extra commands, we are gathering them into a profile/plugin called
-<code>ext</code>, so you can access them using something like: <code>sugar ext restart</code>.</p>
-<p>The current available <strong>ext</strong> commands are:</p>
-<ul>
-<li>start -&gt; alias for <code>up</code></li>
-<li>restart -&gt; runs <code>stop</code> and <code>up</code></li>
-</ul>
-<h2 id="how-to-use-it">How to use it</h2>
-<p>First you need to place the config file <code>.sugar.yaml</code> in the root
-of your project. This is an example of a configuration file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
-<span class="nt">compose-app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose</span>
-<span class="nt">default</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">env.ENV</span><span class="w"> </span><span class="p p-Indicator">}}</span>
-<span class="nt">groups</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">group1</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">project-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project1</span>
-<span class="w">    </span><span class="nt">compose-path</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">containers/tests/group1/compose.yaml</span>
-<span class="w">    </span><span class="nt">env-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
-<span class="w">    </span><span class="nt">services</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">default</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service3</span>
-<span class="w">      </span><span class="nt">available</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service2</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service3</span>
-<span class="w">  </span><span class="nt">group2</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">project-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">    </span><span class="nt">compose-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">containers/tests/group2/compose.yaml</span>
-<span class="w">    </span><span class="nt">env-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
-<span class="w">    </span><span class="nt">services</span><span class="p">:</span>
-<span class="w">      </span><span class="c1"># default: null</span>
-<span class="w">      </span><span class="nt">available</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service1</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service2</span>
-</code></pre></div>
-<p>Some examples of how to use it:</p>
-<ul>
-<li>
-<p>build the defaults services (service1,service3) for group1:
-  <code>sugar build --group group1</code></p>
-</li>
-<li>
-<p>build the all services (there is no default service defined) for group2:
-  <code>sugar build --group group2</code></p>
-</li>
-<li>
-<p>build all services (ignore default) for group1:
-  <code>sugar build --group group1 --all</code></p>
-</li>
-<li>
-<p>start the default services for group1:
-  <code>sugar ext start --group group1</code></p>
-</li>
-<li>
-<p>restart all services (ignore defaults) for group1:
-  <code>sugar ext restart --group group1 --all</code></p>
-</li>
-<li>
-<p>restart service1 and service2 for group1:
-  <code>sugar ext restart --group group1 --services service1,service2</code></p>
-</li>
-</ul>
-<p><strong>NOTE</strong>: If you use: <code>default: group: {{ env.ENV }}</code>, you don't need to
-give <code>--group &lt;GROUP_NAME&gt;</code>, except if you want a different group than the
-default one.</p>
 
 
 
