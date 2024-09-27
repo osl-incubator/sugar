@@ -50,7 +50,7 @@ jobs:
       cancel-in-progress: true
 
     env:
-      KXGR_PROJECT_NAME: ${{ github.run_id }}-${{ github.sha }}
+      SUGAR_PROJECT_NAME: ${{ github.run_id }}-${{ github.sha }}
 
     steps:
     - uses: actions/checkout@v4

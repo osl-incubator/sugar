@@ -151,12 +151,12 @@ groups:
         dependencies:
           - task: docker.killall
         run: |
-          export KXGR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
-          echo $KXGR_PROJECT_NAME
+          export SUGAR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
+          echo $SUGAR_PROJECT_NAME
           sugar build --verbose --group group-defaults
           sugar ext start --verbose --group group-defaults --options -d
           sugar ext restart --verbose --group group-defaults --options -d
-          docker ps|grep $KXGR_PROJECT_NAME
+          docker ps|grep $SUGAR_PROJECT_NAME
           sugar ext stop --verbose --group group-defaults
 
       smoke-final:

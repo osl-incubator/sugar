@@ -1,7 +1,7 @@
 version: 1.0
 compose-app: docker-compose
 defaults:
-  project-name: sugar-{{ env.KXGR_PROJECT_NAME }}
+  project-name: sugar-{{ env.SUGAR_PROJECT_NAME }}
 services:
   project-name: project1  # optional
   compose-path: tests/containers/group1/compose.yaml
