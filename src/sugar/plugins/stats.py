@@ -5,8 +5,9 @@ from __future__ import annotations
 import datetime
 import io
 
+from dataclasses import dataclass, field
 from itertools import tee
-from typing import Iterable
+from typing import Any, Iterable
 
 import plotille
 
@@ -18,11 +19,20 @@ from textual.widgets import Header
 
 from sugar.console import get_terminal_size
 from sugar.inspect import get_container_name, get_container_stats
-from sugar.logs import KxgrErrorType, KxgrLogs
+from sugar.logs import SugarErrorType, SugarLogs
 from sugar.plugins.base import SugarDockerCompose
 
 CHART_WINDOW_DURATION = 60
 CHART_TIME_INTERVAL = 1
+
+
+@dataclass
+class StatsData:
+    """Record stats from containers."""
+
+    times: list[datetime.datetime] = field(default_factory=list)
+    mem_usages: list[float] = field(default_factory=list)
+    cpu_usages: list[float] = field(default_factory=list)
 
 
 class StatsPlot:
@@ -53,20 +63,20 @@ class StatsPlot:
         self.create_chart()
         self.reset_data()
 
-    def create_chart(self):
+    def create_chart(self) -> None:
         """Create a new chart."""
         self.fig_mem = plotille.Figure()
         self.fig_cpu = plotille.Figure()
 
         self.resize_chart()
 
-        self.chart_colors: tuple[Iterable, Iterable] = {
+        self.chart_colors: dict[str, tuple[Iterable[Any], ...]] = {
             'mem': tee(self.fig_mem._color_seq),
             'cpu': tee(self.fig_cpu._color_seq),
         }
 
-        self.stats: dict[str, dict[str, list[str]]] = {
-            name: {'times': [], 'mem_usages': [], 'cpu_usages': []}
+        self.stats: dict[str, StatsData] = {
+            name: StatsData(times=[], mem_usages=[], cpu_usages=[])
             for name in self.container_names
         }
 
@@ -74,17 +84,17 @@ class StatsPlot:
             container_stats = self.stats[name]
             # Add data to plots
             self.fig_mem.plot(
-                container_stats['times'],
-                container_stats['mem_usages'],
+                container_stats.times,
+                container_stats.mem_usages,
                 label=name,
             )
             self.fig_cpu.plot(
-                container_stats['times'],
-                container_stats['cpu_usages'],
+                container_stats.times,
+                container_stats.cpu_usages,
                 label=name,
             )
 
-    def resize_chart(self):
+    def resize_chart(self) -> None:
         """Resize chart."""
         console_width, console_height = get_terminal_size()
 
@@ -96,7 +106,7 @@ class StatsPlot:
         self.fig_cpu.width = chart_width
         self.fig_cpu.height = chart_height
 
-    def reset_chart(self):
+    def reset_chart(self) -> None:
         """Reset chart state."""
         self.fig_mem._plots.clear()
         self.fig_cpu._plots.clear()
@@ -106,20 +116,20 @@ class StatsPlot:
 
         self.resize_chart()
 
-    def reset_data(self):
+    def reset_data(self) -> None:
         """Generate a clean data."""
         current_time = datetime.datetime.now()
 
         for name in self.container_names:
             container_stats = self.stats[name]
 
-            container_stats['mem_usages'].clear()
-            container_stats['cpu_usages'].clear()
-            container_stats['times'].clear()
+            container_stats.mem_usages.clear()
+            container_stats.cpu_usages.clear()
+            container_stats.times.clear()
 
-            container_stats['mem_usages'].extend([0.0] * CHART_WINDOW_DURATION)
-            container_stats['cpu_usages'].extend([0.0] * CHART_WINDOW_DURATION)
-            container_stats['times'].extend(
+            container_stats.mem_usages.extend([0.0] * CHART_WINDOW_DURATION)
+            container_stats.cpu_usages.extend([0.0] * CHART_WINDOW_DURATION)
+            container_stats.times.extend(
                 [
                     current_time
                     - datetime.timedelta(seconds=i * CHART_TIME_INTERVAL)
@@ -129,17 +139,17 @@ class StatsPlot:
 
             # Add data to plots
             self.fig_mem.plot(
-                container_stats['times'],
-                container_stats['mem_usages'],
+                container_stats.times,
+                container_stats.mem_usages,
                 label=name,
             )
             self.fig_cpu.plot(
-                container_stats['times'],
-                container_stats['cpu_usages'],
+                container_stats.times,
+                container_stats.cpu_usages,
                 label=name,
             )
 
-    def plot_stats(self):
+    def plot_stats(self) -> None:
         """
         Plot containers statistic.
 
@@ -153,17 +163,17 @@ class StatsPlot:
 
             # Update and maintain window for stats
             container_stats = self.stats[name]
-            container_stats['times'].append(current_time)
-            container_stats['mem_usages'].append(round(mem_usage, 2))
-            container_stats['cpu_usages'].append(round(cpu_usage, 2))
+            container_stats.times.append(current_time)
+            container_stats.mem_usages.append(round(mem_usage, 2))
+            container_stats.cpu_usages.append(round(cpu_usage, 2))
 
-            container_stats['times'] = container_stats['times'][
+            container_stats.times = container_stats.times[
                 -self.window_duration :
             ]
-            container_stats['mem_usages'] = container_stats['mem_usages'][
+            container_stats.mem_usages = container_stats.mem_usages[
                 -self.window_duration :
             ]
-            container_stats['cpu_usages'] = container_stats['cpu_usages'][
+            container_stats.cpu_usages = container_stats.cpu_usages[
                 -self.window_duration :
             ]
 
@@ -173,18 +183,18 @@ class StatsPlot:
             container_stats = self.stats[name]
             # Add data to plots
             self.fig_mem.plot(
-                container_stats['times'],
-                container_stats['mem_usages'],
+                container_stats.times,
+                container_stats.mem_usages,
                 label=name,
             )
             self.fig_cpu.plot(
-                container_stats['times'],
-                container_stats['cpu_usages'],
+                container_stats.times,
+                container_stats.cpu_usages,
                 label=name,
             )
 
 
-class StatsPlotWidget(Widget):
+class StatsPlotWidget(Widget):  # type: ignore
     """Plot Docker Stats Widget."""
 
     content: Reactive[str] = Reactive('')
@@ -196,7 +206,9 @@ class StatsPlotWidget(Widget):
         }
     """
 
-    def __init__(self, container_names: list[str], *args, **kwargs) -> None:
+    def __init__(
+        self, container_names: list[str], *args: str, **kwargs: Any
+    ) -> None:
         """Initialize StatsPlotWidget."""
         self.container_names = container_names
         super().__init__(*args, **kwargs)
@@ -229,13 +241,15 @@ class StatsPlotWidget(Widget):
         return Text.from_ansi(self.content)
 
 
-class StatsPlotApp(App[str]):
+class StatsPlotApp(App[str]):  # type: ignore
     """StatsPlotApp app class."""
 
     TITLE = 'Sugar Containers Stats'
     container_names: list[str]
 
-    def __init__(self, container_names: list[str], *args, **kwargs) -> None:
+    def __init__(
+        self, container_names: list[str], *args: str, **kwargs: Any
+    ) -> None:
         """Initialize StatsPlotApp."""
         self.container_names = container_names
         super().__init__(*args, **kwargs)
@@ -249,15 +263,15 @@ class StatsPlotApp(App[str]):
 class SugarStats(SugarDockerCompose):
     """SugarStats provides special commands not available on docker-compose."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, args: dict[str, str], **kwargs: Any) -> None:
         """Initialize the SugarExt class."""
         self.actions += [
             'plot',
         ]
 
-        super().__init__(*args, **kwargs)
+        super().__init__(args, **kwargs)
 
-    def _plot(self):
+    def _plot(self) -> None:
         """Call the plot command."""
         _out = io.StringIO()
         _err = io.StringIO()
@@ -274,9 +288,9 @@ class SugarStats(SugarDockerCompose):
 
         if not raw_out:
             service_names = ', '.join(self.service_names)
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 f'No container found for the services: {service_names}',
-                KxgrErrorType.KXGR_NO_SERVICES_RUNNING,
+                SugarErrorType.SUGAR_NO_SERVICES_RUNNING,
             )
 
         containers_ids = [cids for cids in raw_out.split('\n') if cids]

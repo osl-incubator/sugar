@@ -1,9 +1,11 @@
 """Functions about console."""
 
+from __future__ import annotations
+
 import os
 
 
-def get_terminal_size():
+def get_terminal_size() -> tuple[int, int]:
     """Return the height (number of lines) of the terminal using os module."""
     size = os.get_terminal_size()
     try:
