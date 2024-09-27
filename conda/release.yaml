@@ -5,7 +5,7 @@ channels:
 dependencies:
   - python
   - poetry >=1.5
-  - nodejs >=18.17  # used by semantic-release
+  - nodejs >=18.17 # used by semantic-release
   - pip:
-    # fix the distlib issue
-    - paginate >=0.5
+      # fix the distlib issue
+      - paginate >=0.5

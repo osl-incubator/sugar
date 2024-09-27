@@ -6,7 +6,7 @@ defaults:
   project-name: sugar-${{ env.SUGAR_PROJECT_NAME }}
 groups:
   group1:
-    project-name: project1  # optional
+    project-name: project1 # optional
     compose-path: tests/containers/group1/compose.yaml
     env-file: .env
     services:
@@ -17,7 +17,7 @@ groups:
         - name: service1-3
 
   group2:
-    project-name: null  # optional
+    project-name: null # optional
     compose-path: tests/containers/group2/compose.yaml
     env-file: .env
     services:
@@ -27,7 +27,7 @@ groups:
         - name: service2-2
 
   group-mix:
-    project-name: null  # optional
+    project-name: null # optional
     compose-path:
       - tests/containers/group1/compose.yaml
       - tests/containers/group2/compose.yaml

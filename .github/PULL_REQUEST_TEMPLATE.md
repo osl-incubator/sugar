@@ -1,4 +1,5 @@
 ## Pull Request description
+
 <!-- Describe the purpose of your PR and the changes you have made. -->
 
 <!-- Which issue this PR aims to resolve or fix? E.g.:
@@ -16,17 +17,20 @@ Note: for more information check: https://docs.github.com/en/issues/tracking-you
 * ...
 -->
 
-* ```...```
+- `...`
 
 <!-- Modify the options to suit your project. -->
+
 ## Pull Request checklists
 
 This PR is a:
+
 - [ ] bug-fix
 - [ ] new feature
 - [ ] maintenance
 
 About this PR:
+
 - [ ] it includes tests.
 - [ ] the tests are executed on CI.
 - [ ] the tests generate log file(s) (path).
@@ -34,8 +38,10 @@ About this PR:
 - [ ] this PR requires a project documentation update.
 
 Author's checklist:
+
 - [ ] I have reviewed the changes and it contains no misspelling.
-- [ ] The code is well commented, especially in the parts that contain more complexity.
+- [ ] The code is well commented, especially in the parts that contain more
+      complexity.
 - [ ] New and old tests passed locally.
 
 ## Additional information

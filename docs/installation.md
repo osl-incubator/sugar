@@ -14,13 +14,13 @@ Sugar is also available on conda-forge
 $ conda install -c conda-forge containers-sugar
 ```
 
-This is the preferred method to install sugar,
-as it will always install the most recent stable release.
+This is the preferred method to install sugar, as it will always install the
+most recent stable release.
 
 ## From sources
 
-The sources for sugar can be downloaded from
-the [Github repo](https://github.com/osl-incubator/sugar.git).
+The sources for sugar can be downloaded from the
+[Github repo](https://github.com/osl-incubator/sugar.git).
 
 You can either clone the public repository:
 
