@@ -16,6 +16,7 @@ import yaml  # type: ignore
 
 from jinja2 import Environment
 
+from sugar import __version__
 from sugar.logs import KxgrErrorType, KxgrLogs
 
 TEMPLATE = Environment(
@@ -356,6 +357,11 @@ class SugarBase:
             )
         return getattr(self, f'_{action.replace("-", "_")}')()
 
+    def _version(self):
+        KxgrLogs.print_info(f'Sugar Version: {__version__}')
+        KxgrLogs.print_info(f'Container Program Path: {self.compose_app}')
+        self._call_compose_app('version', services=[])
+
 
 class SugarDockerCompose(SugarBase):
     """
@@ -551,9 +557,6 @@ class SugarDockerCompose(SugarBase):
 
     def _up(self):
         self._call_compose_app('up', services=self.service_names)
-
-    def _version(self):
-        self._call_compose_app('version', services=[])
 
     def _wait(self):
         self._call_compose_app('wait', services=self.service_names)

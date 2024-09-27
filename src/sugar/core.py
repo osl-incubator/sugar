@@ -6,7 +6,6 @@ import os
 
 from typing import Dict, Optional, Type, cast
 
-from sugar import __version__
 from sugar.logs import KxgrErrorType, KxgrLogs
 from sugar.plugins.base import SugarBase, SugarDockerCompose
 from sugar.plugins.ext import SugarExt
@@ -93,10 +92,3 @@ class Sugar(SugarBase):
             return
 
         return self.plugin.run()
-
-    # actions available
-
-    def _version(self):
-        KxgrLogs.print_info('sugar version:' + str(__version__))
-        KxgrLogs.print_info('container program path: ' + str(self.compose_app))
-        self._call_compose_app('--version')
