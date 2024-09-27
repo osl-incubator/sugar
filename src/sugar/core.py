@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import os
 
-from typing import Dict, Optional, Type, cast
+from typing import Optional, Type, cast
 
-from sugar import __version__
-from sugar.logs import KxgrErrorType, KxgrLogs
+from sugar.logs import SugarErrorType, SugarLogs
 from sugar.plugins.base import SugarBase, SugarDockerCompose
 from sugar.plugins.ext import SugarExt
 
@@ -21,7 +20,7 @@ except ImportError:
 class Sugar(SugarBase):
     """Sugar main class."""
 
-    plugins_definition: Dict[str, Type[SugarBase]] = {
+    plugins_definition: dict[str, Type[SugarBase]] = {
         'main': SugarDockerCompose,
         'ext': SugarExt,
         **{'stats': SugarStats for i in range(1) if SugarStats is not None},
@@ -30,9 +29,9 @@ class Sugar(SugarBase):
 
     def __init__(
         self,
-        args: dict,
-        options_args: list = [],
-        cmd_args: list = [],
+        args: dict[str, str],
+        options_args: list[str] = [],
+        cmd_args: list[str] = [],
     ):
         """Initialize the Sugar object according to the plugin used."""
         plugin_name = args.get('plugin', '')
@@ -61,18 +60,18 @@ class Sugar(SugarBase):
             cmd_args,
         )
 
-    def _verify_args(self):
+    def _verify_args(self) -> None:
         if self.args.get('plugin') not in self.plugins_definition:
             plugins_name = [k for k in self.plugins_definition.keys()]
 
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 f'`plugin` parameter `{ self.args.get("plugin") }` '
                 f'not found. Options: { plugins_name }.',
-                KxgrErrorType.KXGR_INVALID_PARAMETER,
+                SugarErrorType.SUGAR_INVALID_PARAMETER,
             )
             os._exit(1)
 
-    def get_actions(self) -> list:
+    def get_actions(self) -> list[str]:
         """Get a list of the available actions."""
         actions = []
 
@@ -81,22 +80,16 @@ class Sugar(SugarBase):
 
         return actions
 
-    def _load_compose_args(self):
+    def _load_compose_args(self) -> None:
         pass
 
-    def _load_service_names(self):
+    def _load_service_names(self) -> None:
         pass
 
-    def run(self):
+    def run(self) -> None:
         """Run sugar command."""
         if not self.args.get('action'):
             return
 
-        return self.plugin.run()
-
-    # actions available
-
-    def _version(self):
-        KxgrLogs.print_info('sugar version:' + str(__version__))
-        KxgrLogs.print_info('container program path: ' + str(self.compose_app))
-        self._call_compose_app('--version')
+        if self.plugin:
+            self.plugin.run()

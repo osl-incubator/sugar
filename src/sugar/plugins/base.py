@@ -14,56 +14,53 @@ import dotenv
 import sh
 import yaml  # type: ignore
 
-from jinja2 import Template
+from jinja2 import Environment
 
-from sugar.logs import KxgrErrorType, KxgrLogs
+from sugar import __version__
+from sugar.logs import SugarErrorType, SugarLogs
 
-
-def escape_template_tag(v: str) -> str:
-    """Escape template tags for template rendering."""
-    return v.replace('{{', r'\{\{').replace('}}', r'\}\}')
-
-
-def unescape_template_tag(v: str) -> str:
-    """Unescape template tags for template rendering."""
-    return v.replace(r'\{\{', '{{').replace(r'\}\}', '}}')
+TEMPLATE = Environment(
+    autoescape=False,
+    variable_start_string='${{',
+    variable_end_string='}}',
+)
 
 
 class SugarBase:
     """SugarBase defined the base structure for the Sugar classes."""
 
     actions: list[str] = []
-    args: dict = {}
+    args: dict[str, str] = {}
     config_file: str = ''
-    config: dict = {}
+    config: dict[str, Any] = {}
     # note: it starts with a simple command
     #       it is replaced later in the execution
     compose_app: sh.Command = sh.echo
-    compose_args: list = []
-    defaults: dict = {}
-    env: dict = {}
-    options_args: list = []
-    cmd_args: list = []
-    service_group: dict = {}
-    service_names: list = []
+    compose_args: list[str] = []
+    defaults: dict[str, Any] = {}
+    env: dict[str, str] = {}
+    options_args: list[str] = []
+    cmd_args: list[str] = []
+    service_group: dict[str, Any] = {}
+    service_names: list[str] = []
 
     def __init__(
         self,
-        args: dict,
-        options_args: list = [],
-        cmd_args: list = [],
-    ):
+        args: dict[str, str],
+        options_args: list[str] = [],
+        cmd_args: list[str] = [],
+    ) -> None:
         """Initialize SugarBase instance."""
         self.args = deepcopy(args)
         self.options_args = deepcopy(options_args)
         self.cmd_args = deepcopy(cmd_args)
         self.config_file = self.args.get('config_file', '')
-        self.config = dict()
-        self.compose_args = list()
-        self.defaults = dict()
-        self.env = dict()
-        self.service_group = dict()
-        self.service_names = list()
+        self.config: dict[str, Any] = {}
+        self.compose_args: list[str] = []
+        self.defaults: dict[str, Any] = {}
+        self.env: dict[str, str] = {}
+        self.service_group: dict[str, Any] = {}
+        self.service_names: list[str] = []
 
         self._load_config()
         self._load_env()
@@ -77,8 +74,8 @@ class SugarBase:
 
     def _call_compose_app_core(
         self,
-        *args,
-        services: list = [],
+        *args: str,
+        services: list[str] = [],
         options_args: list[str] = [],
         cmd_args: list[str] = [],
         _out: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stdout,
@@ -114,18 +111,18 @@ class SugarBase:
         try:
             p.wait()
         except sh.ErrorReturnCode as e:
-            KxgrLogs.raise_error(str(e), KxgrErrorType.SH_ERROR_RETURN_CODE)
+            SugarLogs.raise_error(str(e), SugarErrorType.SH_ERROR_RETURN_CODE)
         except KeyboardInterrupt:
             pid = p.pid
             p.kill()
-            KxgrLogs.raise_error(
-                f'Process {pid} killed.', KxgrErrorType.SH_KEYBOARD_INTERRUPT
+            SugarLogs.raise_error(
+                f'Process {pid} killed.', SugarErrorType.SH_KEYBOARD_INTERRUPT
             )
 
     def _call_compose_app(
         self,
-        *args,
-        services: list = [],
+        *args: str,
+        services: list[str] = [],
     ) -> None:
         self._call_compose_app_core(
             *args,
@@ -134,11 +131,11 @@ class SugarBase:
             _err=sys.stderr,
         )
 
-    def _check_config_file(self):
+    def _check_config_file(self) -> bool:
         return Path(self.config_file).exists()
 
     # Check if services item is given
-    def _check_services_item(self):
+    def _check_services_item(self) -> bool:
         return hasattr(self.config, 'services')
 
     # set default group main
@@ -165,16 +162,16 @@ class SugarBase:
         self.service_group = deepcopy(self.config['groups']['main'])
         del self.config['services']
 
-    def _filter_service_group(self):
+    def _filter_service_group(self) -> None:
         groups = self.config['groups']
 
         if not self.args.get('service_group'):
             default_group = self.defaults.get('group')
             if not default_group:
-                KxgrLogs.raise_error(
+                SugarLogs.raise_error(
                     'The service group parameter or default '
                     "group configuration weren't defined.",
-                    KxgrErrorType.KXGR_INVALID_PARAMETER,
+                    SugarErrorType.SUGAR_INVALID_PARAMETER,
                 )
             selected_group_name = default_group
         else:
@@ -203,38 +200,38 @@ class SugarBase:
                 self.service_group = group_data
                 return
 
-        KxgrLogs.raise_error(
+        SugarLogs.raise_error(
             f'The given group service "{group_name}" was not found '
             'in the configuration file.',
-            KxgrErrorType.KXGR_MISSING_PARAMETER,
+            SugarErrorType.SUGAR_MISSING_PARAMETER,
         )
 
-    def _load_config(self):
+    def _load_config(self) -> None:
         with open(self.config_file, 'r') as f:
             # escape template tags
-            content = escape_template_tag(f.read())
+            content = f.read()
             f_content = io.StringIO(content)
             self.config = yaml.safe_load(f_content)
 
         # check if either  services or  groups are present
         if not (self.config.get('services') or self.config.get('groups')):
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 'Either `services` OR  `groups` flag must be given',
-                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
+                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
         # check if both services and groups are present
         if self.config.get('services') and self.config.get('groups'):
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 '`services` and `groups` flags given, only 1 is allowed.',
-                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
+                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
 
-    def _load_compose_app(self):
+    def _load_compose_app(self) -> None:
         compose_cmd = self.config.get('compose-app', '')
         if compose_cmd.replace(' ', '-') != 'docker-compose':
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 f'"{self.config["compose-app"]}" not supported yet.',
-                KxgrErrorType.KXGR_COMPOSE_APP_NOT_SUPPORTED,
+                SugarErrorType.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
             )
 
         if compose_cmd == 'docker-compose':
@@ -243,7 +240,7 @@ class SugarBase:
         self.compose_app = sh.docker
         self.compose_args.append('compose')
 
-    def _load_compose_args(self):
+    def _load_compose_args(self) -> None:
         self._filter_service_group()
 
         if self.service_group.get('env-file'):
@@ -258,11 +255,11 @@ class SugarBase:
         elif isinstance(compose_path_arg, list):
             compose_path.extend(compose_path_arg)
         else:
-            self.KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 'The attribute compose-path` just supports the data '
                 f'types `string` or `list`, {type(compose_path_arg)} '
                 'received.',
-                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
+                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
 
         for p in compose_path:
@@ -273,21 +270,19 @@ class SugarBase:
                 ['--project-name', self.service_group['project-name']]
             )
 
-    def _load_defaults(self):
+    def _load_defaults(self) -> None:
         _defaults = self.config.get('defaults', {})
 
         for k, v in _defaults.items():
-            unescaped_value = (
-                unescape_template_tag(v) if isinstance(v, str) else str(v)
-            )
+            unescaped_value = v if isinstance(v, str) else str(v)
 
             _defaults[k] = yaml.safe_load(
-                Template(unescaped_value).render(env=self.env)
+                TEMPLATE.from_string(unescaped_value).render(env=self.env)
             )
 
         self.defaults = _defaults
 
-    def _load_env(self):
+    def _load_env(self) -> None:
         self.env = dict(os.environ)
 
         env_file = self.config.get('env-file', '')
@@ -301,13 +296,13 @@ class SugarBase:
             env_file = str(Path(self.config_file).parent / env_file)
 
         if not Path(env_file).exists():
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 'The given env-file was not found.',
-                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
+                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
-        self.env.update(dotenv.dotenv_values(env_file))
+        self.env.update(dotenv.dotenv_values(env_file))  # type: ignore
 
-    def _load_service_names(self):
+    def _load_service_names(self) -> None:
         services = self.service_group['services']
 
         if self.args.get('all'):
@@ -318,49 +313,54 @@ class SugarBase:
                 )
             ]
         elif self.args.get('services') == '':
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 'If you want to execute the operation for all services, '
                 'use --all parameter.',
-                KxgrErrorType.KXGR_INVALID_PARAMETER,
+                SugarErrorType.SUGAR_INVALID_PARAMETER,
             )
         elif self.args.get('services'):
-            self.service_names = self.args.get('services').split(',')
+            self.service_names = self.args.get('services', '').split(',')
         elif services.get('default'):
-            self.service_names = services['default'].split(',')
+            self.service_names = services.get('default', '').split(',')
 
-    def _verify_args(self):
+    def _verify_args(self) -> None:
         if not self._check_config_file():
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 'Config file .sugar.yaml not found.',
-                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
+                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
 
         if (
             self.args.get('action')
             and self.args.get('action') not in self.actions
         ):
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 f'The given action `{self.args.get("action")}` is not '
                 f'valid. Use one of them: {",".join(self.actions)}.',
-                KxgrErrorType.KXGR_INVALID_PARAMETER,
+                SugarErrorType.SUGAR_INVALID_PARAMETER,
             )
 
-    def _verify_config(self):
+    def _verify_config(self) -> None:
         if not len(self.config['groups']):
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 'No service groups found.',
-                KxgrErrorType.KXGR_INVALID_CONFIGURATION,
+                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
 
-    def run(self):
+    def run(self) -> None:
         """Run the given sugar command."""
-        action = self.args.get('action')
+        action = self.args.get('action', '')
         if not isinstance(action, str):
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 'The given action is not valid.',
-                KxgrErrorType.KXGR_INVALID_PARAMETER,
+                SugarErrorType.SUGAR_INVALID_PARAMETER,
             )
-        return getattr(self, f'_{action.replace("-", "_")}')()
+        getattr(self, f'_{action.replace("-", "_")}')()
+
+    def _version(self) -> None:
+        SugarLogs.print_info(f'Sugar Version: {__version__}')
+        SugarLogs.print_info(f'Container Program Path: {self.compose_app}')
+        self._call_compose_app('version', services=[])
 
 
 class SugarDockerCompose(SugarBase):
@@ -439,32 +439,39 @@ class SugarDockerCompose(SugarBase):
         'watch',
     ]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        args: dict[str, str],
+        options_args: list[str] = [],
+        cmd_args: list[str] = [],
+    ):
         """Initialize SugarDockerCompose instance."""
-        super().__init__(*args, **kwargs)
+        super().__init__(args, options_args=options_args, cmd_args=cmd_args)
 
     # container commands
-    def _attach(self):
-        self._call_compose_app('attach', services=[self.args.get('service')])
+    def _attach(self) -> None:
+        service_name = self.args.get('service', '')
+        service_name_list: list[str] = [service_name] if service_name else []
+        self._call_compose_app('attach', services=service_name_list)
 
-    def _build(self):
+    def _build(self) -> None:
         self._call_compose_app('build', services=self.service_names)
 
-    def _config(self):
+    def _config(self) -> None:
         self._call_compose_app('config', services=self.service_names)
 
-    def _cp(self):
+    def _cp(self) -> None:
         self._call_compose_app('cp', services=[])
 
-    def _create(self):
+    def _create(self) -> None:
         self._call_compose_app('create', services=self.service_names)
 
-    def _down(self):
+    def _down(self) -> None:
         if self.args.get('all') or self.args.get('services'):
-            KxgrLogs.raise_error(
+            SugarLogs.raise_error(
                 "The `down` sub-command doesn't accept `--all` "
                 'neither `--services` parameters.',
-                KxgrErrorType.KXGR_INVALID_PARAMETER,
+                SugarErrorType.SUGAR_INVALID_PARAMETER,
             )
 
         self._call_compose_app(
@@ -473,96 +480,100 @@ class SugarDockerCompose(SugarBase):
             services=[],
         )
 
-    def _events(self):
+    def _events(self) -> None:
         # port is not complete supported
-        if not self.args.get('service'):
-            KxgrLogs.raise_error(
+        service_name = self.args.get('service', '')
+        if not service_name:
+            SugarLogs.raise_error(
                 '`exec` sub-command expected --service parameter.',
-                KxgrErrorType.KXGR_MISSING_PARAMETER,
+                SugarErrorType.SUGAR_MISSING_PARAMETER,
             )
-        self._call_compose_app('events', services=[self.args.get('service')])
+        service_name_list = [service_name] if service_name else []
+        self._call_compose_app('events', services=service_name_list)
 
-    def _exec(self):
-        if not self.args.get('service'):
-            KxgrLogs.raise_error(
+    def _exec(self) -> None:
+        service_name = self.args.get('service', '')
+        if not service_name:
+            SugarLogs.raise_error(
                 '`exec` sub-command expected --service parameter.',
-                KxgrErrorType.KXGR_MISSING_PARAMETER,
+                SugarErrorType.SUGAR_MISSING_PARAMETER,
             )
 
-        self._call_compose_app('exec', services=[self.args.get('service')])
+        service_name_list: list[str] = [service_name] if service_name else []
+        self._call_compose_app('exec', services=service_name_list)
 
-    def _images(self):
+    def _images(self) -> None:
         self._call_compose_app('images', services=self.service_names)
 
-    def _kill(self):
+    def _kill(self) -> None:
         self._call_compose_app('kill', services=self.service_names)
 
-    def _logs(self):
+    def _logs(self) -> None:
         self._call_compose_app('logs', services=self.service_names)
 
-    def _ls(self):
+    def _ls(self) -> None:
         self._call_compose_app('ls', services=[])
 
-    def _pause(self):
+    def _pause(self) -> None:
         self._call_compose_app('pause', services=self.service_names)
 
-    def _port(self):
+    def _port(self) -> None:
         # port is not complete supported
-        if not self.args.get('service'):
-            KxgrLogs.raise_error(
+        service_name = self.args.get('service', '')
+        if not service_name:
+            SugarLogs.raise_error(
                 '`exec` sub-command expected --service parameter.',
-                KxgrErrorType.KXGR_MISSING_PARAMETER,
+                SugarErrorType.SUGAR_MISSING_PARAMETER,
             )
         # TODO: check how private port could be passed
-        self._call_compose_app('port', services=[self.args.get('service')])
+        service_name_list: list[str] = [service_name] if service_name else []
+        self._call_compose_app('port', services=service_name_list)
 
-    def _ps(self):
+    def _ps(self) -> None:
         self._call_compose_app('ps', services=self.service_names)
 
-    def _pull(self):
+    def _pull(self) -> None:
         self._call_compose_app('pull', services=self.service_names)
 
-    def _push(self):
+    def _push(self) -> None:
         self._call_compose_app('push', services=self.service_names)
 
-    def _restart(self):
+    def _restart(self) -> None:
         self._call_compose_app('restart', services=self.service_names)
 
-    def _rm(self):
+    def _rm(self) -> None:
         self._call_compose_app('rm', services=self.service_names)
 
-    def _run(self):
-        if not self.args.get('service'):
-            KxgrLogs.raise_error(
+    def _run(self) -> None:
+        service_name = self.args.get('service', '')
+        if not service_name:
+            SugarLogs.raise_error(
                 '`run` sub-command expected --service parameter.',
-                KxgrErrorType.KXGR_MISSING_PARAMETER,
+                SugarErrorType.SUGAR_MISSING_PARAMETER,
             )
+        service_name_list: list[str] = [service_name] if service_name else []
+        self._call_compose_app('run', services=service_name_list)
 
-        self._call_compose_app('run', services=[self.args.get('service')])
-
-    def _scale(self):
+    def _scale(self) -> None:
         self._call_compose_app('ls', services=[])
 
-    def _start(self):
+    def _start(self) -> None:
         self._call_compose_app('start', services=self.service_names)
 
-    def _stop(self):
+    def _stop(self) -> None:
         self._call_compose_app('stop', services=self.service_names)
 
-    def _top(self):
+    def _top(self) -> None:
         self._call_compose_app('top', services=self.service_names)
 
-    def _unpause(self):
+    def _unpause(self) -> None:
         self._call_compose_app('unpause', services=self.service_names)
 
-    def _up(self):
+    def _up(self) -> None:
         self._call_compose_app('up', services=self.service_names)
 
-    def _version(self):
-        self._call_compose_app('version', services=[])
-
-    def _wait(self):
+    def _wait(self) -> None:
         self._call_compose_app('wait', services=self.service_names)
 
-    def _watch(self):
+    def _watch(self) -> None:
         self._call_compose_app('watch', services=self.service_names)

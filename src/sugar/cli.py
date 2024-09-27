@@ -6,25 +6,26 @@ import os
 import sys
 
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any
 
 import typer
 
 from typer import Argument, Option
 
-from sugar.core import Sugar, __version__
+from sugar import __version__
+from sugar.core import Sugar
 
-flags_state: Dict[str, bool] = {
+flags_state: dict[str, bool] = {
     'verbose': False,
 }
 
-opt_state: Dict[str, list[Any]] = {
+opt_state: dict[str, list[Any]] = {
     'options': [],
     'cmd': [],
 }
 
 
-def extract_options_and_cmd_args() -> Tuple[list, list]:
+def extract_options_and_cmd_args() -> tuple[list[str], list[str]]:
     """Extract arg `options` and `cmd` from the CLI calling."""
     args = list(sys.argv)
     total_args = len(args)
@@ -81,7 +82,7 @@ def extract_options_and_cmd_args() -> Tuple[list, list]:
     return options_args, cmd_args
 
 
-def create_main_group(sugar_app: typer.Typer):
+def create_main_group(sugar_app: typer.Typer) -> None:
     """
     Create the main plugin command group.
 
@@ -120,7 +121,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """
         Attach to a service's running container.
 
@@ -180,7 +181,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Build or rebuild services."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -227,7 +228,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Parse, resolve and render compose file in canonical format."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -269,7 +270,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """
         Copy files/folders between a services and local filesystem.
 
@@ -322,7 +323,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Create containers for a service."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -362,7 +363,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Stop and remove containers, networks."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -409,7 +410,7 @@ def create_main_group(sugar_app: typer.Typer):
             help='Specify a custom location for the config file.',
             is_flag=True,
         ),
-    ):
+    ) -> None:
         """Receive real time events from containers."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -454,7 +455,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Execute a command in a running container."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -504,7 +505,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """List images used by the created containers."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -554,7 +555,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Force stop service containers."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -604,7 +605,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """View output from containers."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -644,7 +645,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """
         List running compose projects.
 
@@ -697,7 +698,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Pause services."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -727,7 +728,7 @@ def create_main_group(sugar_app: typer.Typer):
             help='Specify a custom location for the config file.',
             is_flag=True,
         ),
-    ):
+    ) -> None:
         """Print the public port for a port binding."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -774,7 +775,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """List containers."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -824,7 +825,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Pull service images."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -874,7 +875,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Push service images."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -924,7 +925,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Restart service containers."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -973,7 +974,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """
         Remove stopped service containers.
 
@@ -1026,7 +1027,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Run a one-off command on a service."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -1066,7 +1067,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """
         Scale services.
 
@@ -1119,7 +1120,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Start services."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -1169,7 +1170,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Stop services."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -1219,7 +1220,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Display the running processes."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -1269,7 +1270,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Unpause services."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -1319,7 +1320,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Create and start containers."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -1353,7 +1354,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Show the Docker Compose version information."""
         args = ctx.params
         args['plugin'] = 'main'
@@ -1403,7 +1404,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """
         Block until the first service container stops.
 
@@ -1456,7 +1457,7 @@ def create_main_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """
         Watch build context.
 
@@ -1477,7 +1478,7 @@ def create_main_group(sugar_app: typer.Typer):
         Sugar(args, options_args=opts_args).run()
 
 
-def create_ext_group(sugar_app: typer.Typer):
+def create_ext_group(sugar_app: typer.Typer) -> None:
     """
     Create a command group for ext plugin.
 
@@ -1507,7 +1508,7 @@ def create_ext_group(sugar_app: typer.Typer):
             help='Specify a custom location for the config file.',
             is_flag=True,
         ),
-    ):
+    ) -> None:
         """Get the IP for given service (NOT IMPLEMENTED YET)."""
         args = ctx.params
         args['plugin'] = 'ext'
@@ -1554,7 +1555,7 @@ def create_ext_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Run `up` main command (alias)."""
         args = ctx.params
         args['plugin'] = 'ext'
@@ -1604,7 +1605,7 @@ def create_ext_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Run the main stop command (alias)."""
         args = ctx.params
         args['plugin'] = 'ext'
@@ -1654,7 +1655,7 @@ def create_ext_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Run `down` and `up` sequentially."""
         args = ctx.params
         args['plugin'] = 'ext'
@@ -1692,7 +1693,7 @@ def create_ext_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Wait until the service are healthy (NOT IMPLEMENTED YET)."""
         args = ctx.params
         args['plugin'] = 'ext'
@@ -1709,7 +1710,7 @@ def create_ext_group(sugar_app: typer.Typer):
     sugar_app.add_typer(ext_group, name='ext', rich_help_panel='Plugins')
 
 
-def create_stats_group(sugar_app: typer.Typer):
+def create_stats_group(sugar_app: typer.Typer) -> None:
     """Instantiate the stats command group."""
     stats_group = typer.Typer(
         help='Use the `stats` plugin.',
@@ -1738,7 +1739,7 @@ def create_stats_group(sugar_app: typer.Typer):
             is_eager=True,
             help='Show the command executed.',
         ),
-    ):
+    ) -> None:
         """Plot stats in real-time for given services (EXPERIMENTAL)."""
         args = ctx.params
         args['plugin'] = 'stats'
@@ -1755,7 +1756,7 @@ def create_stats_group(sugar_app: typer.Typer):
     sugar_app.add_typer(stats_group, name='stats', rich_help_panel='Plugins')
 
 
-def create_app():
+def create_app() -> typer.Typer:
     """Create app function to instantiate the typer app dinamically."""
     options_args, cmd_args = extract_options_and_cmd_args()
     opt_state['options'] = options_args
@@ -1782,7 +1783,7 @@ def create_app():
     create_stats_group(sugar_app)
 
     # -- Callbacks --
-    def version_callback(version: bool):
+    def version_callback(version: bool) -> None:
         """
         Version callback function.
 

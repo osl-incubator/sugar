@@ -68,7 +68,15 @@ testpaths = [
 ]
 
 [tool.mypy]
+python_version = "3.8"
+check_untyped_defs = true
+strict = true
 ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+show_error_codes = true
+exclude = ["scripts/"]
 
 
 [tool.ruff]
@@ -105,6 +113,7 @@ quote-style = "single"
 [tool.bandit]
 exclude_dirs = ["tests"]
 targets = "src/sugar/"
+skips = ["B102", "B701"]
 
 [tool.vulture]
 exclude = ["tests", "src/sugar/cli.py"]
