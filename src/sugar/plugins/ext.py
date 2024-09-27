@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from sugar.logs import SugarErrorType, SugarLogs
 from sugar.plugins.base import SugarDockerCompose
 
@@ -11,7 +9,12 @@ from sugar.plugins.base import SugarDockerCompose
 class SugarExt(SugarDockerCompose):
     """SugarExt provides special commands not available on docker-compose."""
 
-    def __init__(self, args: dict[str, str], **kwargs: Any) -> None:
+    def __init__(
+        self,
+        args: dict[str, str],
+        options_args: list[str] = [],
+        cmd_args: list[str] = [],
+    ) -> None:
         """Initialize the SugarExt class."""
         self.actions += [
             'get-ip',
@@ -21,7 +24,7 @@ class SugarExt(SugarDockerCompose):
             'wait',
         ]
 
-        super().__init__(args, **kwargs)
+        super().__init__(args, options_args=options_args, cmd_args=cmd_args)
 
     def _get_ip(self) -> None:
         SugarLogs.raise_error(

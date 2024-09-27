@@ -263,13 +263,18 @@ class StatsPlotApp(App[str]):  # type: ignore
 class SugarStats(SugarDockerCompose):
     """SugarStats provides special commands not available on docker-compose."""
 
-    def __init__(self, args: dict[str, str], **kwargs: Any) -> None:
+    def __init__(
+        self,
+        args: dict[str, str],
+        options_args: list[str] = [],
+        cmd_args: list[str] = [],
+    ) -> None:
         """Initialize the SugarExt class."""
         self.actions += [
             'plot',
         ]
 
-        super().__init__(args, **kwargs)
+        super().__init__(args, options_args=options_args, cmd_args=cmd_args)
 
     def _plot(self) -> None:
         """Call the plot command."""

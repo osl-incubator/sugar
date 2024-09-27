@@ -439,9 +439,14 @@ class SugarDockerCompose(SugarBase):
         'watch',
     ]
 
-    def __init__(self, args: dict[str, str], **kwargs: Any):
+    def __init__(
+        self,
+        args: dict[str, str],
+        options_args: list[str] = [],
+        cmd_args: list[str] = [],
+    ):
         """Initialize SugarDockerCompose instance."""
-        super().__init__(args, **kwargs)
+        super().__init__(args, options_args=options_args, cmd_args=cmd_args)
 
     # container commands
     def _attach(self) -> None:
