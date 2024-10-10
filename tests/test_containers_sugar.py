@@ -26,9 +26,17 @@ DEFAULT_ARGS = {
 @pytest.mark.parametrize(
     'args',
     [
-        {'version': True},
         {'help': True},
-        {'action': 'config', 'service_group': 'group1'},
+        {'plugin': 'compose', 'action': 'version', 'version': True},
+        {'plugin': 'compose', 'help': True},
+        {'plugin': 'compose', 'action': 'config', 'service_group': 'group1'},
+        {'plugin': 'compose-ext', 'action': 'version', 'version': True},
+        {'plugin': 'compose-ext', 'help': True},
+        {
+            'plugin': 'compose-ext',
+            'action': 'config',
+            'service_group': 'group1',
+        },
     ],
 )
 def test_success(args):

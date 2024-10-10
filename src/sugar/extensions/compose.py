@@ -187,3 +187,6 @@ class SugarCompose(SugarBase):
 
     def _cmd_watch(self) -> None:
         self._call_backend_app('watch', services=self.service_names)
+
+    def _cmd_version(self) -> None:
+        self._call_backend_app('version', services=[])
