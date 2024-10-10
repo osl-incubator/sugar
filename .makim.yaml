@@ -198,7 +198,7 @@ groups:
           - task: tests.smoke-experimental
         run: |
           sugar compose --help
-          sugar compose --version
+          sugar compose version
 
   docker:
     help: Commands for docker
