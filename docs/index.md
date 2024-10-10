@@ -76,7 +76,7 @@ project. This is an example of a configuration file:
 
 ```yaml
 version: 1.0
-backend-app: docker compose
+backend: docker compose
 default:
   group: ${{ "${{ env.ENV }}" }}
 groups:

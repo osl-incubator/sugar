@@ -239,10 +239,10 @@ class SugarBase:
             )
 
     def _load_backend_app(self) -> None:
-        backend_cmd = self.config.get('backend-app', '')
+        backend_cmd = self.config.get('backend', '')
         if backend_cmd.replace(' ', '-') != 'docker-compose':
             SugarLogs.raise_error(
-                f'"{self.config["backend-app"]}" not supported yet.',
+                f'"{self.config["backend"]}" not supported yet.',
                 SugarErrorType.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
             )
 
