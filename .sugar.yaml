@@ -7,7 +7,7 @@ defaults:
 groups:
   group1:
     project-name: project1 # optional
-    backend-path: tests/containers/group1/compose.yaml
+    config-path: tests/containers/group1/compose.yaml
     env-file: .env
     services:
       default: service1-1,service1-3
@@ -18,7 +18,7 @@ groups:
 
   group2:
     project-name: null # optional
-    backend-path: tests/containers/group2/compose.yaml
+    config-path: tests/containers/group2/compose.yaml
     env-file: .env
     services:
       default: null
@@ -28,7 +28,7 @@ groups:
 
   group-mix:
     project-name: null # optional
-    backend-path:
+    config-path:
       - tests/containers/group1/compose.yaml
       - tests/containers/group2/compose.yaml
     env-file: .env
@@ -41,7 +41,7 @@ groups:
         - name: service2-2
 
   group-defaults:
-    backend-path:
+    config-path:
       - tests/containers/group1/compose.yaml
     env-file: .env
     services:

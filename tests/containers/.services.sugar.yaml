@@ -4,7 +4,7 @@ defaults:
   project-name: sugar-{{ env.SUGAR_PROJECT_NAME }}
 services:
   project-name: project1 # optional
-  backend-path: tests/containers/group1/compose.yaml
+  config-path: tests/containers/group1/compose.yaml
   default: service1-1,service1-3
   available:
     - name: service1-1

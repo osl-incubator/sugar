@@ -162,7 +162,7 @@ class SugarBase:
         self.config['groups'] = {
             'main': {
                 'project-name': services.get('project-name'),
-                'backend-path': services.get('backend-path'),
+                'config-path': services.get('config-path'),
                 'env-file': services.get('env-file'),
                 'services': {
                     'default': services.get('default'),
@@ -260,21 +260,21 @@ class SugarBase:
                 ['--env-file', self.service_group['env-file']]
             )
 
-        backend_path = []
-        backend_path_arg = self.service_group['backend-path']
+        config_path = []
+        backend_path_arg = self.service_group['config-path']
         if isinstance(backend_path_arg, str):
-            backend_path.append(backend_path_arg)
+            config_path.append(backend_path_arg)
         elif isinstance(backend_path_arg, list):
-            backend_path.extend(backend_path_arg)
+            config_path.extend(backend_path_arg)
         else:
             SugarLogs.raise_error(
-                'The attribute backend-path` just supports the data '
+                'The attribute config-path` just supports the data '
                 f'types `string` or `list`, {type(backend_path_arg)} '
                 'received.',
                 SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
 
-        for p in backend_path:
+        for p in config_path:
             self.backend_args.extend(['--file', p])
 
         if self.service_group.get('project-name'):

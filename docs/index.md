@@ -82,7 +82,7 @@ default:
 groups:
   group1:
     project-name: project1
-    backend-path:
+    config-path:
       - containers/tests/group1/compose.yaml
     env-file: .env
     services:
@@ -95,7 +95,7 @@ groups:
         - name: service3
   group2:
     project-name: null
-    backend-path: containers/tests/group2/compose.yaml
+    config-path: containers/tests/group2/compose.yaml
     env-file: .env
     services:
       # default: null
