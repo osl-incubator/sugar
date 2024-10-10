@@ -64,61 +64,61 @@ groups:
         dependencies:
           - task: docker.killall
         run: |
-          sugar build --verbose
-          sugar build --verbose --group group1 --all
-          sugar build --verbose --group group1
-          sugar build --verbose --group group1 --services service1-1
-          sugar pull --verbose --group group1 --all
-          sugar pull --verbose --group group1
-          sugar pull --verbose --group group1 --services service1-1
-          sugar ext start --verbose --group group1 --all --options -d
-          sugar ext restart --verbose --group group1 --all --options -d
-          sugar exec --verbose --group group1 --service service1-1 --options -T --cmd env
-          sugar stop --verbose --group group1 --all
-          sugar run --verbose --group group1 --service service1-1 --options -T --cmd env
-          sugar down --verbose --group group1
+          sugar compose build --verbose
+          sugar compose build --verbose --group group1 --all
+          sugar compose build --verbose --group group1
+          sugar compose build --verbose --group group1 --services service1-1
+          sugar compose pull --verbose --group group1 --all
+          sugar compose pull --verbose --group group1
+          sugar compose pull --verbose --group group1 --services service1-1
+          sugar compose-ext start --verbose --group group1 --all --options -d
+          sugar compose-ext restart --verbose --group group1 --all --options -d
+          sugar compose exec --verbose --group group1 --service service1-1 --options -T --cmd env
+          sugar compose stop --verbose --group group1 --all
+          sugar compose run --verbose --group group1 --service service1-1 --options -T --cmd env
+          sugar compose down --verbose --group group1
 
       smoke-2:
         help: Run smoke tests for group 2
         dependencies:
           - task: docker.killall
         run: |
-          sugar build --verbose --group group2 --all
-          sugar build --verbose --group group2
-          sugar build --verbose --group group2 --services service2-1
-          sugar pull --verbose --group group2 --all
-          sugar pull --verbose --group group2
-          sugar pull --verbose --group group2 --services service2-1
-          sugar ext start --verbose --group group2 --all --options -d
-          sugar ext restart --verbose --group group2 --all --options -d
-          sugar exec --verbose --group group2 --service service2-1 --options -T --cmd env
-          sugar stop --verbose --group group2 --all
-          sugar run --verbose --group group2 --service service2-1 --options -T --cmd env
-          sugar down --verbose --group group2
+          sugar compose build --verbose --group group2 --all
+          sugar compose build --verbose --group group2
+          sugar compose build --verbose --group group2 --services service2-1
+          sugar compose pull --verbose --group group2 --all
+          sugar compose pull --verbose --group group2
+          sugar compose pull --verbose --group group2 --services service2-1
+          sugar compose-ext start --verbose --group group2 --all --options -d
+          sugar compose-ext restart --verbose --group group2 --all --options -d
+          sugar compose exec --verbose --group group2 --service service2-1 --options -T --cmd env
+          sugar compose stop --verbose --group group2 --all
+          sugar compose run --verbose --group group2 --service service2-1 --options -T --cmd env
+          sugar compose down --verbose --group group2
       smoke-services:
         help:
         dependencies:
           - task: docker.killall
         run: |
-          sugar build --verbose --config-file tests/containers/.services.sugar.yaml
+          sugar compose build --verbose --config-file tests/containers/.services.sugar.yaml
 
       smoke-mix:
         help: Run smoke tests for group mix
         dependencies:
           - task: docker.killall
         run: |
-          sugar build --verbose --group group-mix --all
-          sugar build --verbose --group group-mix
-          sugar build --verbose --group group-mix --services service1-1,service2-1
-          sugar pull --verbose --group group-mix --all
-          sugar pull --verbose --group group-mix
-          sugar pull --verbose --group group-mix --services service1-1,service2-1
-          sugar ext start --verbose --group group-mix --all --options -d
-          sugar ext restart --verbose --group group-mix --all --options -d
-          sugar exec --verbose --group group-mix --service service2-1 --options -T --cmd env
-          sugar stop --verbose --group group-mix --all
-          sugar run --verbose --group group-mix --service service2-1 --options -T --cmd env
-          sugar down --verbose --group group-mix
+          sugar compose build --verbose --group group-mix --all
+          sugar compose build --verbose --group group-mix
+          sugar compose build --verbose --group group-mix --services service1-1,service2-1
+          sugar compose pull --verbose --group group-mix --all
+          sugar compose pull --verbose --group group-mix
+          sugar compose pull --verbose --group group-mix --services service1-1,service2-1
+          sugar compose-ext start --verbose --group group-mix --all --options -d
+          sugar compose-ext restart --verbose --group group-mix --all --options -d
+          sugar compose exec --verbose --group group-mix --service service2-1 --options -T --cmd env
+          sugar compose stop --verbose --group group-mix --all
+          sugar compose run --verbose --group group-mix --service service2-1 --options -T --cmd env
+          sugar compose down --verbose --group group-mix
 
       smoke-main:
         help: Run smoke tests for group main
@@ -126,25 +126,25 @@ groups:
           - task: docker.killall
         run: |
           # general tests main profile/plugins
-          sugar build --verbose --group group1
-          sugar config --verbose --group group1
-          sugar create --verbose --group group1
-          sugar ext start --verbose --group group1 --options -d
-          sugar ext restart --verbose --group group1 --options -d
-          sugar exec --verbose --group group1 --service service1-1 --options -T --cmd env
-          sugar images --verbose --group group1
-          sugar logs --verbose --group group1
+          sugar compose build --verbose --group group1
+          sugar compose config --verbose --group group1
+          sugar compose create --verbose --group group1
+          sugar compose-ext start --verbose --group group1 --options -d
+          sugar compose-ext restart --verbose --group group1 --options -d
+          sugar compose exec --verbose --group group1 --service service1-1 --options -T --cmd env
+          sugar compose images --verbose --group group1
+          sugar compose logs --verbose --group group1
           # port is not complete supported
-          # sugar port --verbose --group group1 --service service1-1
-          sugar ps --verbose --group group1
-          sugar pull --verbose --group group1
-          sugar push --verbose --group group1
-          sugar run --verbose --group group1 --service service1-1 --options -T --cmd env
-          sugar top --verbose --group group1
-          sugar up --verbose --group group1 --options -d
-          sugar version --verbose
+          # sugar compose port --verbose --group group1 --service service1-1
+          sugar compose ps --verbose --group group1
+          sugar compose pull --verbose --group group1
+          sugar compose push --verbose --group group1
+          sugar compose run --verbose --group group1 --service service1-1 --options -T --cmd env
+          sugar compose top --verbose --group group1
+          sugar compose up --verbose --group group1 --options -d
+          sugar compose version --verbose
           # port is not complete supported
-          # sugar events --verbose --group group1 --service service1-1 --options --json --dry-run
+          # sugar compose events --verbose --group group1 --service service1-1 --options --json --dry-run
 
       smoke-defaults:
         help: Run smoke tests for group defaults
@@ -153,36 +153,36 @@ groups:
         run: |
           export SUGAR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
           echo $SUGAR_PROJECT_NAME
-          sugar build --verbose --group group-defaults
-          sugar ext start --verbose --group group-defaults --options -d
-          sugar ext restart --verbose --group group-defaults --options -d
+          sugar compose build --verbose --group group-defaults
+          sugar compose-ext start --verbose --group group-defaults --options -d
+          sugar compose-ext restart --verbose --group group-defaults --options -d
           docker ps|grep $SUGAR_PROJECT_NAME
-          sugar ext stop --verbose --group group-defaults
+          sugar compose-ext stop --verbose --group group-defaults
 
       smoke-final:
         help: Run final smoke tests
         dependencies:
           - task: docker.killall
         run: |
-          sugar ext restart --verbose --group group-defaults --options -d
-          sugar pause --verbose --group group1
-          sugar unpause --verbose --group group1
-          sugar kill --verbose --group group1
-          sugar stop --verbose --group group1
-          sugar rm --verbose --group group1 --options --force
-          sugar down --verbose --group group1
+          sugar compose-ext restart --verbose --group group-defaults --options -d
+          sugar compose pause --verbose --group group1
+          sugar compose unpause --verbose --group group1
+          sugar compose kill --verbose --group group1
+          sugar compose stop --verbose --group group1
+          sugar compose rm --verbose --group group1 --options --force
+          sugar compose down --verbose --group group1
 
       smoke-experimental:
         help: Run simple text for experimental commands
         dependencies:
           - task: docker.killall
         run: |
-          sugar attach --options --help
-          sugar cp --options --help
-          sugar ls --options --help
-          sugar scale --options --help
-          sugar wait --options --help
-          sugar watch --options --help
+          sugar compose attach --options --help
+          sugar compose cp --options --help
+          sugar compose ls --options --help
+          sugar compose scale --options --help
+          sugar compose wait --options --help
+          sugar compose watch --options --help
 
       smoke:
         help: Run final smoke tests
@@ -197,8 +197,8 @@ groups:
           - task: tests.smoke-services
           - task: tests.smoke-experimental
         run: |
-          sugar --help
-          sugar --version
+          sugar compose --help
+          sugar compose version
 
   docker:
     help: Commands for docker

@@ -1,4 +1,4 @@
 - name: group2
   project-name: null #optional
-  compose-path: containers/tests2/group2/compose.yaml
+  config-path: containers/tests2/group2/compose.yaml
   env-file: .env

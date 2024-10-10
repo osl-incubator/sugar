@@ -43,7 +43,7 @@ def extract_options_and_cmd_args() -> tuple[list[str], list[str]]:
     if options_sep_idx is None and cmd_sep_idx is None:
         return [], []
 
-    # check if --pre-args or --post-args are the last ones in the command line
+    # check if --options or --cmd are the last ones in the command line
     first_sep_idx = min(
         [(options_sep_idx or total_args), (cmd_sep_idx or total_args)]
     )
@@ -82,15 +82,19 @@ def extract_options_and_cmd_args() -> tuple[list[str], list[str]]:
     return options_args, cmd_args
 
 
-def create_main_group(sugar_app: typer.Typer) -> None:
+def create_compose_group(sugar_app: typer.Typer) -> None:
     """
     Create the main plugin command group.
 
     Also add the commands to sugar app.
     """
+    compose_group = typer.Typer(
+        help='Use the `compose` extension.',
+        invoke_without_command=True,
+    )
     # -- Main commands --
 
-    @sugar_app.command()
+    @compose_group.command()
     def attach(
         ctx: typer.Context,
         service_group: str = Option(
@@ -105,7 +109,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         options: str = Option(
             None,
             help=(
-                'Specify the options for docker-compose command. '
+                'Specify the options for the backend command. '
                 'E.g.: --options -d'
             ),
         ),
@@ -131,7 +135,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         Note: This is an experimental feature.
         """
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'attach'
 
         if verbose or flags_state['verbose']:
@@ -141,7 +145,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def build(
         ctx: typer.Context,
         service_group: str = Option(
@@ -160,7 +164,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         options: str = Option(
             None,
             help=(
-                'Specify the options for docker-compose command. '
+                'Specify the options for the backend command. '
                 'E.g.: --options -d'
             ),
         ),
@@ -184,7 +188,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Build or rebuild services."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'build'
 
         if verbose or flags_state['verbose']:
@@ -195,7 +199,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def config(
         ctx: typer.Context,
         service_group: str = Option(
@@ -213,7 +217,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command. \
+            help='Specify the options for the backend command. \
                   E.g.: --options -d',
         ),
         config_file: str = Option(
@@ -231,7 +235,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Parse, resolve and render compose file in canonical format."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'config'
 
         if verbose or flags_state['verbose']:
@@ -242,7 +246,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def cp(
         ctx: typer.Context,
         service_group: str = Option(
@@ -254,7 +258,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         options: str = Option(
             None,
             help=(
-                'Specify the options for docker-compose command. '
+                'Specify the options for the backend command. '
                 'E.g.: --options -d'
             ),
         ),
@@ -277,7 +281,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         Note: This is an experimental feature.
         """
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'cp'
 
         if verbose or flags_state['verbose']:
@@ -287,7 +291,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def create(
         ctx: typer.Context,
         service_group: str = Option(
@@ -303,7 +307,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command. \
+            help='Specify the options for the backend command. \
                   E.g.: --options -d',
         ),
         all: bool = Option(
@@ -326,7 +330,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Create containers for a service."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'create'
 
         if verbose or flags_state['verbose']:
@@ -337,7 +341,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def down(
         ctx: typer.Context,
         service_group: str = Option(
@@ -348,7 +352,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command. \
+            help='Specify the options for the backend command. \
                 E.g.: --options -d',
         ),
         config_file: str = Option(
@@ -366,7 +370,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Stop and remove containers, networks."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'down'
 
         if verbose or flags_state['verbose']:
@@ -377,7 +381,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def events(
         ctx: typer.Context,
         service_group: str = Option(
@@ -396,7 +400,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         options: str = Option(
             None,
             help=(
-                'Specify the options for docker-compose command. '
+                'Specify the options for the backend command. '
                 'E.g.: --options -d'
             ),
         ),
@@ -413,7 +417,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Receive real time events from containers."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'events'
 
         cmd_args: list[Any] = opt_state['cmd']
@@ -421,8 +425,8 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command(name='exec')
-    def exec_command(
+    @compose_group.command(name='exec')
+    def exec(
         ctx: typer.Context,
         service_group: str = Option(
             None,
@@ -435,7 +439,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         config_file: str = Option(
@@ -458,7 +462,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Execute a command in a running container."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'exec'
 
         if verbose or flags_state['verbose']:
@@ -469,7 +473,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def images(
         ctx: typer.Context,
         service_group: str = Option(
@@ -485,7 +489,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -508,7 +512,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """List images used by the created containers."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'images'
 
         if verbose or flags_state['verbose']:
@@ -519,7 +523,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def kill(
         ctx: typer.Context,
         service_group: str = Option(
@@ -535,7 +539,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -558,7 +562,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Force stop service containers."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'kill'
 
         if verbose or flags_state['verbose']:
@@ -569,7 +573,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def logs(
         ctx: typer.Context,
         service_group: str = Option(
@@ -585,7 +589,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -608,7 +612,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """View output from containers."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'logs'
 
         if verbose or flags_state['verbose']:
@@ -619,7 +623,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def ls(
         ctx: typer.Context,
         service_group: str = Option(
@@ -630,7 +634,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         config_file: str = Option(
@@ -652,7 +656,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         Note: This is an experimental feature.
         """
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'ls'
 
         if verbose or flags_state['verbose']:
@@ -662,7 +666,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def pause(
         ctx: typer.Context,
         service_group: str = Option(
@@ -678,7 +682,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -701,7 +705,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Pause services."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'pause'
 
         if verbose or flags_state['verbose']:
@@ -712,7 +716,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def port(
         ctx: typer.Context,
         service: str = Option(
@@ -720,7 +724,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         config_file: str = Option(
@@ -731,7 +735,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Print the public port for a port binding."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'port'
 
         cmd_args: list[Any] = opt_state['cmd']
@@ -739,7 +743,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def ps(
         ctx: typer.Context,
         service_group: str = Option(
@@ -755,7 +759,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -778,7 +782,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """List containers."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'ps'
 
         if verbose or flags_state['verbose']:
@@ -789,7 +793,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def pull(
         ctx: typer.Context,
         service_group: str = Option(
@@ -805,7 +809,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -828,7 +832,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Pull service images."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'pull'
 
         if verbose or flags_state['verbose']:
@@ -839,7 +843,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def push(
         ctx: typer.Context,
         service_group: str = Option(
@@ -855,7 +859,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -878,7 +882,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Push service images."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'push'
 
         if verbose or flags_state['verbose']:
@@ -889,7 +893,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def restart(
         ctx: typer.Context,
         service_group: str = Option(
@@ -905,7 +909,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -928,7 +932,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Restart service containers."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'restart'
 
         if verbose or flags_state['verbose']:
@@ -939,7 +943,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def rm(
         ctx: typer.Context,
         service_group: str = Option(
@@ -985,7 +989,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         Any data which is not in a volume will be lost.
         """
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'rm'
 
         cmd_args: list[Any] = opt_state['cmd']
@@ -993,7 +997,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def run(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1007,7 +1011,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         config_file: str = Option(
@@ -1030,7 +1034,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Run a one-off command on a service."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'run'
 
         if verbose or flags_state['verbose']:
@@ -1041,7 +1045,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def scale(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1052,7 +1056,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         config_file: str = Option(
@@ -1074,7 +1078,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         Note: This is an experimental feature.
         """
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'scale'
 
         if verbose or flags_state['verbose']:
@@ -1084,7 +1088,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def start(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1100,7 +1104,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1123,7 +1127,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Start services."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'start'
 
         if verbose or flags_state['verbose']:
@@ -1134,7 +1138,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def stop(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1150,7 +1154,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1173,7 +1177,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Stop services."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'stop'
 
         if verbose or flags_state['verbose']:
@@ -1184,7 +1188,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def top(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1200,7 +1204,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1223,7 +1227,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Display the running processes."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'top'
 
         if verbose or flags_state['verbose']:
@@ -1234,7 +1238,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def unpause(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1250,7 +1254,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1273,7 +1277,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Unpause services."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'unpause'
 
         if verbose or flags_state['verbose']:
@@ -1284,7 +1288,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def up(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1300,7 +1304,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1323,7 +1327,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Create and start containers."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'up'
 
         if verbose or flags_state['verbose']:
@@ -1334,12 +1338,12 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def version(
         ctx: typer.Context,
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         config_file: str = Option(
@@ -1357,7 +1361,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Show the Docker Compose version information."""
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'version'
 
         if verbose or flags_state['verbose']:
@@ -1368,7 +1372,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def wait(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1384,7 +1388,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1411,7 +1415,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         Note: This is an experimental feature.
         """
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'wait'
 
         if verbose or flags_state['verbose']:
@@ -1421,7 +1425,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args).run()
 
-    @sugar_app.command()
+    @compose_group.command()
     def watch(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1437,7 +1441,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1467,7 +1471,7 @@ def create_main_group(sugar_app: typer.Typer) -> None:
         Note: This is an experimental feature.
         """
         args = ctx.params
-        args['plugin'] = 'main'
+        args['plugin'] = 'compose'
         args['action'] = 'watch'
 
         if verbose or flags_state['verbose']:
@@ -1477,21 +1481,25 @@ def create_main_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args).run()
 
+    sugar_app.add_typer(
+        compose_group, name='compose', rich_help_panel='Extensions'
+    )
 
-def create_ext_group(sugar_app: typer.Typer) -> None:
+
+def create_compose_ext_group(sugar_app: typer.Typer) -> None:
     """
     Create a command group for ext plugin.
 
     The function also associate the group to sugar app.
     """
-    ext_group = typer.Typer(
+    compose_ext_group = typer.Typer(
         help='Use the `ext` plugin.',
         invoke_without_command=True,
     )
 
     # -- Ext Commands
 
-    @ext_group.command(name='get-ip')
+    @compose_ext_group.command(name='get-ip')
     def get_ip(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1511,7 +1519,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Get the IP for given service (NOT IMPLEMENTED YET)."""
         args = ctx.params
-        args['plugin'] = 'ext'
+        args['plugin'] = 'compose-ext'
         args['action'] = 'get-ip'
 
         cmd_args: list[Any] = opt_state['cmd']
@@ -1519,7 +1527,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @ext_group.command(name='start')
+    @compose_ext_group.command(name='start')
     def ext_start(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1535,7 +1543,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1558,7 +1566,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Run `up` main command (alias)."""
         args = ctx.params
-        args['plugin'] = 'ext'
+        args['plugin'] = 'compose-ext'
         args['action'] = 'start'
 
         if verbose or flags_state['verbose']:
@@ -1569,7 +1577,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @ext_group.command(name='stop')
+    @compose_ext_group.command(name='stop')
     def ext_stop(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1585,7 +1593,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1608,7 +1616,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Run the main stop command (alias)."""
         args = ctx.params
-        args['plugin'] = 'ext'
+        args['plugin'] = 'compose-ext'
         args['action'] = 'stop'
 
         if verbose or flags_state['verbose']:
@@ -1619,7 +1627,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @ext_group.command(name='restart')
+    @compose_ext_group.command(name='restart')
     def ext_restart(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1635,7 +1643,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
         ),
         options: str = Option(
             None,
-            help='Specify the options for docker-compose command.\
+            help='Specify the options for the backend command.\
                 E.g.: --options -d',
         ),
         all: bool = Option(
@@ -1658,7 +1666,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Run `down` and `up` sequentially."""
         args = ctx.params
-        args['plugin'] = 'ext'
+        args['plugin'] = 'compose-ext'
         args['action'] = 'restart'
 
         if verbose or flags_state['verbose']:
@@ -1669,7 +1677,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    @ext_group.command()
+    @compose_ext_group.command()
     def wait(
         ctx: typer.Context,
         service_group: str = Option(
@@ -1696,7 +1704,7 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
     ) -> None:
         """Wait until the service are healthy (NOT IMPLEMENTED YET)."""
         args = ctx.params
-        args['plugin'] = 'ext'
+        args['plugin'] = 'compose-ext'
         args['action'] = 'wait'
 
         if verbose or flags_state['verbose']:
@@ -1707,7 +1715,9 @@ def create_ext_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    sugar_app.add_typer(ext_group, name='ext', rich_help_panel='Plugins')
+    sugar_app.add_typer(
+        compose_ext_group, name='compose-ext', rich_help_panel='Extensions'
+    )
 
 
 def create_stats_group(sugar_app: typer.Typer) -> None:
@@ -1753,11 +1763,13 @@ def create_stats_group(sugar_app: typer.Typer) -> None:
 
         Sugar(args, options_args=opts_args, cmd_args=cmd_args).run()
 
-    sugar_app.add_typer(stats_group, name='stats', rich_help_panel='Plugins')
+    sugar_app.add_typer(
+        stats_group, name='stats', rich_help_panel='Extensions'
+    )
 
 
 def create_app() -> typer.Typer:
-    """Create app function to instantiate the typer app dinamically."""
+    """Create app function to instantiate the typer app dynamically."""
     options_args, cmd_args = extract_options_and_cmd_args()
     opt_state['options'] = options_args
     opt_state['cmd'] = cmd_args
@@ -1778,8 +1790,8 @@ def create_app() -> typer.Typer:
 
     # -- Add typer groups --
 
-    create_main_group(sugar_app)
-    create_ext_group(sugar_app)
+    create_compose_group(sugar_app)
+    create_compose_ext_group(sugar_app)
     create_stats_group(sugar_app)
 
     # -- Callbacks --
@@ -1832,5 +1844,5 @@ def create_app() -> typer.Typer:
 
 app = create_app()
 
-if __name__ == '__main__':
+if __name__ == '__compose__':
     app()
