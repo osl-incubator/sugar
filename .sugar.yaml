@@ -1,5 +1,5 @@
 version: 1.0
-compose-app: docker-compose
+backend-app: docker-compose
 env-file: .env
 defaults:
   group: ${{ env.SUGAR_GROUP }}
@@ -7,7 +7,7 @@ defaults:
 groups:
   group1:
     project-name: project1 # optional
-    compose-path: tests/containers/group1/compose.yaml
+    backend-path: tests/containers/group1/compose.yaml
     env-file: .env
     services:
       default: service1-1,service1-3
@@ -18,7 +18,7 @@ groups:
 
   group2:
     project-name: null # optional
-    compose-path: tests/containers/group2/compose.yaml
+    backend-path: tests/containers/group2/compose.yaml
     env-file: .env
     services:
       default: null
@@ -28,7 +28,7 @@ groups:
 
   group-mix:
     project-name: null # optional
-    compose-path:
+    backend-path:
       - tests/containers/group1/compose.yaml
       - tests/containers/group2/compose.yaml
     env-file: .env
@@ -41,7 +41,7 @@ groups:
         - name: service2-2
 
   group-defaults:
-    compose-path:
+    backend-path:
       - tests/containers/group1/compose.yaml
     env-file: .env
     services:

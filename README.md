@@ -76,13 +76,13 @@ project. This is an example of a configuration file:
 
 ```yaml
 version: 1.0
-compose-app: docker compose
+backend-app: docker compose
 default:
   group: ${{ env.ENV }}
 groups:
   group1:
     project-name: project1
-    compose-path:
+    backend-path:
       - containers/tests/group1/compose.yaml
     env-file: .env
     services:
@@ -93,7 +93,7 @@ groups:
         - name: service3
   group2:
     project-name: null
-    compose-path: containers/tests/group2/compose.yaml
+    backend-path: containers/tests/group2/compose.yaml
     env-file: .env
     services:
       available:

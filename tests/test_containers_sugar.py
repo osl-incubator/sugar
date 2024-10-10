@@ -9,7 +9,7 @@ from sugar.core import Sugar
 
 CONFIG_PATH = Path(__file__).parent.parent / '.sugar.yaml'
 DEFAULT_ARGS = {
-    'compose-app': 'docker compose',
+    'backend-app': 'docker compose',
     'action': '',
     'config_file': '',
     'service_group': '',

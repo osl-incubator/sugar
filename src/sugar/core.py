@@ -6,12 +6,13 @@ import os
 
 from typing import Optional, Type, cast
 
+from sugar.extensions.base import SugarBase
+from sugar.extensions.compose import SugarCompose
+from sugar.extensions.compose_ext import SugarComposeExt
 from sugar.logs import SugarErrorType, SugarLogs
-from sugar.plugins.base import SugarBase, SugarDockerCompose
-from sugar.plugins.ext import SugarExt
 
 try:
-    from sugar.plugins.stats import SugarStats
+    from sugar.extensions.stats import SugarStats
 except ImportError:
     # SugarStats is optional (extras=tui)
     SugarStats = cast(Optional[Type[SugarBase]], None)  # type: ignore
@@ -21,8 +22,8 @@ class Sugar(SugarBase):
     """Sugar main class."""
 
     plugins_definition: dict[str, Type[SugarBase]] = {
-        'main': SugarDockerCompose,
-        'ext': SugarExt,
+        'compose': SugarCompose,
+        'compose-ext': SugarComposeExt,
         **{'stats': SugarStats for i in range(1) if SugarStats is not None},
     }
     plugin: Optional[SugarBase] = None
@@ -32,7 +33,7 @@ class Sugar(SugarBase):
         args: dict[str, str],
         options_args: list[str] = [],
         cmd_args: list[str] = [],
-    ):
+    ) -> None:
         """Initialize the Sugar object according to the plugin used."""
         plugin_name = args.get('plugin', '')
 
@@ -44,7 +45,7 @@ class Sugar(SugarBase):
             and not args.get('action')
         ):
             args['action'] = plugin_name
-            args['plugin'] = 'main'
+            args['plugin'] = 'compose'
 
         # update plugin name
         plugin_name = args.get('plugin', '')
@@ -80,7 +81,7 @@ class Sugar(SugarBase):
 
         return actions
 
-    def _load_compose_args(self) -> None:
+    def _load_backend_args(self) -> None:
         pass
 
     def _load_service_names(self) -> None:

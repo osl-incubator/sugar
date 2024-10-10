@@ -18,9 +18,9 @@ from textual.widget import Widget
 from textual.widgets import Header
 
 from sugar.console import get_terminal_size
+from sugar.extensions.compose import SugarCompose
 from sugar.inspect import get_container_name, get_container_stats
 from sugar.logs import SugarErrorType, SugarLogs
-from sugar.plugins.base import SugarDockerCompose
 
 CHART_WINDOW_DURATION = 60
 CHART_TIME_INTERVAL = 1
@@ -260,28 +260,15 @@ class StatsPlotApp(App[str]):  # type: ignore
         yield StatsPlotWidget(self.container_names)
 
 
-class SugarStats(SugarDockerCompose):
+class SugarStats(SugarCompose):
     """SugarStats provides special commands not available on docker-compose."""
 
-    def __init__(
-        self,
-        args: dict[str, str],
-        options_args: list[str] = [],
-        cmd_args: list[str] = [],
-    ) -> None:
-        """Initialize the SugarExt class."""
-        self.actions += [
-            'plot',
-        ]
-
-        super().__init__(args, options_args=options_args, cmd_args=cmd_args)
-
-    def _plot(self) -> None:
+    def _cmd_plot(self) -> None:
         """Call the plot command."""
         _out = io.StringIO()
         _err = io.StringIO()
 
-        self._call_compose_app_core(
+        self._call_backend_app_core(
             'ps',
             services=self.service_names,
             options_args=['-q'],
