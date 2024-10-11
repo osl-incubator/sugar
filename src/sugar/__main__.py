@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from sugar.cli import app
+from sugar.cli import run_app
 
 if __name__ == '__main__':
-    app()
+    run_app()

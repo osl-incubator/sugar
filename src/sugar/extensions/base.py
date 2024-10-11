@@ -31,7 +31,7 @@ class SugarBase:
 
     actions: list[str] = []
     args: dict[str, str] = {}
-    config_file: str = ''
+    file: str = ''
     config: dict[str, Any] = {}
     # note: it starts with a simple command
     #       it is replaced later in the execution
@@ -58,21 +58,33 @@ class SugarBase:
 
     def __init__(
         self,
-        args: dict[str, str],
-        options_args: list[str] = [],
-        cmd_args: list[str] = [],
+        file: str = '.sugar.yaml',
+        verbose: bool = False,
     ) -> None:
         """Initialize SugarBase instance."""
-        self.args = deepcopy(args)
-        self.options_args = deepcopy(options_args)
-        self.cmd_args = deepcopy(cmd_args)
-        self.config_file = self.args.get('config_file', '')
+        self.file = file
+        self.verbose = verbose
+
+        self.args: dict[str, str] = {}
+        self.options_args: list[str] = []
+        self.cmd_args: list[str] = []
         self.config: dict[str, Any] = {}
         self.backend_args: list[str] = []
         self.defaults: dict[str, Any] = {}
         self.env: dict[str, str] = {}
         self.service_group: dict[str, Any] = {}
         self.service_names: list[str] = []
+
+    def _setup(self, **kwargs: Any) -> None:
+        """Set up the configuration for running the commands."""
+        args: dict[str, str] = kwargs.get('args', {})
+        options_args: list[str] = kwargs.get('options_args', [])
+        cmd_args: list[str] = kwargs.get('cmd_args', [])
+
+        self.args = deepcopy(args)
+        self.options_args = deepcopy(options_args)
+        # note: it needs to be refactored
+        self.cmd_args = deepcopy(cmd_args)
 
         self._load_config()
         self._load_env()
@@ -144,7 +156,7 @@ class SugarBase:
         )
 
     def _check_config_file(self) -> bool:
-        return Path(self.config_file).exists()
+        return Path(self.file).exists()
 
     # Check if services item is given
     def _check_services_item(self) -> bool:
@@ -219,7 +231,7 @@ class SugarBase:
         )
 
     def _load_config(self) -> None:
-        with open(self.config_file, 'r') as f:
+        with open(self.file, 'r') as f:
             # escape template tags
             content = f.read()
             f_content = io.StringIO(content)
@@ -305,7 +317,7 @@ class SugarBase:
         if not env_file.startswith('/'):
             # use .sugar file as reference for the working
             # directory for the .env file
-            env_file = str(Path(self.config_file).parent / env_file)
+            env_file = str(Path(self.file).parent / env_file)
 
         if not Path(env_file).exists():
             SugarLogs.raise_error(
@@ -359,17 +371,24 @@ class SugarBase:
                 SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
 
-    def run(self) -> None:
+    def _version(self) -> None:
+        SugarLogs.print_info(f'Sugar Version: {__version__}')
+
+    def load(
+        self, file: str, dry_run: bool = False, verbose: bool = False
+    ) -> None:
+        """Load makim configuration."""
+        self.file = file
+        self.dry_run = dry_run
+        self.verbose = verbose
+
+    def run(self, action: str, **kwargs: Any) -> None:
         """Run the given sugar command."""
-        action = self.args.get('action', '')
+        self._setup()
+
         if not isinstance(action, str):
             SugarLogs.raise_error(
                 'The given action is not valid.',
                 SugarErrorType.SUGAR_INVALID_PARAMETER,
             )
-        getattr(self, f'_cmd_{action.replace("-", "_")}')()
-
-    def _version(self) -> None:
-        SugarLogs.print_info(f'Sugar Version: {__version__}')
-        SugarLogs.print_info(f'Container Program Path: {self.backend_app}')
-        self._call_backend_app('version', services=[])
+        getattr(self, f'_cmd_{action.replace("-", "_")}')(**kwargs)

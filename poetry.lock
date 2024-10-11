@@ -2997,4 +2997,4 @@ tui = ["plotille", "rich", "textual"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4"
-content-hash = "a71b0e8653551826da701bc1fc34ed729f15edef5ffea4e02286294a616d1ca9"
+content-hash = "a8f4b2e7b50d22691c8b7feaa670de6e05fb2afbf681df5c47fa214689ff0435"
