@@ -12,7 +12,7 @@ from typing import Any, Union
 
 import dotenv
 import sh
-import yaml  # type: ignore
+import yaml
 
 from jinja2 import Environment
 
@@ -382,13 +382,4 @@ class SugarBase:
         self.dry_run = dry_run
         self.verbose = verbose
 
-    def run(self, action: str, **kwargs: Any) -> None:
-        """Run the given sugar command."""
         self._setup()
-
-        if not isinstance(action, str):
-            SugarLogs.raise_error(
-                'The given action is not valid.',
-                SugarErrorType.SUGAR_INVALID_PARAMETER,
-            )
-        getattr(self, f'_cmd_{action.replace("-", "_")}')(**kwargs)

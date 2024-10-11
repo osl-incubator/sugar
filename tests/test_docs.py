@@ -31,7 +31,8 @@ def test_docparams() -> None:
             },
         },
     }
+    func_docstring = a.myfunc.__doc__ or ''
     assert a.myfunc._meta_docs == expected
-    assert 'Parameters:' in a.myfunc.__doc__
-    assert 'arg1' in a.myfunc.__doc__
-    assert 'arg2' in a.myfunc.__doc__
+    assert 'Parameters:' in func_docstring
+    assert 'arg1' in func_docstring
+    assert 'arg2' in func_docstring

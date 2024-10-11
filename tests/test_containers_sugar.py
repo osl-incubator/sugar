@@ -1,11 +1,15 @@
 """Tests for `sugar` package."""
 
+from __future__ import annotations
+
 from copy import deepcopy
 from pathlib import Path
+from typing import Any
 
 import pytest
 
-from sugar.core import Sugar
+from sugar.core import extensions
+from sugar.extensions.base import SugarBase
 
 CONFIG_PATH = Path(__file__).parent.parent / '.sugar.yaml'
 DEFAULT_ARGS = {
@@ -22,24 +26,29 @@ DEFAULT_ARGS = {
     'plugin': 'main',
 }
 
+COMPOSE = extensions['compose']()
+COMPOSE_EXT = extensions['compose-ext']()
+STATS = extensions['stats']()
+
 
 @pytest.mark.parametrize(
-    'args',
+    'args,ext,action',
     [
-        {'help': True},
-        {'plugin': 'compose', 'action': 'version', 'version': True},
-        {'plugin': 'compose', 'help': True},
-        {'plugin': 'compose', 'action': 'config', 'service_group': 'group1'},
-        {'plugin': 'compose-ext', 'action': 'version', 'version': True},
-        {'plugin': 'compose-ext', 'help': True},
-        {
-            'plugin': 'compose-ext',
-            'action': 'config',
-            'service_group': 'group1',
-        },
+        COMPOSE,
+        'version',
+        {'version': True},
+        COMPOSE,
+        'config',
+        {'service_group': 'group1'},
+        COMPOSE_EXT,
+        'version',
+        {'version': True},
+        COMPOSE_EXT,
+        'config',
+        {'service_group': 'group1'},
     ],
 )
-def test_success(args):
+def test_success(ext: SugarBase, action: str, args: dict[str, Any]) -> None:
     """Test success cases."""
     args.update(
         {
@@ -49,7 +58,5 @@ def test_success(args):
     )
     args_obj = deepcopy(DEFAULT_ARGS)
     args_obj.update(args)
-    print(args_obj)
 
-    s = Sugar(args_obj)
-    s.run()
+    getattr(ext, f'_cmd_{action}')(args_obj)

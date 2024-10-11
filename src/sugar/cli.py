@@ -16,6 +16,7 @@ from typer import Option
 
 from sugar import __version__
 from sugar.core import extensions
+from sugar.docs import MetaDocs, MetaDocsParams
 from sugar.logs import SugarLogs
 
 CLI_ROOT_FLAGS_VALUES_COUNT = {
@@ -292,7 +293,7 @@ def apply_click_options(
 def create_dynamic_command(
     ext_name: str,
     typer_group: typer.Typer,
-    meta: dict[str, str | dict[str, str]],
+    meta: MetaDocs,
 ) -> None:
     """
     Dynamically create a Typer command with the specified options.
@@ -305,9 +306,9 @@ def create_dynamic_command(
     meta : dict
         the action/command metadata
     """
-    name = meta.get('name', '')
-    args = meta.get('parameters', {})
-    fn_help = meta.get('title', '')
+    name = cast(str, meta.get('name', ''))
+    args = cast(Dict[str, Dict[str, str]], meta.get('parameters', {}))
+    fn_help = cast(str, meta.get('title', ''))
 
     args_str = create_args_string(args)
     args_param_list: list[str] = []
@@ -330,7 +331,7 @@ def create_dynamic_command(
         arg_clean = arg.replace('-', '_')
 
     function_code += f'    sugar = sugar_exts.get("{ext_name}")\n'
-    function_code += f'    sugar.run("{name}", {args_param_str})\n'
+    function_code += f'    sugar._cmd_{name}({args_param_str})\n'
 
     local_vars: dict[str, Any] = {}
     exec(function_code, globals(), local_vars)
@@ -492,7 +493,7 @@ def run_app() -> None:
             verbose=cast(bool, root_config.get('verbose', False)),
         )
 
-    commands: dict[str, list[dict[str, dict[str, str | dict[str, str]]]]] = {}
+    commands: dict[str, list[MetaDocs]] = {}
     actions: list[str] = []
 
     for ext_name, ext_class in extensions.items():
@@ -505,16 +506,21 @@ def run_app() -> None:
             fn_name = f'_cmd_{action}'
             fn = getattr(ext_obj, fn_name)
             commands[ext_name].append(
-                {
-                    'name': action,
-                    'title': fn._meta_docs.get('title', ''),
-                    'parameters': fn._meta_docs.get('parameters', {}),
-                }
+                cast(
+                    MetaDocs,
+                    {
+                        'name': action,
+                        'title': fn._meta_docs.get('title', ''),
+                        'parameters': cast(
+                            MetaDocsParams, fn._meta_docs.get('parameters', {})
+                        ),
+                    },
+                )
             )
 
     # Add dynamically created commands to Typer app
     for ext_name, actions_meta in commands.items():
-        ext_obj = extensions[ext_name]
+        ext_obj = extensions[ext_name]()
 
         if not ext_obj:
             SugarLogs.raise_error(f'Extension not found ({ext_name}).')

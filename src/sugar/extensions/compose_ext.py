@@ -15,29 +15,23 @@ class SugarComposeExt(SugarCompose):
     @docparams(doc_common_services)
     def _cmd_restart(
         self,
-        group: str,
-        services: str,
-        all: bool,
-        options: str,
-        config_file: str,
-        verbose: bool,
+        group: str = '',
+        services: str = '',
+        all: bool = False,
+        options: str = '',
     ) -> None:
         """Restart services (compose stop + up)."""
-        options = self.options_args
-        self.options_args = []
         self._cmd_stop()
-        self.options_args = options
+        self.options_args = options.split(' ')
         self._cmd_start()
 
     @docparams(doc_common_services)
     def _cmd_start(
         self,
-        group: str,
-        services: str,
-        all: bool,
-        options: str,
-        config_file: str,
-        verbose: bool,
+        group: str = '',
+        services: str = '',
+        all: bool = False,
+        options: str = '',
     ) -> None:
         """Start services (compose up)."""
         self._cmd_up()

@@ -1,14 +1,33 @@
 """Helper functions for documentation."""
 
+from __future__ import annotations
+
 import functools
 import inspect
 
-from typing import Any, Callable, Dict, TypeVar
+from typing import Any, Callable, Dict, Protocol, TypeVar, Union, cast
+
+from typing_extensions import TypeAlias
 
 F = TypeVar('F', bound=Callable[..., Any])
 
+MetaDocsParams: TypeAlias = Dict[str, Dict[str, str]]
+MetaDocs: TypeAlias = Dict[str, Union[str, MetaDocsParams]]
 
-def docparams(param_docs: Dict[str, str]) -> Callable[[F], F]:
+
+class DecoratedMetaDocsFunction(Protocol):
+    """Type for functions with _meta_docs."""
+
+    _meta_docs: MetaDocs
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """Define a placeholder for the type."""
+        ...
+
+
+def docparams(
+    param_docs: Dict[str, str],
+) -> Callable[[F], DecoratedMetaDocsFunction]:
     """
     Decorate functions to add dynamic parameters to docs and metadata.
 
@@ -26,7 +45,7 @@ def docparams(param_docs: Dict[str, str]) -> Callable[[F], F]:
         The decorated function with updated docstring and '_meta_docs'.
     """
 
-    def decorator(func: F) -> F:  # noqa: PLR0912
+    def decorator(func: F) -> DecoratedMetaDocsFunction:  # noqa: PLR0912
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             return func(*args, **kwargs)
@@ -35,7 +54,8 @@ def docparams(param_docs: Dict[str, str]) -> Callable[[F], F]:
         annotations = func.__annotations__
 
         # Build the _meta_docs dictionary
-        meta_docs = {'title': func.__doc__, 'parameters': {}}
+        parameters: MetaDocsParams = {}
+
         for name, param in sig.parameters.items():
             if name == 'self':
                 continue
@@ -50,11 +70,11 @@ def docparams(param_docs: Dict[str, str]) -> Callable[[F], F]:
                 param_info['help'] = param_docs[name]
             if param.default != inspect.Parameter.empty:
                 param_info['default'] = param.default
-            meta_docs['parameters'][name] = param_info
+            parameters[name] = param_info
 
         # Build parameter documentation
         param_docs_lines = []
-        for name, info in meta_docs['parameters'].items():
+        for name, info in parameters.items():
             param_line = f'{name} : {info.get("type", "")}'
             param_docs_lines.append(param_line)
             default = info.get('default', None)
@@ -108,9 +128,14 @@ def docparams(param_docs: Dict[str, str]) -> Callable[[F], F]:
         updated_doc = '\n'.join(doc_lines)
         wrapper.__doc__ = updated_doc
 
+        meta_docs: MetaDocs = {
+            'title': func.__doc__ or '',
+            'parameters': parameters,
+        }
+
         # Set the _meta_docs attribute
         setattr(wrapper, '_meta_docs', meta_docs)
 
-        return wrapper  # Return the wrapper function
+        return cast(DecoratedMetaDocsFunction, wrapper)
 
     return decorator

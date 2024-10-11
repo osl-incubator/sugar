@@ -27,7 +27,10 @@ class SugarLogs:
     """SugarLogs is responsible for handling system messages."""
 
     @staticmethod
-    def raise_error(message: str, message_type: SugarErrorType) -> None:
+    def raise_error(
+        message: str,
+        message_type: SugarErrorType = SugarErrorType.SH_ERROR_RETURN_CODE,
+    ) -> None:
         """Print error message and exit with given error code."""
         print(Fore.RED, f'[EE] {message}', Fore.RESET)
         os._exit(message_type.value)

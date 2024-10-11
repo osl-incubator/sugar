@@ -198,7 +198,7 @@ class StatsPlot:
             )
 
 
-class StatsPlotWidget(Widget):  # type: ignore
+class StatsPlotWidget(Widget):
     """Plot Docker Stats Widget."""
 
     content: Reactive[str] = Reactive('')
@@ -215,7 +215,7 @@ class StatsPlotWidget(Widget):  # type: ignore
     ) -> None:
         """Initialize StatsPlotWidget."""
         self.container_names = container_names
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)  # type: ignore
 
     def on_mount(self) -> None:
         """Set up the widget."""
@@ -245,7 +245,7 @@ class StatsPlotWidget(Widget):  # type: ignore
         return Text.from_ansi(self.content)
 
 
-class StatsPlotApp(App[str]):  # type: ignore
+class StatsPlotApp(App[str]):
     """StatsPlotApp app class."""
 
     TITLE = 'Sugar Containers Stats'
@@ -256,7 +256,7 @@ class StatsPlotApp(App[str]):  # type: ignore
     ) -> None:
         """Initialize StatsPlotApp."""
         self.container_names = container_names
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)  # type: ignore
 
     def compose(self) -> ComposeResult:
         """Compose the app."""
