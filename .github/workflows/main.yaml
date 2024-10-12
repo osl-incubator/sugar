@@ -69,7 +69,9 @@ jobs:
         run: poetry check
 
       - name: Install dependencies
-        run: poetry install --verbose
+        run: |
+          poetry install --verbose
+          poetry install --verbose --extras tui
 
       - name: run unit tests
         run: makim --verbose tests.unit
@@ -105,6 +107,7 @@ jobs:
           activate-environment: sugar
           auto-update-conda: true
           conda-solver: libmamba
+          python-version: "3.9"
 
       - name: Install dependencies
         run: |

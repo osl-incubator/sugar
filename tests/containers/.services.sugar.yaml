@@ -1,5 +1,5 @@
 version: 1.0
-backend: docker-compose
+backend: compose
 defaults:
   project-name: sugar-{{ env.SUGAR_PROJECT_NAME }}
 services:

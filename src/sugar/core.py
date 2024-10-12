@@ -2,14 +2,11 @@
 
 from __future__ import annotations
 
-import os
-
 from typing import Optional, Type, cast
 
 from sugar.extensions.base import SugarBase
 from sugar.extensions.compose import SugarCompose
 from sugar.extensions.compose_ext import SugarComposeExt
-from sugar.logs import SugarErrorType, SugarLogs
 
 try:
     from sugar.extensions.stats import SugarStats
@@ -18,79 +15,8 @@ except ImportError:
     SugarStats = cast(Optional[Type[SugarBase]], None)  # type: ignore
 
 
-class Sugar(SugarBase):
-    """Sugar main class."""
-
-    plugins_definition: dict[str, Type[SugarBase]] = {
-        'compose': SugarCompose,
-        'compose-ext': SugarComposeExt,
-        **{'stats': SugarStats for i in range(1) if SugarStats is not None},
-    }
-    plugin: Optional[SugarBase] = None
-
-    def __init__(
-        self,
-        args: dict[str, str],
-        options_args: list[str] = [],
-        cmd_args: list[str] = [],
-    ) -> None:
-        """Initialize the Sugar object according to the plugin used."""
-        plugin_name = args.get('plugin', '')
-
-        use_plugin = not (plugin_name == 'main' and not args.get('action'))
-
-        if (
-            plugin_name
-            and plugin_name not in self.plugins_definition
-            and not args.get('action')
-        ):
-            args['action'] = plugin_name
-            args['plugin'] = 'compose'
-
-        # update plugin name
-        plugin_name = args.get('plugin', '')
-
-        super().__init__(args, options_args, cmd_args)
-
-        if not use_plugin:
-            return
-
-        self.plugin = self.plugins_definition[plugin_name](
-            args,
-            options_args,
-            cmd_args,
-        )
-
-    def _verify_args(self) -> None:
-        if self.args.get('plugin') not in self.plugins_definition:
-            plugins_name = [k for k in self.plugins_definition.keys()]
-
-            SugarLogs.raise_error(
-                f'`plugin` parameter `{ self.args.get("plugin") }` '
-                f'not found. Options: { plugins_name }.',
-                SugarErrorType.SUGAR_INVALID_PARAMETER,
-            )
-            os._exit(1)
-
-    def get_actions(self) -> list[str]:
-        """Get a list of the available actions."""
-        actions = []
-
-        for k, v in self.plugins_definition.items():
-            actions.extend(v.actions)
-
-        return actions
-
-    def _load_backend_args(self) -> None:
-        pass
-
-    def _load_service_names(self) -> None:
-        pass
-
-    def run(self) -> None:
-        """Run sugar command."""
-        if not self.args.get('action'):
-            return
-
-        if self.plugin:
-            self.plugin.run()
+extensions: dict[str, Type[SugarBase]] = {
+    'compose': SugarCompose,
+    'compose-ext': SugarComposeExt,
+    **{'stats': SugarStats for i in range(1) if SugarStats is not None},
+}
