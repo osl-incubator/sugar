@@ -254,7 +254,7 @@ class SugarBase:
         if backend_cmd not in supported_backends:
             SugarLogs.raise_error(
                 f'"{self.config["backend"]}" not supported yet.'
-                f' Supported backends are: {', '.join(supported_backends)}.',
+                f' Supported backends are: {", ".join(supported_backends)}.',
                 SugarErrorType.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
             )
 
