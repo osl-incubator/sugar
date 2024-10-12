@@ -1,5 +1,5 @@
 version: 1.0.0
-shell: bash
+backend: bash
 groups:
   clean:
     env-file: .env
