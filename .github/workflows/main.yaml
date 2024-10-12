@@ -69,7 +69,9 @@ jobs:
         run: poetry check
 
       - name: Install dependencies
-        run: poetry install --verbose
+        run: |
+          poetry install --verbose
+          poetry install --verbose --extras tui
 
       - name: run unit tests
         run: makim --verbose tests.unit
