@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -12,51 +11,35 @@ from sugar.core import extensions
 from sugar.extensions.base import SugarBase
 
 CONFIG_PATH = Path(__file__).parent.parent / '.sugar.yaml'
-DEFAULT_ARGS = {
-    'backend': 'docker compose',
-    'action': '',
-    'config_file': '',
-    'service_group': '',
-    'service': '',
-    'services': None,
-    'all': False,
-    'version': False,
-    'verbose': False,
-    'help': False,
-    'plugin': 'main',
+
+SUGAR_ARGS = {
+    'file': str(CONFIG_PATH.absolute()),
+    'group': 'group1',
+    'verbose': True,
 }
 
 COMPOSE = extensions['compose']()
 COMPOSE_EXT = extensions['compose-ext']()
 STATS = extensions['stats']()
 
+COMPOSE.load(**SUGAR_ARGS)  # type: ignore
+COMPOSE_EXT.load(**SUGAR_ARGS)  # type: ignore
+STATS.load(**SUGAR_ARGS)  # type: ignore
+
 
 @pytest.mark.parametrize(
-    'args,ext,action',
+    'ext,action,args',
     [
-        COMPOSE,
-        'version',
-        {'version': True},
-        COMPOSE,
-        'config',
-        {'service_group': 'group1'},
-        COMPOSE_EXT,
-        'version',
-        {'version': True},
-        COMPOSE_EXT,
-        'config',
-        {'service_group': 'group1'},
+        (COMPOSE, 'version', {}),
+        (COMPOSE, 'config', {}),
+        (COMPOSE, 'ls', {}),
+        (COMPOSE, 'ps', {}),
+        (COMPOSE_EXT, 'version', {}),
+        (COMPOSE_EXT, 'config', {}),
+        (COMPOSE_EXT, 'ls', {}),
+        (COMPOSE_EXT, 'ps', {}),
     ],
 )
 def test_success(ext: SugarBase, action: str, args: dict[str, Any]) -> None:
     """Test success cases."""
-    args.update(
-        {
-            'config_file': str(CONFIG_PATH.absolute()),
-            'verbose': True,
-        }
-    )
-    args_obj = deepcopy(DEFAULT_ARGS)
-    args_obj.update(args)
-
-    getattr(ext, f'_cmd_{action}')(args_obj)
+    getattr(ext, f'_cmd_{action}')(**args)

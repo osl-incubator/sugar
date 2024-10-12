@@ -39,12 +39,14 @@ class SugarBase:
     backend_app: sh.Command = sh.echo
     backend_args: list[str] = []
     defaults: dict[str, Any] = {}
+    dry_run: bool = False
     env: dict[str, str] = {}
     options_args: list[str] = []
     cmd_args: list[str] = []
     service_group: dict[str, Any] = {}
     service_names: list[str] = []
     group_selected: str = ''
+    verbose: bool = False
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """Initialize the actions list for all the created commands."""
@@ -62,6 +64,7 @@ class SugarBase:
         """Initialize SugarBase instance."""
         self.file = '.sugar.yaml'
         self.verbose = False
+        self.dry_run = False
         self.args: dict[str, str] = {}
         self.options_args: list[str] = []
         self.cmd_args: list[str] = []
