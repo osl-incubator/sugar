@@ -126,7 +126,7 @@ class SugarBase:
 
         if self.verbose or self.dry_run:
             SugarLogs.print_info(
-                f'>>> {self.backend_app} {' '.join(positional_parameters)}'
+                f'>>> {self.backend_app} {" ".join(positional_parameters)}'
             )
             SugarLogs.print_info('-' * 80)
 
