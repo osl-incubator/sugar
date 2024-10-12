@@ -11,7 +11,6 @@ from typing import Any, Callable, Dict, Optional, Type, Union, cast
 import click
 import typer
 
-from fuzzywuzzy import process
 from typer import Option
 
 from sugar import __version__
@@ -19,9 +18,11 @@ from sugar.core import extensions
 from sugar.docs import MetaDocs, MetaDocsParams
 from sugar.logs import SugarLogs
 
+# "count" means the number of parameters expected for each flag
 CLI_ROOT_FLAGS_VALUES_COUNT = {
     '--dry-run': 0,
     '--file': 1,
+    '--group': 1,
     '--help': 0,  # not necessary to store this value
     '--verbose': 0,
     '--version': 0,  # not necessary to store this value
@@ -29,6 +30,14 @@ CLI_ROOT_FLAGS_VALUES_COUNT = {
 
 flags_state: dict[str, bool] = {
     'verbose': False,
+}
+
+flags_group: dict[str, str] = {
+    'group': '',
+}
+
+flags_dry_run: dict[str, bool] = {
+    'dry_run': False,
 }
 
 opt_state: dict[str, list[Any]] = {
@@ -69,11 +78,15 @@ def version_callback() -> None:
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
+    group: str = Option(
+        '',
+        '--group',
+        help='Set the group of services for running the sugar command.',
+    ),
     version: bool = Option(
         None,
         '--version',
         '-v',
-        callback=version_callback,
         is_flag=True,
         is_eager=True,
         help='Show the version of sugar.',
@@ -84,6 +97,13 @@ def main(
         is_flag=True,
         is_eager=True,
         help='Show the command executed.',
+    ),
+    dry_run: bool = Option(
+        False,
+        '--dry-run',
+        is_flag=True,
+        is_eager=True,
+        help="Don't actually execute the command.",
     ),
 ) -> None:
     """
@@ -97,26 +117,17 @@ def main(
         # global
         flags_state['verbose'] = True
 
+    if group:
+        # global
+        flags_group['group'] = group
+
+    if dry_run:
+        # global
+        flags_dry_run['dry_run'] = True
+
     if ctx.invoked_subcommand is None:
         # typer.echo('Welcome to sugar. For usage, try --help.')
         raise typer.Exit()
-
-
-def suggest_command(user_input: str, available_commands: list[str]) -> str:
-    """
-    Suggest the closest command to the user input using fuzzy search.
-
-    Parameters
-    ----------
-    user_input (str): The command input by the user.
-    available_commands (list): A list of available commands.
-
-    Returns
-    -------
-    str: The suggested command.
-    """
-    suggestion, _ = process.extractOne(user_input, available_commands)
-    return str(suggestion)
 
 
 def map_type_from_string(type_name: str) -> Type[Union[str, int, float, bool]]:
@@ -408,6 +419,7 @@ def extract_root_config(
 
     # default values
     sugar_file = '.sugar.yaml'
+    group = ''
     dry_run = False
     verbose = False
 
@@ -421,6 +433,11 @@ def extract_root_config(
             if arg == '--file':
                 try:
                     sugar_file = params[idx + 1]
+                except IndexError:
+                    pass
+            elif arg == '--group':
+                try:
+                    group = params[idx + 1]
                 except IndexError:
                     pass
             elif arg == '--dry-run':
@@ -440,6 +457,7 @@ def extract_root_config(
 
     return {
         'file': sugar_file,
+        'group': group,
         'dry_run': dry_run,
         'verbose': verbose,
     }
@@ -489,6 +507,7 @@ def run_app() -> None:
     for sugar_ext in sugar_exts.values():
         sugar_ext.load(
             file=config_file_path,
+            group=cast(str, root_config.get('group', '')),
             dry_run=cast(bool, root_config.get('dry_run', False)),
             verbose=cast(bool, root_config.get('verbose', False)),
         )
@@ -505,12 +524,14 @@ def run_app() -> None:
         for action in actions:
             fn_name = f'_cmd_{action}'
             fn = getattr(ext_obj, fn_name)
+            title = fn._meta_docs.get('title', '')
+
             commands[ext_name].append(
                 cast(
                     MetaDocs,
                     {
                         'name': action,
-                        'title': fn._meta_docs.get('title', ''),
+                        'title': title,
                         'parameters': cast(
                             MetaDocsParams, fn._meta_docs.get('parameters', {})
                         ),
@@ -546,16 +567,7 @@ def run_app() -> None:
             raise e
 
         command_used = _get_command_from_cli()
-
-        available_cmds = [
-            cmd.name for cmd in app.registered_commands if cmd.name is not None
-        ]
-        suggestion = suggest_command(command_used, available_cmds)
-
-        typer.secho(
-            f"Command {command_used} not found. Did you mean '{suggestion}'?",
-            fg='red',
-        )
+        typer.secho(f'Command {command_used} not found.', fg='red')
 
         raise e
 

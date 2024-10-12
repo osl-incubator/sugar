@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import os
+import shlex
 import sys
 
 from copy import deepcopy
@@ -43,6 +44,7 @@ class SugarBase:
     cmd_args: list[str] = []
     service_group: dict[str, Any] = {}
     service_names: list[str] = []
+    group_selected: str = ''
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """Initialize the actions list for all the created commands."""
@@ -56,15 +58,10 @@ class SugarBase:
                 action_name = name[prefix_len:]
                 cls.actions.append(action_name)
 
-    def __init__(
-        self,
-        file: str = '.sugar.yaml',
-        verbose: bool = False,
-    ) -> None:
+    def __init__(self) -> None:
         """Initialize SugarBase instance."""
-        self.file = file
-        self.verbose = verbose
-
+        self.file = '.sugar.yaml'
+        self.verbose = False
         self.args: dict[str, str] = {}
         self.options_args: list[str] = []
         self.cmd_args: list[str] = []
@@ -74,8 +71,9 @@ class SugarBase:
         self.env: dict[str, str] = {}
         self.service_group: dict[str, Any] = {}
         self.service_names: list[str] = []
+        self.group_selected: str = ''
 
-    def _setup(self, **kwargs: Any) -> None:
+    def _setup_load(self, **kwargs: Any) -> None:
         """Set up the configuration for running the commands."""
         args: dict[str, str] = kwargs.get('args', {})
         options_args: list[str] = kwargs.get('options_args', [])
@@ -90,15 +88,15 @@ class SugarBase:
         self._load_env()
         self._load_defaults()
         self._load_root_services()
-        self._verify_args()
+
         self._load_backend_app()
         self._load_backend_args()
-        self._verify_config()
-        self._load_service_names()
 
-    def _call_backend_app_core(
+        self._verify_config()
+
+    def _call_backend_app(
         self,
-        *args: str,
+        action: str,
         services: list[str] = [],
         options_args: list[str] = [],
         cmd_args: list[str] = [],
@@ -115,17 +113,25 @@ class SugarBase:
             '_bg_exc': False,
         }
 
-        positional_parameters = (
-            self.backend_args
-            + list(args)
-            + (options_args or self.options_args)
-            + services
-            + (cmd_args or self.cmd_args)
-        )
+        positional_parameters = [
+            *self.backend_args,
+            *[action],
+            *options_args,
+            *services,
+            *cmd_args,
+        ]
 
-        if self.args.get('verbose'):
-            print('>>>', self.backend_app, *positional_parameters)
-            print('-' * 80)
+        if self.verbose or self.dry_run:
+            SugarLogs.print_info(
+                f'>>> {self.backend_app} {' '.join(positional_parameters)}'
+            )
+            SugarLogs.print_info('-' * 80)
+
+        if self.dry_run:
+            SugarLogs.print_warning(
+                'Running it in dry-run mode, the command was skipped.'
+            )
+            return
 
         p = self.backend_app(
             *positional_parameters,
@@ -142,18 +148,6 @@ class SugarBase:
             SugarLogs.raise_error(
                 f'Process {pid} killed.', SugarErrorType.SH_KEYBOARD_INTERRUPT
             )
-
-    def _call_backend_app(
-        self,
-        *args: str,
-        services: list[str] = [],
-    ) -> None:
-        self._call_backend_app_core(
-            *args,
-            services=services,
-            _out=sys.stdout,
-            _err=sys.stderr,
-        )
 
     def _check_config_file(self) -> bool:
         return Path(self.file).exists()
@@ -189,7 +183,7 @@ class SugarBase:
     def _filter_service_group(self) -> None:
         groups = self.config['groups']
 
-        if not self.args.get('service_group'):
+        if not self.group_selected:
             default_group = self.defaults.get('group')
             if not default_group:
                 SugarLogs.raise_error(
@@ -199,7 +193,7 @@ class SugarBase:
                 )
             selected_group_name = default_group
         else:
-            selected_group_name = self.args.get('service_group')
+            selected_group_name = self.group_selected
 
         # Verify if project-name is not null
         default_project_name = self.defaults.get('project-name', '') or ''
@@ -252,17 +246,17 @@ class SugarBase:
 
     def _load_backend_app(self) -> None:
         backend_cmd = self.config.get('backend', '')
-        if backend_cmd.replace(' ', '-') != 'docker-compose':
+        supported_backends = ['compose']
+
+        if backend_cmd not in supported_backends:
             SugarLogs.raise_error(
-                f'"{self.config["backend"]}" not supported yet.',
+                f'"{self.config["backend"]}" not supported yet.'
+                f' Supported backends are: {', '.join(supported_backends)}.',
                 SugarErrorType.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
             )
 
-        if backend_cmd == 'docker-compose':
-            self.backend_app = sh.docker_compose
-            return
         self.backend_app = sh.docker
-        self.backend_args.append('compose')
+        self.backend_args.append(backend_cmd)
 
     def _load_backend_args(self) -> None:
         self._filter_service_group()
@@ -326,45 +320,56 @@ class SugarBase:
             )
         self.env.update(dotenv.dotenv_values(env_file))  # type: ignore
 
-    def _load_service_names(self) -> None:
-        services = self.service_group['services']
+    def _get_list_args(self, args: str) -> list[str]:
+        """Return a list with the name of the service if any."""
+        if not args.strip():
+            return []
 
-        if self.args.get('all'):
-            self.service_names = [
+        return shlex.split(args)
+
+    def _get_service_name(self, service: str) -> list[str]:
+        """Return a list with the name of the service if any."""
+        return [service] if service else []
+
+    def _get_services_names(self, **kwargs: Any) -> list[str]:
+        if 'all' not in kwargs and 'services' not in kwargs:
+            # the command doesn't specify services (e.g. version)
+            return []
+
+        _arg_services = kwargs.get('services', '')
+        _arg_all = kwargs.get('all', '')
+
+        services_config = self.service_group['services']
+        service_names: list[str] = []
+        services_default = services_config.get('default', '')
+
+        if _arg_all:
+            service_names = [
                 v['name']
                 for v in self.service_group.get('services', {}).get(
                     'available'
                 )
             ]
-        elif self.args.get('services') == '':
+        elif _arg_services == '' and not services_default:
             SugarLogs.raise_error(
                 'If you want to execute the operation for all services, '
                 'use --all parameter.',
                 SugarErrorType.SUGAR_INVALID_PARAMETER,
             )
-        elif self.args.get('services'):
-            self.service_names = self.args.get('services', '').split(',')
-        elif services.get('default'):
-            self.service_names = services.get('default', '').split(',')
+        elif _arg_services:
+            service_names = _arg_services.split(',')
+        elif services_config.get('default'):
+            service_names = services_default.split(',')
 
-    def _verify_args(self) -> None:
+        return service_names
+
+    def _verify_config(self) -> None:
         if not self._check_config_file():
             SugarLogs.raise_error(
                 'Config file .sugar.yaml not found.',
                 SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
 
-        if (
-            self.args.get('action')
-            and self.args.get('action') not in self.actions
-        ):
-            SugarLogs.raise_error(
-                f'The given action `{self.args.get("action")}` is not '
-                f'valid. Use one of them: {",".join(self.actions)}.',
-                SugarErrorType.SUGAR_INVALID_PARAMETER,
-            )
-
-    def _verify_config(self) -> None:
         if not len(self.config['groups']):
             SugarLogs.raise_error(
                 'No service groups found.',
@@ -375,11 +380,16 @@ class SugarBase:
         SugarLogs.print_info(f'Sugar Version: {__version__}')
 
     def load(
-        self, file: str, dry_run: bool = False, verbose: bool = False
+        self,
+        file: str = '.sugar.yaml',
+        group: str = '',
+        dry_run: bool = False,
+        verbose: bool = False,
     ) -> None:
         """Load makim configuration."""
         self.file = file
+        self.group_selected = group
         self.dry_run = dry_run
         self.verbose = verbose
 
-        self._setup()
+        self._setup_load()

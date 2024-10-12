@@ -21,7 +21,7 @@ from sugar.console import get_terminal_size
 from sugar.docs import docparams
 from sugar.extensions.compose import (
     SugarCompose,
-    doc_common_services,
+    doc_common_services_no_options,
 )
 from sugar.inspect import get_container_name, get_container_stats
 from sugar.logs import SugarErrorType, SugarLogs
@@ -267,23 +267,21 @@ class StatsPlotApp(App[str]):
 class SugarStats(SugarCompose):
     """SugarStats provides special commands not available on docker-compose."""
 
-    @docparams(doc_common_services)
+    @docparams(doc_common_services_no_options)
     def _cmd_plot(
         self,
-        group: str,
         services: str,
         all: bool,
-        options: str,
-        config_file: str,
-        verbose: bool,
     ) -> None:
         """Call the plot command."""
         _out = io.StringIO()
         _err = io.StringIO()
 
-        super()._call_backend_app_core(
+        services_names = self._get_services_names(services=services, all=all)
+
+        super()._call_backend_app(
             'ps',
-            services=self.service_names,
+            services=services_names,
             options_args=['-q'],
             _out=_out,
             _err=_err,
@@ -292,9 +290,9 @@ class SugarStats(SugarCompose):
         raw_out = _out.getvalue()
 
         if not raw_out:
-            service_names = ', '.join(self.service_names)
+            service_names_txt = ', '.join(services_names)
             SugarLogs.raise_error(
-                f'No container found for the services: {service_names}',
+                f'No container found for the services: {service_names_txt}',
                 SugarErrorType.SUGAR_NO_SERVICES_RUNNING,
             )
 
