@@ -203,7 +203,6 @@ class SugarCompose(SugarBase):
         """Force stop service containers."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
-        breakpoint()
         self._call_backend_app(
             'kill', services=services_names, options_args=options_args
         )

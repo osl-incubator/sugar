@@ -180,6 +180,7 @@ class SugarBase:
             }
         }
         self.defaults['group'] = 'main'
+        self.group_selected = 'main'
         self.service_group = deepcopy(self.config['groups']['main'])
         del self.config['services']
 

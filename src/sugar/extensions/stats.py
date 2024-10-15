@@ -287,6 +287,9 @@ class SugarStats(SugarCompose):
             _err=_err,
         )
 
+        if self.dry_run:
+            return
+
         raw_out = _out.getvalue()
 
         if not raw_out:
