@@ -1,6 +1,15 @@
 # Release Notes
 ---
 
+## [1.14.2](https://github.com/osl-incubator/sugar/compare/1.14.1...1.14.2) (2024-10-15)
+
+
+### Bug Fixes
+
+* Refactor and fix  sugar classes and CLI ([#128](https://github.com/osl-incubator/sugar/issues/128)) ([5ee9adf](https://github.com/osl-incubator/sugar/commit/5ee9adf67c1c8eada6425dd86de499532c654ac0))
+* Refactor the interface for the plugins/extensions, move the main commands to the compose group ([#127](https://github.com/osl-incubator/sugar/issues/127)) ([0e0e7fe](https://github.com/osl-incubator/sugar/commit/0e0e7fece180f65d809e6339b073cdb88c0ffeff))
+* Remove breakpoints, fix small issues and add unittests ([#129](https://github.com/osl-incubator/sugar/issues/129)) ([62ff5c2](https://github.com/osl-incubator/sugar/commit/62ff5c2f10e1fa046af96ca6c58cf5faf3665c68))
+
 ## [1.14.1](https://github.com/osl-incubator/sugar/compare/1.14.0...1.14.1) (2024-09-27)
 
 
