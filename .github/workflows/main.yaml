@@ -37,6 +37,7 @@ jobs:
         shell: bash -l {0}
 
     strategy:
+      fail-fast: false
       matrix:
         python_version:
           - "3.9"

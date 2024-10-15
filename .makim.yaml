@@ -4,7 +4,7 @@ groups:
   clean:
     env-file: .env
     tasks:
-      all:
+      tmp:
         help: Remove build artifacts, compiled files, and cache
         run: |
           rm -f .coverage

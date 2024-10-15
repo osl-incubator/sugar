@@ -233,9 +233,6 @@ def create_args_string(args: dict[str, dict[str, str]]) -> str:
             default_value = spec.get('default', '')
             default_value = get_default_value_str(arg_type, default_value)
 
-        if isinstance(help_text, tuple):
-            breakpoint()
-
         arg_str = arg_template.format(
             **{
                 'arg_name': name_clean,
