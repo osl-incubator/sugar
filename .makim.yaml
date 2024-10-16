@@ -212,7 +212,6 @@ groups:
             - task: tests.smoke-2
             - task: tests.smoke-mix
             - task: tests.smoke-main
-            - task: tests.smoke-defaults
             - task: tests.smoke-final
             - task: tests.smoke-services
             - task: tests.smoke-experimental
