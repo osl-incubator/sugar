@@ -6,6 +6,7 @@ import io
 import os
 import shlex
 import sys
+import tempfile
 
 from copy import deepcopy
 from pathlib import Path
@@ -19,6 +20,7 @@ from jinja2 import Environment
 
 from sugar import __version__
 from sugar.logs import SugarErrorType, SugarLogs
+from sugar.utils import camel_to_snake
 
 TEMPLATE = Environment(
     autoescape=False,
@@ -47,6 +49,7 @@ class SugarBase:
     service_names: list[str] = []
     group_selected: str = ''
     verbose: bool = False
+    hooks: dict[str, list[dict[str, Any]]] = {}
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         """Initialize the actions list for all the created commands."""
@@ -106,6 +109,12 @@ class SugarBase:
         _out: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stdout,
         _err: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stderr,
     ) -> None:
+        # Execute pre-run hooks
+        extension = camel_to_snake(
+            self.__class__.__name__.replace('Sugar', '')
+        )
+        self._execute_hooks('pre-run', extension, action)
+
         sh_extras = {
             '_in': sys.stdin,
             '_out': _out,
@@ -151,6 +160,7 @@ class SugarBase:
             SugarLogs.raise_error(
                 f'Process {pid} killed.', SugarErrorType.SH_KEYBOARD_INTERRUPT
             )
+        self._execute_hooks('post-run', extension, action)
 
     def _check_config_file(self) -> bool:
         return Path(self.file).exists()
@@ -158,6 +168,40 @@ class SugarBase:
     # Check if services item is given
     def _check_services_item(self) -> bool:
         return hasattr(self.config, 'services')
+
+    def _execute_hooks(
+        self, hook_type: str, extension: str, action: str
+    ) -> None:
+        """Execute hooks specific type, extension, and action."""
+        hooks = self.hooks.get(hook_type, [])
+
+        sh_extras = {
+            '_in': sys.stdin,
+            '_out': sys.stdout,
+            '_err': sys.stderr,
+            '_no_err': True,
+            '_env': os.environ,
+        }
+
+        fd, filepath = tempfile.mkstemp(suffix='sugar', text=True)
+
+        for hook in hooks:
+            targets = hook.get('targets', {})
+            target_ext = targets.get(extension, [])
+            hook_name = hook.get('name', '')
+
+            if not target_ext or action not in target_ext:
+                continue
+
+            SugarLogs.print_info(f'Running {hook_type} hook: {hook_name} ...')
+            cmd = hook.get('run', '').strip()
+
+            with open(filepath, 'w') as f:
+                f.write(cmd)
+
+            sh.xonsh(filepath, **sh_extras)
+
+        os.remove(filepath)
 
     # set default group main
     def _load_root_services(self) -> None:
@@ -213,7 +257,7 @@ class SugarBase:
                     default_services = [
                         service['name']
                         for service in group_data.get('services', {}).get(
-                            'available'
+                            'available', []
                         )
                     ]
                     group_data['services']['default'] = ','.join(
@@ -223,7 +267,7 @@ class SugarBase:
                 return
 
         SugarLogs.raise_error(
-            f'The given group service "{group_name}" was not found '
+            f'The given group service "{selected_group_name}" was not found '
             'in the configuration file.',
             SugarErrorType.SUGAR_MISSING_PARAMETER,
         )
@@ -247,6 +291,9 @@ class SugarBase:
                 '`services` and `groups` flags given, only 1 is allowed.',
                 SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
+
+        # Load hooks
+        self.hooks = self.config.get('hooks', {})
 
     def _load_backend_app(self) -> None:
         backend_cmd = self.config.get('backend', '')
@@ -341,7 +388,7 @@ class SugarBase:
             return []
 
         _arg_services = kwargs.get('services', '')
-        _arg_all = kwargs.get('all', '')
+        _arg_all = kwargs.get('all', False)
 
         services_config = self.service_group['services']
         service_names: list[str] = []
@@ -349,21 +396,21 @@ class SugarBase:
 
         if _arg_all:
             service_names = [
-                v['name']
-                for v in self.service_group.get('services', {}).get(
-                    'available'
+                service['name']
+                for service in self.service_group.get('services', {}).get(
+                    'available', []
                 )
             ]
-        elif _arg_services == '' and not services_default:
+        elif _arg_services:
+            service_names = _arg_services.split(',')
+        elif services_default:
+            service_names = services_default.split(',')
+        else:
             SugarLogs.raise_error(
                 'If you want to execute the operation for all services, '
                 'use --all parameter.',
                 SugarErrorType.SUGAR_INVALID_PARAMETER,
             )
-        elif _arg_services:
-            service_names = _arg_services.split(',')
-        elif services_config.get('default'):
-            service_names = services_default.split(',')
 
         return service_names
 
@@ -374,7 +421,7 @@ class SugarBase:
                 SugarErrorType.SUGAR_INVALID_CONFIGURATION,
             )
 
-        if not len(self.config['groups']):
+        if not len(self.config.get('groups', {})):
             SugarLogs.raise_error(
                 'No service groups found.',
                 SugarErrorType.SUGAR_INVALID_CONFIGURATION,
@@ -390,7 +437,7 @@ class SugarBase:
         dry_run: bool = False,
         verbose: bool = False,
     ) -> None:
-        """Load makim configuration."""
+        """Load sugar configuration."""
         self.file = file
         self.group_selected = group
         self.dry_run = dry_run
