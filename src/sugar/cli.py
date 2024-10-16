@@ -78,6 +78,11 @@ def version_callback() -> None:
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
+    file: str = Option(
+        '',
+        '--file',
+        help='Set the sugar config file.',
+    ),
     group: str = Option(
         '',
         '--group',
@@ -126,7 +131,6 @@ def main(
         flags_dry_run['dry_run'] = True
 
     if ctx.invoked_subcommand is None:
-        # typer.echo('Welcome to sugar. For usage, try --help.')
         raise typer.Exit()
 
 
@@ -376,12 +380,11 @@ def extract_options_and_cmd_args() -> tuple[list[str], list[str]]:
     for sugar_arg in [
         '--verbose',
         '--version',
-        '--service-group',
         '--group',
         '--services',
         '--service',
         '--all',
-        '--config-file',
+        '--file',
     ]:
         if sugar_arg not in args:
             continue

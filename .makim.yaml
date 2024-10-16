@@ -30,8 +30,9 @@ groups:
 
       preview:
         help: Preview the documentation
-        dependencies:
-          - task: docs.build
+        hooks:
+          pre-run:
+            - task: docs.build
         run: mkdocs serve --watch docs --config-file mkdocs.yaml
 
   package:
@@ -61,8 +62,9 @@ groups:
 
       smoke-1:
         help: Run smoke tests for group 1
-        dependencies:
-          - task: docker.killall
+        hooks:
+          pre-run:
+            - task: docker.killall
         vars:
           SUGAR_FLAGS: --verbose --group group1
         run: |
@@ -82,34 +84,32 @@ groups:
 
       smoke-2:
         help: Run smoke tests for group 2
-        dependencies:
-          - task: docker.killall
+        hooks:
+          pre-run:
+            - task: docker.killall
         vars:
           SUGAR_FLAGS: --verbose --group group2
         run: |
           sugar ${{ vars.SUGAR_FLAGS }} compose build --all
           sugar ${{ vars.SUGAR_FLAGS }} compose build
           sugar ${{ vars.SUGAR_FLAGS }} compose build --services service2-1
-          sugar ${{ vars.SUGAR_FLAGS }} compose pull --all
-          sugar ${{ vars.SUGAR_FLAGS }} compose pull
-          sugar ${{ vars.SUGAR_FLAGS }} compose pull --services service2-1
-          sugar ${{ vars.SUGAR_FLAGS }} compose-ext start --all --options -d
-          sugar ${{ vars.SUGAR_FLAGS }} compose-ext restart --all --options -d
-          sugar ${{ vars.SUGAR_FLAGS }} compose exec --service service2-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} compose pull --allconfig2-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose stop --all
           sugar ${{ vars.SUGAR_FLAGS }} compose run --service service2-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose down
       smoke-services:
         help:
-        dependencies:
-          - task: docker.killall
+        hooks:
+          pre-run:
+            - task: docker.killall
         run: |
-          sugar --verbose --config-file tests/containers/.services.sugar.yaml compose build
+          sugar --verbose --file tests/containers/.services.sugar.yaml compose build
 
       smoke-mix:
         help: Run smoke tests for group mix
-        dependencies:
-          - task: docker.killall
+        hooks:
+          pre-run:
+            - task: docker.killall
         vars:
           SUGAR_FLAGS: --verbose --group group-mix
         run: |
@@ -128,8 +128,9 @@ groups:
 
       smoke-main:
         help: Run smoke tests for group main
-        dependencies:
-          - task: docker.killall
+        hooks:
+          pre-run:
+            - task: docker.killall
         vars:
           SUGAR_FLAGS: --verbose --group group1
         run: |
@@ -151,16 +152,7 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose top
           sugar ${{ vars.SUGAR_FLAGS }} compose up --options -d
           sugar ${{ vars.SUGAR_FLAGS }} compose version --verbose
-          # port is not complete supported
-          # sugar ${{ vars.SUGAR_FLAGS }} compose events --service service1-1 --options --json --dry-run
-
-      smoke-defaults:
-        help: Run smoke tests for group defaults
-        dependencies:
-          - task: docker.killall
-        vars:
-          SUGAR_FLAGS: --verbose --group group-defaults
-        run: |
+          # port is not complete supportedconfig
           export SUGAR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
           echo $SUGAR_PROJECT_NAME
           sugar ${{ vars.SUGAR_FLAGS }} compose build
@@ -171,8 +163,9 @@ groups:
 
       smoke-final:
         help: Run final smoke tests
-        dependencies:
-          - task: docker.killall
+        hooks:
+          pre-run:
+            - task: docker.killall
         run: |
           sugar --verbose --group group-defaults compose-ext restart --options -d
           sugar --verbose --group group1 compose pause
@@ -184,28 +177,45 @@ groups:
 
       smoke-experimental:
         help: Run simple text for experimental commands
-        dependencies:
-          - task: docker.killall
+        hooks:
+          pre-run:
+            - task: docker.killall
         run: |
-          sugar --verbose compose attach--help
+          sugar --verbose compose attach --help
           sugar --verbose compose cp --help
           sugar --verbose compose ls --help
           sugar --verbose compose scale --help
           sugar --verbose compose wait --help
           sugar --verbose compose watch --help
 
+      smoke-hooks:
+        help: Run simple text for experimental commands
+        hooks:
+          pre-run:
+            - task: docker.killall
+        vars:
+          SUGAR_FLAGS: --file .hooks.sugar.yaml
+        dir: tests/containers
+        run: |
+          sugar ${{ vars.SUGAR_FLAGS }} compose config | grep "RUNNING PRE-RUN FOR CONFIG"
+          sugar ${{ vars.SUGAR_FLAGS }} compose config | grep "CONFIG EXECUTED WITH SUCCESS"
+          sugar ${{ vars.SUGAR_FLAGS }} compose-ext config | grep "RUNNING PRE-RUN FOR CONFIG"
+          sugar ${{ vars.SUGAR_FLAGS }} compose-ext config | grep "CONFIG EXECUTED WITH SUCCESS"
+
       smoke:
         help: Run final smoke tests
-        dependencies:
-          - task: docker.killall
-          - task: tests.smoke-1
-          - task: tests.smoke-2
-          - task: tests.smoke-mix
-          - task: tests.smoke-main
-          - task: tests.smoke-defaults
-          - task: tests.smoke-final
-          - task: tests.smoke-services
-          - task: tests.smoke-experimental
+        hooks:
+          pre-run:
+            - task: docker.killall
+            - task: tests.smoke-1
+            - task: tests.smoke-2
+            - task: tests.smoke-mix
+            - task: tests.smoke-main
+            - task: tests.smoke-defaults
+            - task: tests.smoke-final
+            - task: tests.smoke-services
+            - task: tests.smoke-experimental
+            - task: tests.smoke-hooks
         run: |
           sugar --verbose compose --help
           sugar --verbose compose version

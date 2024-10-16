@@ -1,0 +1,35 @@
+version: 1.0
+backend: compose
+
+defaults:
+  project-name: sugar-{{ env.SUGAR_PROJECT_NAME }}
+
+hooks:
+  pre-run:
+    - name: run setup before run the config
+      targets:
+        compose:
+          - config
+        compose-ext:
+          - config
+      run: |
+        echo "RUNNING PRE-RUN FOR CONFIG"
+
+  post-run:
+    - name: run teardown after executed the config
+      targets:
+        compose:
+          - config
+        compose-ext:
+          - config
+      run: |
+        echo "CONFIG EXECUTED WITH SUCCESS"
+
+services:
+  project-name: project1 # optional
+  config-path: group1/compose.yaml
+  default: service1-1,service1-3
+  available:
+    - name: service1-1
+    - name: service1-2
+    - name: service1-3
