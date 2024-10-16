@@ -158,7 +158,8 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose build
           sugar ${{ vars.SUGAR_FLAGS }} compose-ext start --options -d
           sugar ${{ vars.SUGAR_FLAGS }} compose-ext restart --options -d
-          docker ps|grep $SUGAR_PROJECT_NAME
+          # TODO: it seems that the SUGAR_PROJECT_NAME is not used properly from this block
+          # docker ps|grep $SUGAR_PROJECT_NAME
           sugar ${{ vars.SUGAR_FLAGS }} compose-ext stop
 
       smoke-final:
