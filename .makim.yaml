@@ -151,8 +151,8 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose run --service service1-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose top
           sugar ${{ vars.SUGAR_FLAGS }} compose up --options -d
-          sugar ${{ vars.SUGAR_FLAGS }} compose version --verbose
-          # port is not complete supportedconfig
+          sugar ${{ vars.SUGAR_FLAGS }} compose version
+          # port is not complete supported
           export SUGAR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
           echo $SUGAR_PROJECT_NAME
           sugar ${{ vars.SUGAR_FLAGS }} compose build
