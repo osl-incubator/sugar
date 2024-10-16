@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.15.0](https://github.com/osl-incubator/sugar/compare/1.14.2...1.15.0) (2024-10-16)
+
+
+### Features
+
+* Add support for pre and post hooks ([#130](https://github.com/osl-incubator/sugar/issues/130)) ([74bdada](https://github.com/osl-incubator/sugar/commit/74bdadaae6a83cc6d4ab43c0811535c7aadaeb44))
+
 ## [1.14.2](https://github.com/osl-incubator/sugar/compare/1.14.1...1.14.2) (2024-10-15)
 
 
