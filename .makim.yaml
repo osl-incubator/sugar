@@ -93,7 +93,7 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose build --all
           sugar ${{ vars.SUGAR_FLAGS }} compose build
           sugar ${{ vars.SUGAR_FLAGS }} compose build --services service2-1
-          sugar ${{ vars.SUGAR_FLAGS }} compose pull --allconfig2-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} compose pull --all --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose stop --all
           sugar ${{ vars.SUGAR_FLAGS }} compose run --service service2-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose down
