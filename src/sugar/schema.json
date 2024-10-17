@@ -83,7 +83,7 @@
           }
         }
       },
-      "required": ["pre-run", "post-run"],
+      "required": [],
       "additionalProperties": false
     },
     "groups": {
@@ -135,7 +135,7 @@
               "additionalProperties": false
             }
           },
-          "required": ["config-path", "env-file", "services"],
+          "required": ["config-path", "services"],
           "additionalProperties": false
         }
       },
@@ -167,7 +167,7 @@
           }
         }
       },
-      "required": ["project-name", "config-path", "default", "available"],
+      "required": ["config-path", "available"],
       "additionalProperties": false
     }
   },
