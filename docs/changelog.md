@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.16.0](https://github.com/osl-incubator/sugar/compare/1.15.0...1.16.0) (2024-10-17)
+
+
+### Features
+
+* Check if the .sugar.yaml file is valid according to the schema file ([#131](https://github.com/osl-incubator/sugar/issues/131)) ([c5913c8](https://github.com/osl-incubator/sugar/commit/c5913c856d64c41371bf72d688b71c21c704966f))
+
 # [1.15.0](https://github.com/osl-incubator/sugar/compare/1.14.2...1.15.0) (2024-10-16)
 
 
