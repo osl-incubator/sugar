@@ -9,18 +9,23 @@ from enum import Enum
 from colorama import Fore
 
 
-class SugarErrorType(Enum):
-    """SugarErrorType group all error types handled by the system."""
+class SugarError(Enum):
+    """SugarError group all error types handled by the system."""
 
     SH_ERROR_RETURN_CODE = 1
     SH_KEYBOARD_INTERRUPT = 2
-    SUGAR_COMPOSE_APP_NOT_SUPPORTED = 3
-    SUGAR_COMPOSE_APP_NOT_FOUNDED = 4
-    SUGAR_INVALID_PARAMETER = 5
-    SUGAR_MISSING_PARAMETER = 6
-    SUGAR_INVALID_CONFIGURATION = 7
-    SUGAR_ACTION_NOT_IMPLEMENTED = 8
-    SUGAR_NO_SERVICES_RUNNING = 9
+    SUGAR_CONFIG_FILE_NOT_FOUND = 3
+    SUGAR_COMPOSE_APP_NOT_SUPPORTED = 4
+    SUGAR_COMPOSE_APP_NOT_FOUNDED = 5
+    SUGAR_INVALID_PARAMETER = 6
+    SUGAR_MISSING_PARAMETER = 7
+    SUGAR_INVALID_CONFIGURATION = 8
+    SUGAR_ACTION_NOT_IMPLEMENTED = 9
+    SUGAR_NO_SERVICES_RUNNING = 10
+    CONFIG_VALIDATION_ERROR = 11
+    YAML_PARSING_ERROR = 12
+    JSON_SCHEMA_DECODING_ERROR = 13
+    CONFIG_VALIDATION_UNEXPECTED_ERROR = 14
 
 
 class SugarLogs:
@@ -29,7 +34,7 @@ class SugarLogs:
     @staticmethod
     def raise_error(
         message: str,
-        message_type: SugarErrorType = SugarErrorType.SH_ERROR_RETURN_CODE,
+        message_type: SugarError = SugarError.SH_ERROR_RETURN_CODE,
     ) -> None:
         """Print error message and exit with given error code."""
         print(Fore.RED, f'[EE] {message}', Fore.RESET)

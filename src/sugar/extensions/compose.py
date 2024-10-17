@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
-from sugar.logs import SugarErrorType, SugarLogs
+from sugar.logs import SugarError, SugarLogs
 
 doc_group = {
     'group': 'Specify the group name of the services you want to use.'
@@ -351,7 +351,7 @@ class SugarCompose(SugarBase):
         if not service:
             SugarLogs.raise_error(
                 '`run` sub-command expected --service parameter.',
-                SugarErrorType.SUGAR_MISSING_PARAMETER,
+                SugarError.SUGAR_MISSING_PARAMETER,
             )
         services_names = self._get_service_name(service)
         options_args = self._get_list_args(options)

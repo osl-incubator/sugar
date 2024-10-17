@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sugar Configuration Schema",
+  "type": "object",
+  "properties": {
+    "backend": {
+      "type": "string",
+      "enum": ["compose"]
+    },
+    "env-file": {
+      "type": "string"
+    },
+    "defaults": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "project-name": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hooks": {
+      "type": "object",
+      "properties": {
+        "pre-run": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "targets": {
+                "type": "object",
+                "patternProperties": {
+                  "^[a-zA-Z0-9_-]+$": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              },
+              "run": {
+                "type": "string"
+              }
+            },
+            "required": ["name", "targets", "run"],
+            "additionalProperties": false
+          }
+        },
+        "post-run": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "targets": {
+                "type": "object",
+                "patternProperties": {
+                  "^[a-zA-Z0-9_-]+$": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              },
+              "run": {
+                "type": "string"
+              }
+            },
+            "required": ["name", "targets", "run"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["pre-run", "post-run"],
+      "additionalProperties": false
+    },
+    "groups": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_-]+$": {
+          "type": "object",
+          "properties": {
+            "project-name": {
+              "type": "string"
+            },
+            "config-path": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            },
+            "env-file": {
+              "type": "string"
+            },
+            "services": {
+              "type": "object",
+              "properties": {
+                "default": {
+                  "type": "string"
+                },
+                "available": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["name"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["available"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["config-path", "env-file", "services"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "services": {
+      "type": "object",
+      "properties": {
+        "project-name": {
+          "type": "string"
+        },
+        "config-path": {
+          "type": "string"
+        },
+        "default": {
+          "type": "string"
+        },
+        "available": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": ["name"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["project-name", "config-path", "default", "available"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["backend"],
+  "additionalProperties": false
+}

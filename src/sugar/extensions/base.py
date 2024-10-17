@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import json
 import os
 import shlex
 import sys
@@ -17,9 +18,10 @@ import sh
 import yaml
 
 from jinja2 import Environment
+from jsonschema import ValidationError, validate
 
 from sugar import __version__
-from sugar.logs import SugarErrorType, SugarLogs
+from sugar.logs import SugarError, SugarLogs
 from sugar.utils import camel_to_snake
 
 TEMPLATE = Environment(
@@ -27,6 +29,8 @@ TEMPLATE = Environment(
     variable_start_string='${{',
     variable_end_string='}}',
 )
+
+SUGAR_CURRENT_PATH = Path(__file__).parent.parent
 
 
 class SugarBase:
@@ -153,12 +157,12 @@ class SugarBase:
         try:
             p.wait()
         except sh.ErrorReturnCode as e:
-            SugarLogs.raise_error(str(e), SugarErrorType.SH_ERROR_RETURN_CODE)
+            SugarLogs.raise_error(str(e), SugarError.SH_ERROR_RETURN_CODE)
         except KeyboardInterrupt:
             pid = p.pid
             p.kill()
             SugarLogs.raise_error(
-                f'Process {pid} killed.', SugarErrorType.SH_KEYBOARD_INTERRUPT
+                f'Process {pid} killed.', SugarError.SH_KEYBOARD_INTERRUPT
             )
         self._execute_hooks('post-run', extension, action)
 
@@ -237,7 +241,7 @@ class SugarBase:
                 SugarLogs.raise_error(
                     'The service group parameter or default '
                     "group configuration weren't defined.",
-                    SugarErrorType.SUGAR_INVALID_PARAMETER,
+                    SugarError.SUGAR_INVALID_PARAMETER,
                 )
             selected_group_name = default_group
         else:
@@ -269,7 +273,7 @@ class SugarBase:
         SugarLogs.raise_error(
             f'The given group service "{selected_group_name}" was not found '
             'in the configuration file.',
-            SugarErrorType.SUGAR_MISSING_PARAMETER,
+            SugarError.SUGAR_MISSING_PARAMETER,
         )
 
     def _load_config(self) -> None:
@@ -283,14 +287,16 @@ class SugarBase:
         if not (self.config.get('services') or self.config.get('groups')):
             SugarLogs.raise_error(
                 'Either `services` OR  `groups` flag must be given',
-                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
+                SugarError.SUGAR_INVALID_CONFIGURATION,
             )
         # check if both services and groups are present
         if self.config.get('services') and self.config.get('groups'):
             SugarLogs.raise_error(
                 '`services` and `groups` flags given, only 1 is allowed.',
-                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
+                SugarError.SUGAR_INVALID_CONFIGURATION,
             )
+
+        self._validate_config()
 
         # Load hooks
         self.hooks = self.config.get('hooks', {})
@@ -303,7 +309,7 @@ class SugarBase:
             SugarLogs.raise_error(
                 f'"{self.config["backend"]}" not supported yet.'
                 f' Supported backends are: {", ".join(supported_backends)}.',
-                SugarErrorType.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
+                SugarError.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
             )
 
         self.backend_app = sh.docker
@@ -328,7 +334,7 @@ class SugarBase:
                 'The attribute config-path` just supports the data '
                 f'types `string` or `list`, {type(backend_path_arg)} '
                 'received.',
-                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
+                SugarError.SUGAR_INVALID_CONFIGURATION,
             )
 
         for p in config_path:
@@ -367,7 +373,7 @@ class SugarBase:
         if not Path(env_file).exists():
             SugarLogs.raise_error(
                 'The given env-file was not found.',
-                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
+                SugarError.SUGAR_INVALID_CONFIGURATION,
             )
         self.env.update(dotenv.dotenv_values(env_file))  # type: ignore
 
@@ -409,22 +415,68 @@ class SugarBase:
             SugarLogs.raise_error(
                 'If you want to execute the operation for all services, '
                 'use --all parameter.',
-                SugarErrorType.SUGAR_INVALID_PARAMETER,
+                SugarError.SUGAR_INVALID_PARAMETER,
             )
 
         return service_names
+
+    def _validate_config(self) -> None:
+        """
+        Validate the .sugar.yaml against the predefined JSON Schema.
+
+        Raises
+        ------
+            SugarError: If the configuration does not conform to the schema.
+        """
+        try:
+            with open(SUGAR_CURRENT_PATH / 'schema.json', 'r') as schema_file:
+                schema = json.load(schema_file)
+
+            config_data = self.config
+
+            # Validate the configuration against the schema
+            validate(instance=config_data, schema=schema)
+
+            if self.verbose:
+                SugarLogs.print_info('Configuration validation successful.')
+
+        except ValidationError as ve:
+            error_message = f'Configuration validation error: {ve.message}'
+            SugarLogs.raise_error(
+                error_message, SugarError.CONFIG_VALIDATION_ERROR
+            )
+        except yaml.YAMLError as ye:
+            error_message = f'YAML parsing error: {ye}'
+            SugarLogs.raise_error(error_message, SugarError.YAML_PARSING_ERROR)
+        except json.JSONDecodeError as je:
+            error_message = f'JSON schema decoding error: {je}'
+            SugarLogs.raise_error(
+                error_message, SugarError.JSON_SCHEMA_DECODING_ERROR
+            )
+        except FileNotFoundError:
+            error_message = f'Configuration file {self.file} not found.'
+            SugarLogs.raise_error(
+                error_message, SugarError.SUGAR_CONFIG_FILE_NOT_FOUND
+            )
+        except Exception as e:
+            error_message = (
+                f'Unexpected error during configuration validation: {e}'
+            )
+            SugarLogs.raise_error(
+                error_message, SugarError.CONFIG_VALIDATION_UNEXPECTED_ERROR
+            )
 
     def _verify_config(self) -> None:
         if not self._check_config_file():
             SugarLogs.raise_error(
                 'Config file .sugar.yaml not found.',
-                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
+                SugarError.SUGAR_INVALID_CONFIGURATION,
             )
 
         if not len(self.config.get('groups', {})):
             SugarLogs.raise_error(
                 'No service groups found.',
-                SugarErrorType.SUGAR_INVALID_CONFIGURATION,
+                SugarError.SUGAR_INVALID_CONFIGURATION,
             )
 
     def _version(self) -> None:

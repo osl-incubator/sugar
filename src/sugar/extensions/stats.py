@@ -24,7 +24,7 @@ from sugar.extensions.compose import (
     doc_common_services_no_options,
 )
 from sugar.inspect import get_container_name, get_container_stats
-from sugar.logs import SugarErrorType, SugarLogs
+from sugar.logs import SugarError, SugarLogs
 
 CHART_WINDOW_DURATION = 60
 CHART_TIME_INTERVAL = 1
@@ -296,7 +296,7 @@ class SugarStats(SugarCompose):
             service_names_txt = ', '.join(services_names)
             SugarLogs.raise_error(
                 f'No container found for the services: {service_names_txt}',
-                SugarErrorType.SUGAR_NO_SERVICES_RUNNING,
+                SugarError.SUGAR_NO_SERVICES_RUNNING,
             )
 
         containers_ids = [cids for cids in raw_out.split('\n') if cids]

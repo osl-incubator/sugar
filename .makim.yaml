@@ -1,4 +1,3 @@
-version: 1.0.0
 backend: bash
 groups:
   clean:
@@ -56,7 +55,7 @@ groups:
         args:
           params:
             help: Extra parameters for pytest
-            type: str
+            type: string
             default: "-vv"
         run: pytest -s ${{ args.params }} tests
 
@@ -97,8 +96,9 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose stop --all
           sugar ${{ vars.SUGAR_FLAGS }} compose run --service service2-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose down
+
       smoke-services:
-        help:
+        help: Run smoke test for services
         hooks:
           pre-run:
             - task: docker.killall
