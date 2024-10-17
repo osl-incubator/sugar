@@ -20,7 +20,7 @@
           "type": "string"
         }
       },
-      "required": ["group", "project-name"],
+      "required": [],
       "additionalProperties": false
     },
     "hooks": {
