@@ -1,12 +1,11 @@
-version: 1.0
 backend: compose
 env-file: .env
 defaults:
-  group: ${{ env.SUGAR_GROUP }}
-  project-name: sugar-${{ env.SUGAR_PROJECT_NAME }}
+  group: "${{ env.SUGAR_GROUP }}"
+  project-name: "sugar-${{ env.SUGAR_PROJECT_NAME }}"
 groups:
   group1:
-    project-name: project1 # optional
+    project-name: project1
     config-path: tests/containers/group1/compose.yaml
     env-file: .env
     services:
@@ -17,23 +16,19 @@ groups:
         - name: service1-3
 
   group2:
-    project-name: null # optional
     config-path: tests/containers/group2/compose.yaml
     env-file: .env
     services:
-      default: null
       available:
         - name: service2-1
         - name: service2-2
 
   group-mix:
-    project-name: null # optional
     config-path:
       - tests/containers/group1/compose.yaml
       - tests/containers/group2/compose.yaml
     env-file: .env
     services:
-      default: null
       available:
         - name: service1-1
         - name: service1-2
@@ -45,7 +40,6 @@ groups:
       - tests/containers/group1/compose.yaml
     env-file: .env
     services:
-      # default: service1-1,service1-2
       available:
         - name: service1-1
         - name: service1-2
