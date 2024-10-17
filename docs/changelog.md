@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.16.1](https://github.com/osl-incubator/sugar/compare/1.16.0...1.16.1) (2024-10-17)
+
+
+### Bug Fixes
+
+* Fix specification of required attributes in schema.json ([#132](https://github.com/osl-incubator/sugar/issues/132)) ([059de08](https://github.com/osl-incubator/sugar/commit/059de08b3abb5061f833c964525bf2b1e0138947))
+
 # [1.16.0](https://github.com/osl-incubator/sugar/compare/1.15.0...1.16.0) (2024-10-17)
 
 
