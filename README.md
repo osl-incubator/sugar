@@ -1,4 +1,10 @@
-# sugar
+# Sugar
+
+![CI](https://img.shields.io/github/actions/workflow/status/osl-incubator/sugar/main.yaml?logo=github&label=CI)
+[![Python Versions](https://img.shields.io/pypi/pyversions/containers-sugar)](https://pypi.org/project/containers-sugar/)
+[![Package Version](https://img.shields.io/pypi/v/containers-sugar?color=blue)](https://pypi.org/project/containers-sugar/)
+![License](https://img.shields.io/pypi/l/containers-sugar?color=blue)
+![Discord](https://img.shields.io/discord/796786891798085652?logo=discord&color=blue)
 
 Simplify the usage of containers.
 
