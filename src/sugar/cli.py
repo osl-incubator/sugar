@@ -504,6 +504,16 @@ def _handle_config_file(help_requested: bool, config_file_path: str) -> None:
         raise typer.Exit(1)
 
 
+def _show_warning_config_file_not_found(config_file_path: str) -> None:
+    if not _check_sugar_file(config_file_path):
+        typer.secho(
+            f"Warning: Sugar config file '{config_file_path}' "
+            'not found. Some commands may not be fully documented.',
+            fg='yellow',
+            err=True,
+        )
+
+
 def run_app() -> None:
     """Run the typer app."""
     root_config = extract_root_config()
@@ -514,6 +524,9 @@ def run_app() -> None:
     cli_completion_words = [
         w for w in os.getenv('COMP_WORDS', '').split('\n') if w
     ]
+
+    # Show warning if config file not found while showing help
+    _show_warning_config_file_not_found(config_file_path)
 
     if (
         not help_requested
