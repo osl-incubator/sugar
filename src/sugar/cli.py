@@ -487,9 +487,15 @@ def _get_command_from_cli() -> str:
     return command
 
 
+def _is_help_requested() -> bool:
+    """Check if help flag is present in arguments."""
+    return any(arg in ['--help', '-h'] for arg in sys.argv[1:])
+
+
 def run_app() -> None:
     """Run the typer app."""
     root_config = extract_root_config()
+    help_requested = _is_help_requested()
 
     config_file_path = cast(str, root_config.get('file', '.sugar.yaml'))
 
@@ -497,20 +503,29 @@ def run_app() -> None:
         w for w in os.getenv('COMP_WORDS', '').split('\n') if w
     ]
 
-    if not _check_sugar_file(config_file_path) and cli_completion_words:
+    if not help_requested and not _check_sugar_file(config_file_path) and cli_completion_words:
         # autocomplete call
         root_config = extract_root_config(cli_completion_words)
         config_file_path = cast(str, root_config.get('file', '.sugar.yaml'))
         if not _check_sugar_file(config_file_path):
             return
 
-    for sugar_ext in sugar_exts.values():
-        sugar_ext.load(
-            file=config_file_path,
-            group=cast(str, root_config.get('group', '')),
-            dry_run=cast(bool, root_config.get('dry_run', False)),
-            verbose=cast(bool, root_config.get('verbose', False)),
+    if not help_requested and not _check_sugar_file(config_file_path):
+        typer.secho(
+            f"Error: Sugar config file '{config_file_path}' not found in current directory.",
+            fg='red',
+            err=True
         )
+        raise typer.Exit(1)
+
+    for sugar_ext in sugar_exts.values():
+        if not help_requested:
+            sugar_ext.load(
+                file=config_file_path,
+                group=cast(str, root_config.get('group', '')),
+                dry_run=cast(bool, root_config.get('dry_run', False)),
+                verbose=cast(bool, root_config.get('verbose', False)),
+            )
 
     commands: dict[str, list[MetaDocs]] = {}
     actions: list[str] = []
