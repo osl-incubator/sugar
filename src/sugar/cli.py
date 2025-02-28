@@ -492,6 +492,18 @@ def _is_help_requested() -> bool:
     return any(arg in ['--help', '-h'] for arg in sys.argv[1:])
 
 
+def _handle_config_file(help_requested: bool, config_file_path: str) -> None:
+    """Handle config file validation and errors."""
+    if not help_requested and not _check_sugar_file(config_file_path):
+        typer.secho(
+            f"Error: Sugar config file '{config_file_path}' "
+            'not found in current directory.',
+            fg='red',
+            err=True,
+        )
+        raise typer.Exit(1)
+
+
 def run_app() -> None:
     """Run the typer app."""
     root_config = extract_root_config()
@@ -503,20 +515,18 @@ def run_app() -> None:
         w for w in os.getenv('COMP_WORDS', '').split('\n') if w
     ]
 
-    if not help_requested and not _check_sugar_file(config_file_path) and cli_completion_words:
+    if (
+        not help_requested
+        and not _check_sugar_file(config_file_path)
+        and cli_completion_words
+    ):
         # autocomplete call
         root_config = extract_root_config(cli_completion_words)
         config_file_path = cast(str, root_config.get('file', '.sugar.yaml'))
         if not _check_sugar_file(config_file_path):
             return
 
-    if not help_requested and not _check_sugar_file(config_file_path):
-        typer.secho(
-            f"Error: Sugar config file '{config_file_path}' not found in current directory.",
-            fg='red',
-            err=True
-        )
-        raise typer.Exit(1)
+    _handle_config_file(help_requested, config_file_path)
 
     for sugar_ext in sugar_exts.values():
         if not help_requested:
