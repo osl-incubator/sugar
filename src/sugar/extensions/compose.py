@@ -6,8 +6,8 @@ from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
 from sugar.logs import SugarError, SugarLogs
 
-doc_group = {
-    'group': 'Specify the group name of the services you want to use.'
+doc_profile = {
+    'profile': 'Specify the profile name of the services you want to use.'
 }
 doc_service = {'service': 'Set the service for the container call.'}
 doc_services = {
@@ -27,25 +27,25 @@ doc_cmd = {
 }
 
 doc_common_no_services = {
-    **doc_group,
+    **doc_profile,
     **doc_options,
 }
 
 doc_common_service = {
-    **doc_group,
+    **doc_profile,
     **doc_service,
     **doc_options,
 }
 
 doc_common_services = {
-    **doc_group,
+    **doc_profile,
     **doc_services,
     **doc_all_services,
     **doc_options,
 }
 
 doc_common_services_no_options = {
-    **doc_group,
+    **doc_profile,
     **doc_services,
     **doc_all_services,
 }
