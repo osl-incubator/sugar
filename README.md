@@ -80,6 +80,7 @@ The current available **ext** commands are:
 First you need to place the config file `.sugar.yaml` in the root of your
 project. This is an example of a configuration file:
 
+```yaml
 backend: compose
 defaults:
   profile: ${{ env.ENV }}
@@ -103,6 +104,7 @@ profiles:
       available:
         - name: service1
         - name: service3
+```
 
 Some examples of how to use it:
 
