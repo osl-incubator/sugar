@@ -22,7 +22,7 @@ from sugar.logs import SugarLogs
 CLI_ROOT_FLAGS_VALUES_COUNT = {
     '--dry-run': 0,
     '--file': 1,
-    '--group': 1,
+    '--profile': 1,
     '--help': 0,  # not necessary to store this value
     '--verbose': 0,
     '--version': 0,  # not necessary to store this value
@@ -32,8 +32,8 @@ flags_state: dict[str, bool] = {
     'verbose': False,
 }
 
-flags_group: dict[str, str] = {
-    'group': '',
+flags_profile: dict[str, str] = {
+    'profile': '',
 }
 
 flags_dry_run: dict[str, bool] = {
@@ -49,7 +49,7 @@ sugar_exts = {
     ext_name: ext_class() for ext_name, ext_class in extensions.items()
 }
 
-typer_groups: dict[str, typer.Typer] = {}
+typer_profiles: dict[str, typer.Typer] = {}
 
 app = typer.Typer(
     name='sugar',
@@ -83,10 +83,10 @@ def main(
         '--file',
         help='Set the sugar config file.',
     ),
-    group: str = Option(
+    profile: str = Option(
         '',
-        '--group',
-        help='Set the group of services for running the sugar command.',
+        '--profile',
+        help='Set the profile of services for running the sugar command.',
     ),
     version: bool = Option(
         None,
@@ -122,9 +122,9 @@ def main(
         # global
         flags_state['verbose'] = True
 
-    if group:
+    if profile:
         # global
-        flags_group['group'] = group
+        flags_profile['profile'] = profile
 
     if dry_run:
         # global
@@ -304,7 +304,7 @@ def apply_click_options(
 
 def create_dynamic_command(
     ext_name: str,
-    typer_group: typer.Typer,
+    typer_profile: typer.Typer,
     meta: MetaDocs,
 ) -> None:
     """
@@ -312,7 +312,7 @@ def create_dynamic_command(
 
     Parameters
     ----------
-    typer_group : typer.Typer
+    typer_profile : typer.Typer
     name : str
         The command name.
     meta : dict
@@ -331,7 +331,7 @@ def create_dynamic_command(
 
     args_param_str = ','.join(args_param_list)
 
-    decorator = typer_group.command(
+    decorator = typer_profile.command(
         name,
         help=fn_help,
     )
@@ -380,7 +380,7 @@ def extract_options_and_cmd_args() -> tuple[list[str], list[str]]:
     for sugar_arg in [
         '--verbose',
         '--version',
-        '--group',
+        '--profile',
         '--services',
         '--service',
         '--all',
@@ -419,7 +419,7 @@ def extract_root_config(
 
     # default values
     sugar_file = '.sugar.yaml'
-    group = ''
+    profile = ''
     dry_run = False
     verbose = False
 
@@ -435,9 +435,9 @@ def extract_root_config(
                     sugar_file = params[idx + 1]
                 except IndexError:
                     pass
-            elif arg == '--group':
+            elif arg == '--profile':
                 try:
-                    group = params[idx + 1]
+                    profile = params[idx + 1]
                 except IndexError:
                     pass
             elif arg == '--dry-run':
@@ -457,7 +457,7 @@ def extract_root_config(
 
     return {
         'file': sugar_file,
-        'group': group,
+        'profile': profile,
         'dry_run': dry_run,
         'verbose': verbose,
     }
@@ -465,7 +465,7 @@ def extract_root_config(
 
 def _get_command_from_cli() -> str:
     """
-    Get the group and task from CLI.
+    Get the profile and task from CLI.
 
     This function is based on `CLI_ROOT_FLAGS_VALUES_COUNT`.
     """
@@ -545,7 +545,7 @@ def run_app() -> None:
         if not help_requested:
             sugar_ext.load(
                 file=config_file_path,
-                group=cast(str, root_config.get('group', '')),
+                profile=cast(str, root_config.get('profile', '')),
                 dry_run=cast(bool, root_config.get('dry_run', False)),
                 verbose=cast(bool, root_config.get('verbose', False)),
             )
@@ -584,17 +584,17 @@ def run_app() -> None:
         if not ext_obj:
             SugarLogs.raise_error(f'Extension not found ({ext_name}).')
 
-        typer_group = typer.Typer(
+        typer_profile = typer.Typer(
             help=ext_obj.__doc__,
             invoke_without_command=True,
         )
-        typer_groups[ext_name] = typer_group
+        typer_profiles[ext_name] = typer_profile
 
         for action_meta in actions_meta:
-            create_dynamic_command(ext_name, typer_group, action_meta)
+            create_dynamic_command(ext_name, typer_profile, action_meta)
 
-    for ext_name, typer_group in typer_groups.items():
-        app.add_typer(typer_group, name=ext_name, rich_help_panel='COMMAND')
+    for ext_name, typer_profile in typer_profiles.items():
+        app.add_typer(typer_profile, name=ext_name, rich_help_panel='COMMAND')
 
     try:
         app()

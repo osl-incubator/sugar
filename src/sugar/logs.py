@@ -10,7 +10,7 @@ from colorama import Fore
 
 
 class SugarError(Enum):
-    """SugarError group all error types handled by the system."""
+    """SugarError profile all error types handled by the system."""
 
     SH_ERROR_RETURN_CODE = 1
     SH_KEYBOARD_INTERRUPT = 2

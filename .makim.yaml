@@ -60,12 +60,12 @@ groups:
         run: pytest -s ${{ args.params }} tests
 
       smoke-1:
-        help: Run smoke tests for group 1
+        help: Run smoke tests for profile 1
         hooks:
           pre-run:
             - task: docker.killall
         vars:
-          SUGAR_FLAGS: --verbose --group group1
+          SUGAR_FLAGS: --verbose --profile profile1
         run: |
           sugar ${{ vars.SUGAR_FLAGS }} compose build
           sugar ${{ vars.SUGAR_FLAGS }} compose build --all
@@ -82,12 +82,12 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose down
 
       smoke-2:
-        help: Run smoke tests for group 2
+        help: Run smoke tests for profile 2
         hooks:
           pre-run:
             - task: docker.killall
         vars:
-          SUGAR_FLAGS: --verbose --group group2
+          SUGAR_FLAGS: --verbose --profile profile2
         run: |
           sugar ${{ vars.SUGAR_FLAGS }} compose build --all
           sugar ${{ vars.SUGAR_FLAGS }} compose build
@@ -106,12 +106,12 @@ groups:
           sugar --verbose --file tests/containers/.services.sugar.yaml compose build
 
       smoke-mix:
-        help: Run smoke tests for group mix
+        help: Run smoke tests for profile mix
         hooks:
           pre-run:
             - task: docker.killall
         vars:
-          SUGAR_FLAGS: --verbose --group group-mix
+          SUGAR_FLAGS: --verbose --profile profile-mix
         run: |
           sugar ${{ vars.SUGAR_FLAGS }} compose build --all
           sugar ${{ vars.SUGAR_FLAGS }} compose build
@@ -127,12 +127,12 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose down
 
       smoke-main:
-        help: Run smoke tests for group main
+        help: Run smoke tests for profile main
         hooks:
           pre-run:
             - task: docker.killall
         vars:
-          SUGAR_FLAGS: --verbose --group group1
+          SUGAR_FLAGS: --verbose --profile profile1
         run: |
           # general tests main profile/plugins
           sugar ${{ vars.SUGAR_FLAGS }} compose build
@@ -168,13 +168,13 @@ groups:
           pre-run:
             - task: docker.killall
         run: |
-          sugar --verbose --group group-defaults compose-ext restart --options -d
-          sugar --verbose --group group1 compose pause
-          sugar --verbose --group group1 compose unpause
-          sugar --verbose --group group1 compose kill
-          sugar --verbose --group group1 compose stop
-          sugar --verbose --group group1 compose rm --options --force
-          sugar --verbose --group group1 compose down
+          sugar --verbose --profile profile-defaults compose-ext restart --options -d
+          sugar --verbose --profile profile1 compose pause
+          sugar --verbose --profile profile1 compose unpause
+          sugar --verbose --profile profile1 compose kill
+          sugar --verbose --profile profile1 compose stop
+          sugar --verbose --profile profile1 compose rm --options --force
+          sugar --verbose --profile profile1 compose down
 
       smoke-experimental:
         help: Run simple text for experimental commands
