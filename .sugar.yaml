@@ -1,7 +1,7 @@
 backend: compose
 env-file: .env
 defaults:
-  profile: "${{ env.SUGAR_profile }}"
+  profile: "${{ env.SUGAR_PROFILE }}"
   project-name: "sugar-${{ env.SUGAR_PROJECT_NAME }}"
 profiles:
   profile1:
