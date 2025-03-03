@@ -81,7 +81,7 @@ First you need to place the config file `.sugar.yaml` in the root of your
 project. This is an example of a configuration file:
 
 ```yaml
-backend: docker compose
+backend: compose
 default:
   group: ${{ env.ENV }}
 groups:
