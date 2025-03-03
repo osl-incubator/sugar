@@ -125,7 +125,6 @@ markdown_extensions:
   - toc
 extra:
   project_name: "Sugar"
-  env: "development"
   team:
     - name: "Active maintainers"
       members:
