@@ -49,9 +49,9 @@ class SugarBase:
     env: dict[str, str] = {}
     options_args: list[str] = []
     cmd_args: list[str] = []
-    service_group: dict[str, Any] = {}
+    service_profile: dict[str, Any] = {}
     service_names: list[str] = []
-    group_selected: str = ''
+    profile_selected: str = ''
     verbose: bool = False
     hooks: dict[str, list[dict[str, Any]]] = {}
 
@@ -79,9 +79,9 @@ class SugarBase:
         self.backend_args: list[str] = []
         self.defaults: dict[str, Any] = {}
         self.env: dict[str, str] = {}
-        self.service_group: dict[str, Any] = {}
+        self.service_profile: dict[str, Any] = {}
         self.service_names: list[str] = []
-        self.group_selected: str = ''
+        self.profile_selected: str = ''
 
     def _setup_load(self, **kwargs: Any) -> None:
         """Set up the configuration for running the commands."""
@@ -207,16 +207,16 @@ class SugarBase:
 
         os.remove(filepath)
 
-    # set default group main
+    # set default profile main
     def _load_root_services(self) -> None:
         """Load services attribute in the root of the configuration."""
-        # must set the default group
+        # must set the default profile
         services = self.config.get('services', {})
 
         if not services:
             return
 
-        self.config['groups'] = {
+        self.config['profiles'] = {
             'main': {
                 'project-name': services.get('project-name'),
                 'config-path': services.get('config-path'),
@@ -227,51 +227,51 @@ class SugarBase:
                 },
             }
         }
-        self.defaults['group'] = 'main'
-        self.group_selected = 'main'
-        self.service_group = deepcopy(self.config['groups']['main'])
+        self.defaults['profile'] = 'main'
+        self.profile_selected = 'main'
+        self.service_profile = deepcopy(self.config['profiles']['main'])
         del self.config['services']
 
-    def _filter_service_group(self) -> None:
-        groups = self.config['groups']
+    def _filter_service_profile(self) -> None:
+        profiles = self.config['profiles']
 
-        if not self.group_selected:
-            default_group = self.defaults.get('group')
-            if not default_group:
+        if not self.profile_selected:
+            default_profile = self.defaults.get('profile')
+            if not default_profile:
                 SugarLogs.raise_error(
-                    'The service group parameter or default '
-                    "group configuration weren't defined.",
+                    'The service profile parameter or default '
+                    "profile configuration weren't defined.",
                     SugarError.SUGAR_INVALID_PARAMETER,
                 )
-            selected_group_name = default_group
+            selected_profile_name = default_profile
         else:
-            selected_group_name = self.group_selected
+            selected_profile_name = self.profile_selected
 
         # Verify if project-name is not null
         default_project_name = self.defaults.get('project-name', '') or ''
 
-        for group_name, group_data in groups.items():
-            if group_name == selected_group_name:
-                if default_project_name and 'project-name' not in group_data:
+        for profile_name, profile_data in profiles.items():
+            if profile_name == selected_profile_name:
+                if default_project_name and 'project-name' not in profile_data:
                     # just use default value if "project-name" is not set
-                    group_data['project-name'] = default_project_name
-                if not group_data.get('services', {}).get('default'):
+                    profile_data['project-name'] = default_project_name
+                if not profile_data.get('services', {}).get('default'):
                     # if default is not given or it is empty or null,
                     # use as default all the services available
                     default_services = [
                         service['name']
-                        for service in group_data.get('services', {}).get(
+                        for service in profile_data.get('services', {}).get(
                             'available', []
                         )
                     ]
-                    group_data['services']['default'] = ','.join(
+                    profile_data['services']['default'] = ','.join(
                         default_services
                     )
-                self.service_group = group_data
+                self.service_profile = profile_data
                 return
 
         SugarLogs.raise_error(
-            f'The given group service "{selected_group_name}" was not found '
+            f'The given profile service "{selected_profile_name}" was not found '
             'in the configuration file.',
             SugarError.SUGAR_MISSING_PARAMETER,
         )
@@ -283,16 +283,16 @@ class SugarBase:
             f_content = io.StringIO(content)
             self.config = yaml.safe_load(f_content)
 
-        # check if either  services or  groups are present
-        if not (self.config.get('services') or self.config.get('groups')):
+        # check if either  services or  profiles are present
+        if not (self.config.get('services') or self.config.get('profiles')):
             SugarLogs.raise_error(
-                'Either `services` OR  `groups` flag must be given',
+                'Either `services` OR  `profiles` flag must be given',
                 SugarError.SUGAR_INVALID_CONFIGURATION,
             )
-        # check if both services and groups are present
-        if self.config.get('services') and self.config.get('groups'):
+        # check if both services and profiles are present
+        if self.config.get('services') and self.config.get('profiles'):
             SugarLogs.raise_error(
-                '`services` and `groups` flags given, only 1 is allowed.',
+                '`services` and `profiles` flags given, only 1 is allowed.',
                 SugarError.SUGAR_INVALID_CONFIGURATION,
             )
 
@@ -316,15 +316,15 @@ class SugarBase:
         self.backend_args.append(backend_cmd)
 
     def _load_backend_args(self) -> None:
-        self._filter_service_group()
+        self._filter_service_profile()
 
-        if self.service_group.get('env-file'):
+        if self.service_profile.get('env-file'):
             self.backend_args.extend(
-                ['--env-file', self.service_group['env-file']]
+                ['--env-file', self.service_profile['env-file']]
             )
 
         config_path = []
-        backend_path_arg = self.service_group['config-path']
+        backend_path_arg = self.service_profile['config-path']
         if isinstance(backend_path_arg, str):
             config_path.append(backend_path_arg)
         elif isinstance(backend_path_arg, list):
@@ -340,9 +340,9 @@ class SugarBase:
         for p in config_path:
             self.backend_args.extend(['--file', p])
 
-        if self.service_group.get('project-name'):
+        if self.service_profile.get('project-name'):
             self.backend_args.extend(
-                ['--project-name', self.service_group['project-name']]
+                ['--project-name', self.service_profile['project-name']]
             )
 
     def _load_defaults(self) -> None:
@@ -396,14 +396,14 @@ class SugarBase:
         _arg_services = kwargs.get('services', '')
         _arg_all = kwargs.get('all', False)
 
-        services_config = self.service_group['services']
+        services_config = self.service_profile['services']
         service_names: list[str] = []
         services_default = services_config.get('default', '')
 
         if _arg_all:
             service_names = [
                 service['name']
-                for service in self.service_group.get('services', {}).get(
+                for service in self.service_profile.get('services', {}).get(
                     'available', []
                 )
             ]
@@ -473,9 +473,9 @@ class SugarBase:
                 SugarError.SUGAR_INVALID_CONFIGURATION,
             )
 
-        if not len(self.config.get('groups', {})):
+        if not len(self.config.get('profiles', {})):
             SugarLogs.raise_error(
-                'No service groups found.',
+                'No service profiles found.',
                 SugarError.SUGAR_INVALID_CONFIGURATION,
             )
 
@@ -485,13 +485,13 @@ class SugarBase:
     def load(
         self,
         file: str = '.sugar.yaml',
-        group: str = '',
+        profile: str = '',
         dry_run: bool = False,
         verbose: bool = False,
     ) -> None:
         """Load sugar configuration."""
         self.file = file
-        self.group_selected = group
+        self.profile_selected = profile
         self.dry_run = dry_run
         self.verbose = verbose
 

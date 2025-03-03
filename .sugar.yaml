@@ -1,10 +1,10 @@
 backend: compose
 env-file: .env
 defaults:
-  group: "${{ env.SUGAR_GROUP }}"
+  profile: "${{ env.SUGAR_PROFILE }}"
   project-name: "sugar-${{ env.SUGAR_PROJECT_NAME }}"
-groups:
-  group1:
+profiles:
+  profile1:
     project-name: project1
     config-path: tests/containers/group1/compose.yaml
     env-file: .env
@@ -15,7 +15,7 @@ groups:
         - name: service1-2
         - name: service1-3
 
-  group2:
+  profile2:
     config-path: tests/containers/group2/compose.yaml
     env-file: .env
     services:
@@ -23,7 +23,7 @@ groups:
         - name: service2-1
         - name: service2-2
 
-  group-mix:
+  profile-mix:
     config-path:
       - tests/containers/group1/compose.yaml
       - tests/containers/group2/compose.yaml
@@ -35,7 +35,7 @@ groups:
         - name: service2-1
         - name: service2-2
 
-  group-defaults:
+  profile-defaults:
     config-path:
       - tests/containers/group1/compose.yaml
     env-file: .env

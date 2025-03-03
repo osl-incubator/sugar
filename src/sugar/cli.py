@@ -22,7 +22,7 @@ from sugar.logs import SugarLogs
 CLI_ROOT_FLAGS_VALUES_COUNT = {
     '--dry-run': 0,
     '--file': 1,
-    '--group': 1,
+    '--profile': 1,
     '--help': 0,  # not necessary to store this value
     '--verbose': 0,
     '--version': 0,  # not necessary to store this value
@@ -32,8 +32,8 @@ flags_state: dict[str, bool] = {
     'verbose': False,
 }
 
-flags_group: dict[str, str] = {
-    'group': '',
+flags_profile: dict[str, str] = {
+    'profile': '',
 }
 
 flags_dry_run: dict[str, bool] = {
@@ -83,10 +83,10 @@ def main(
         '--file',
         help='Set the sugar config file.',
     ),
-    group: str = Option(
+    profile: str = Option(
         '',
-        '--group',
-        help='Set the group of services for running the sugar command.',
+        '--profile',
+        help='Set the profile of services for running the sugar command.',
     ),
     version: bool = Option(
         None,
@@ -122,9 +122,9 @@ def main(
         # global
         flags_state['verbose'] = True
 
-    if group:
+    if profile:
         # global
-        flags_group['group'] = group
+        flags_profile['profile'] = profile
 
     if dry_run:
         # global
@@ -380,7 +380,7 @@ def extract_options_and_cmd_args() -> tuple[list[str], list[str]]:
     for sugar_arg in [
         '--verbose',
         '--version',
-        '--group',
+        '--profile',
         '--services',
         '--service',
         '--all',
@@ -419,7 +419,7 @@ def extract_root_config(
 
     # default values
     sugar_file = '.sugar.yaml'
-    group = ''
+    profile = ''
     dry_run = False
     verbose = False
 
@@ -435,9 +435,9 @@ def extract_root_config(
                     sugar_file = params[idx + 1]
                 except IndexError:
                     pass
-            elif arg == '--group':
+            elif arg == '--profile':
                 try:
-                    group = params[idx + 1]
+                    profile = params[idx + 1]
                 except IndexError:
                     pass
             elif arg == '--dry-run':
@@ -457,7 +457,7 @@ def extract_root_config(
 
     return {
         'file': sugar_file,
-        'group': group,
+        'profile': profile,
         'dry_run': dry_run,
         'verbose': verbose,
     }
@@ -465,7 +465,7 @@ def extract_root_config(
 
 def _get_command_from_cli() -> str:
     """
-    Get the group and task from CLI.
+    Get the profile and task from CLI.
 
     This function is based on `CLI_ROOT_FLAGS_VALUES_COUNT`.
     """
@@ -545,7 +545,7 @@ def run_app() -> None:
         if not help_requested:
             sugar_ext.load(
                 file=config_file_path,
-                group=cast(str, root_config.get('group', '')),
+                profile=cast(str, root_config.get('profile', '')),
                 dry_run=cast(bool, root_config.get('dry_run', False)),
                 verbose=cast(bool, root_config.get('verbose', False)),
             )

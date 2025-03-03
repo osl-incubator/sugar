@@ -14,7 +14,7 @@ CONFIG_PATH = Path(__file__).parent.parent / '.sugar.yaml'
 
 SUGAR_ARGS = {
     'file': str(CONFIG_PATH.absolute()),
-    'group': 'group1',
+    'profile': 'group1',
     'verbose': True,
 }
 
