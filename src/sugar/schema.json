@@ -13,7 +13,7 @@
     "defaults": {
       "type": "object",
       "properties": {
-        "group": {
+        "profile": {
           "type": "string"
         },
         "project-name": {
@@ -86,7 +86,7 @@
       "required": [],
       "additionalProperties": false
     },
-    "groups": {
+    "profiles": {
       "type": "object",
       "patternProperties": {
         "^[a-zA-Z0-9_-]+$": {

@@ -26,7 +26,7 @@ hooks:
 
 services:
   project-name: project1
-  config-path: group1/compose.yaml
+  config-path: profile1/compose.yaml
   default: service1-1,service1-3
   available:
     - name: service1-1

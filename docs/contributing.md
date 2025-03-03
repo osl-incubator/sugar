@@ -162,7 +162,7 @@ environment:
    `poetry` for managing Python dependencies.
 
    ```bash
-   $ mamba env create --file conda/dev.yaml --force
+   $ mamba env create --file conda/dev.yaml --yes
    $ poetry config virtualenvs.create false
    $ poetry install
    ```
