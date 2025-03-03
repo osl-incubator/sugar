@@ -80,15 +80,14 @@ The current available **ext** commands are:
 First you need to place the config file `.sugar.yaml` in the root of your
 project. This is an example of a configuration file:
 
-```yaml
 backend: compose
 defaults:
-  group: ${{ env.ENV }}
-groups:
-  group1:
+  profile: ${{ env.ENV }}
+profiles:
+  profile1:
     project-name: project1
     config-path:
-      - containers/tests/group1/compose.yaml
+      - containers/tests/profile1/compose.yaml
     env-file: .env
     services:
       default: service1,service3
@@ -96,35 +95,34 @@ groups:
         - name: service1
         - name: service2
         - name: service3
-  group2:
+  profile2:
     project-name: null
-    config-path: containers/tests/group2/compose.yaml
+    config-path: containers/tests/profile2/compose.yaml
     env-file: .env
     services:
       available:
         - name: service1
         - name: service3
-```
 
 Some examples of how to use it:
 
-- build the defaults services (service1,service3) for group1:
-  `sugar build --group group1`
+- build the defaults services (service1,service3) for profile1:
+  `sugar build --profile profile1`
 
-- build the all services (there is no default service defined) for group2:
-  `sugar build --group group2`
+- build the all services (there is no default service defined) for profile2:
+  `sugar build --profile profile2`
 
-- build all services (ignore default) for group1:
-  `sugar build --group group1 --all`
+- build all services (ignore default) for profile1:
+  `sugar build --profile profile1 --all`
 
-- start the default services for group1: `sugar ext start --group group1`
+- start the default services for profile1: `sugar ext start --profile profile1`
 
-- restart all services (ignore defaults) for group1:
-  `sugar ext restart --group group1 --all`
+- restart all services (ignore defaults) for profile1:
+  `sugar ext restart --profile profile1 --all`
 
-- restart service1 and service2 for group1:
-  `sugar ext restart --group group1 --services service1,service2`
+- restart service1 and service2 for profile1:
+  `sugar ext restart --profile profile1 --services service1,service2`
 
-**NOTE**: If you use: `default: group: ${{ env.ENV }}`, you don't need to give
-`--group <GROUP_NAME>`, except if you want a different group than the default
-one.
+**NOTE**: If you use: `default: profile: ${{ env.ENV }}`, you don't need to give
+`--profile <PROFILE_NAME>`, except if you want a different profile than the
+default one.
