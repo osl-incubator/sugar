@@ -82,7 +82,7 @@ project. This is an example of a configuration file:
 
 ```yaml
 backend: compose
-default:
+defaults:
   profile: ${{ env.ENV }}
 profiles:
   profile1:
