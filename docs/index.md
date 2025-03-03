@@ -77,7 +77,7 @@ project. This is an example of a configuration file:
 ```yaml
 backend: compose
 default:
-  group: ${{ "${{ env.ENV }}" }}
+  group:  {% raw %} ${{ env.ENV }} {% endraw %}
 groups:
   group1:
     project-name: project1
@@ -122,6 +122,6 @@ Some examples of how to use it:
 - restart service1 and service2 for group1:
   `sugar ext restart --group group1 --services service1,service2`
 
-**NOTE**: If you use: `default: group: ${{ env.ENV }}`, you don't need to give
-`--group <GROUP_NAME>`, except if you want a different group than the default
-one.
+**NOTE**: If you use: `default: group: {% raw %} ${{ env.ENV }} {% endraw %}`,
+you don't need to give `--group <GROUP_NAME>`, except if you want a different
+group than the default one.
