@@ -210,12 +210,10 @@ class StatsPlotWidget(Widget):  # type: ignore
         }
     """
 
-    def __init__(
-        self, container_names: list[str], *args: str, **kwargs: Any
-    ) -> None:
+    def __init__(self, container_names: list[str], **kwargs: Any) -> None:
         """Initialize StatsPlotWidget."""
         self.container_names = container_names
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
 
     def on_mount(self) -> None:
         """Set up the widget."""
@@ -251,12 +249,10 @@ class StatsPlotApp(App[str]):  # type: ignore
     TITLE = 'Sugar Containers Stats'
     container_names: list[str]
 
-    def __init__(
-        self, container_names: list[str], *args: str, **kwargs: Any
-    ) -> None:
+    def __init__(self, container_names: list[str], **kwargs: Any) -> None:
         """Initialize StatsPlotApp."""
         self.container_names = container_names
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
 
     def compose(self) -> ComposeResult:
         """Compose the app."""
