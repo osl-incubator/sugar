@@ -5,7 +5,7 @@
   "properties": {
     "backend": {
       "type": "string",
-      "enum": ["compose"]
+      "enum": ["compose", "swarm"]
     },
     "env-file": {
       "type": "string"
