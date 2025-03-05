@@ -1,9 +1,9 @@
-"""SugarBase classes for containers."""     
+"""SugarBase classes for containers."""
 
 from __future__ import annotations
 
 import io
-import json 
+import json
 import os
 import shlex
 import sys
@@ -113,14 +113,58 @@ class SugarBase:
         _out: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stdout,
         _err: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stderr,
     ) -> None:
-        """
-        Call the backend application with the given arguments.
-        This method should be overridden by subclasses if they need
-        custom behavior for calling the backend.
-        """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement _call_backend_app method"
+        # Execute pre-run hooks
+        extension = camel_to_snake(
+            self.__class__.__name__.replace('Sugar', '')
         )
+        self._execute_hooks('pre-run', extension, action)
+
+        sh_extras = {
+            '_in': sys.stdin,
+            '_out': _out,
+            '_err': _err,
+            '_no_err': True,
+            '_env': os.environ,
+            '_bg': True,
+            '_bg_exc': False,
+        }
+
+        positional_parameters = [
+            *self.backend_args,
+            *[action],
+            *options_args,
+            *services,
+            *cmd_args,
+        ]
+
+        if self.verbose or self.dry_run:
+            SugarLogs.print_info(
+                f'>>> {self.backend_app} {" ".join(positional_parameters)}'
+            )
+            SugarLogs.print_info('-' * 80)
+
+        if self.dry_run:
+            SugarLogs.print_warning(
+                'Running it in dry-run mode, the command was skipped.'
+            )
+            return
+
+        p = self.backend_app(
+            *positional_parameters,
+            **sh_extras,
+        )
+
+        try:
+            p.wait()
+        except sh.ErrorReturnCode as e:
+            SugarLogs.raise_error(str(e), SugarError.SH_ERROR_RETURN_CODE)
+        except KeyboardInterrupt:
+            pid = p.pid
+            p.kill()
+            SugarLogs.raise_error(
+                f'Process {pid} killed.', SugarError.SH_KEYBOARD_INTERRUPT
+            )
+        self._execute_hooks('post-run', extension, action)
 
     def _check_config_file(self) -> bool:
         return Path(self.file).exists()
@@ -258,32 +302,18 @@ class SugarBase:
         self.hooks = self.config.get('hooks', {})
 
     def _load_backend_app(self) -> None:
-        """
-        Load the backend application for the specific implementation.
-        This method should be overridden by subclasses to provide
-        their specific backend loading logic.
-        """
-        backend_cmd = self.config.get('backend')  # Removed default empty string - fail fast
-        
-        if not backend_cmd:
+        backend_cmd = self.config.get('backend', '')
+        supported_backends = ['compose']
+
+        if backend_cmd not in supported_backends:
             SugarLogs.raise_error(
-                'Backend must be specified in configuration.',
-                SugarError.SUGAR_INVALID_CONFIGURATION,
+                f'"{self.config["backend"]}" not supported yet.'
+                f' Supported backends are: {", ".join(supported_backends)}.',
+                SugarError.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
             )
-            
-        self._load_specific_backend(backend_cmd)
-    
-    def _load_specific_backend(self, backend_cmd: str) -> None:
-        """
-        Load the specific backend application.
-        This method must be implemented by subclasses.
-        
-        Args:
-            backend_cmd: The backend command specified in the config
-        """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement _load_specific_backend method"
-        )
+
+        self.backend_app = sh.docker
+        self.backend_args.append(backend_cmd)
 
     def _load_backend_args(self) -> None:
         self._filter_service_profile()

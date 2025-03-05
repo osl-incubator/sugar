@@ -5,7 +5,6 @@ from __future__ import annotations
 from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
 from sugar.logs import SugarError, SugarLogs
-import sh  
 
 doc_profile = {
     'profile': 'Specify the profile name of the services you want to use.'
@@ -54,9 +53,7 @@ doc_common_services_no_options = {
 
 class SugarCompose(SugarBase):
     """SugarCompose provides the docker compose commands."""
-    
-    SUPPORTED_BACKENDS = frozenset(['compose'])
-    
+
     @docparams(doc_common_service)
     def _cmd_attach(
         self,
@@ -499,32 +496,3 @@ class SugarCompose(SugarBase):
         self._call_backend_app(
             'version', services=[], options_args=options_args
         )
-
-    def _load_specific_backend(self, backend_cmd: str) -> None:
-        """
-        Load the Docker Compose backend application.
-        
-        Args:
-            backend_cmd: The backend command (should be 'compose')
-        """
-        if backend_cmd not in self.SUPPORTED_BACKENDS:
-            SugarLogs.raise_error(
-                f'"{backend_cmd}" not supported for this extension. '
-                f'Only "compose" is supported.',
-                SugarError.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
-            )
-        
-        # Set both attributes in one go
-        self.backend_app, self.backend_args = sh.docker, [backend_cmd]
-    
-    def _call_backend_app(
-        self, 
-        action: str, 
-        services: list[str] | None = None,
-        options_args: list[str] | None = None,
-        cmd_args: list[str] | None = None,
-        _out=None,
-        _err=None,
-    ) -> None:
-        """Implementation of the backend app call for Docker Compose."""
-        # ... existing implementation ...
