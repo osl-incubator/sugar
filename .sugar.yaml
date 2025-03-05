@@ -9,7 +9,9 @@ profiles:
     config-path: tests/containers/profile1/compose.yaml
     env-file: .env
     services:
-      default: service1-1,service1-3
+      default: 
+        - service1-1
+        - service1-3
       available:
         - name: service1-1
         - name: service1-2
