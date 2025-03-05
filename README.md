@@ -91,7 +91,9 @@ profiles:
       - containers/tests/profile1/compose.yaml
     env-file: .env
     services:
-      default: service1,service3
+      default: 
+        - service1
+        - service3
       available:
         - name: service1
         - name: service2
@@ -123,7 +125,7 @@ Some examples of how to use it:
   `sugar ext restart --profile profile1 --all`
 
 - restart service1 and service2 for profile1:
-  `sugar ext restart --profile profile1 --services service1,service2`
+  `sugar ext restart --profile profile1 --services service1 service2`
 
 **NOTE**: If you use: `default: profile: ${{ env.ENV }}`, you don't need to give
 `--profile <PROFILE_NAME>`, except if you want a different profile than the
