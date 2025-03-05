@@ -5,7 +5,7 @@ from __future__ import annotations
 from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
 from sugar.logs import SugarError, SugarLogs
-import sh 
+import sh  
 
 doc_profile = {
     'profile': 'Specify the profile name of the services you want to use.'
