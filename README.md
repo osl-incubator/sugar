@@ -1,4 +1,4 @@
-# Sugar
+# Sugar 
 
 ![CI](https://img.shields.io/github/actions/workflow/status/osl-incubator/sugar/main.yaml?logo=github&label=CI)
 [![Python Versions](https://img.shields.io/pypi/pyversions/containers-sugar)](https://pypi.org/project/containers-sugar/)
