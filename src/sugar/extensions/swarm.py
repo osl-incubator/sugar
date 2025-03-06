@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import io
-import os
 import sys
 
 from typing import Any, Union
@@ -13,7 +12,6 @@ import sh
 from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
 from sugar.logs import SugarError, SugarLogs
-from sugar.utils import camel_to_snake
 
 doc_profile = {
     'profile': 'Specify the profile name of the services you want to use.'
@@ -81,8 +79,9 @@ doc_node_options = {
     'inspect': 'Display detailed information on one or more nodes',
     'ls': 'List nodes in the swarm',
     'promote': 'Promote one or more nodes to manager in the swarm',
-    'ps': ('List tasks running on one or more nodes, '
-          'defaults to current node'),
+    'ps': (
+        'List tasks running on one or more nodes, defaults to current node'
+    ),
     'rm': 'Remove one or more nodes from the swarm',
     'update': 'Update a node',
 }
@@ -91,8 +90,12 @@ doc_node_options = {
 class SugarSwarm(SugarBase):
     """SugarSwarm provides the docker swarm commands."""
 
+    # Override the prefix for commands that should be hidden from CLI
+    # The CLI framework only looks for methods starting with _cmd_
+    # By renaming these methods to start with _subcmd_ instead,
+    # they won't be automatically exposed in the CLI
+
     def _load_backend_app(self) -> None:
-        """Override to use docker directly instead of docker compose."""
         self.backend_app = sh.docker
         # Don't add a compose subcommand
         self.backend_args = []
@@ -156,7 +159,6 @@ class SugarSwarm(SugarBase):
 
     def _call_swarm_command(
         self,
-        command: str,
         subcommand: str,
         services: list[str] = [],
         options_args: list[str] = [],
@@ -164,59 +166,56 @@ class SugarSwarm(SugarBase):
         _out: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stdout,
         _err: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stderr,
     ) -> None:
-        """Call docker swarm/service commands with proper structure."""
-        # Execute pre-run hooks
-        extension = camel_to_snake(
-            self.__class__.__name__.replace('Sugar', '')
-        )
-        self._execute_hooks('pre-run', extension, subcommand)
-
-        sh_extras = {
-            '_in': sys.stdin,
-            '_out': _out,
-            '_err': _err,
-            '_no_err': True,
-            '_env': os.environ,
-            '_bg': True,
-            '_bg_exc': False,
-        }
-
-        positional_parameters = [
-            command,
+        """Call docker swarm commands with proper structure."""
+        self.backend_args = ['swarm']
+        self._call_backend_app(
             subcommand,
-            *options_args,
-            *services,
-            *cmd_args,
-        ]
-
-        if self.verbose or self.dry_run:
-            SugarLogs.print_info(
-                f'>>> {self.backend_app} {" ".join(positional_parameters)}'
-            )
-            SugarLogs.print_info('-' * 80)
-
-        if self.dry_run:
-            SugarLogs.print_warning(
-                'Running it in dry-run mode, the command was skipped.'
-            )
-            return
-
-        p = self.backend_app(
-            *positional_parameters,
-            **sh_extras,
+            services=services,
+            options_args=options_args,
+            cmd_args=cmd_args,
+            _out=_out,
+            _err=_err,
         )
 
-        try:
-            p.wait()
-        except sh.ErrorReturnCode as e:
-            SugarLogs.raise_error(str(e), SugarError.SH_ERROR_RETURN_CODE)
-        except KeyboardInterrupt:
-            pid = p.pid
-            p.kill()
-            SugarLogs.raise_error(
-                f'Process {pid} killed.', SugarError.SH_KEYBOARD_INTERRUPT
-            )
-        self._execute_hooks('post-run', extension, subcommand)
+    def _call_service_command(
+        self,
+        subcommand: str,
+        services: list[str] = [],
+        options_args: list[str] = [],
+        cmd_args: list[str] = [],
+        _out: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stdout,
+        _err: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stderr,
+    ) -> None:
+        """Call docker service commands with proper structure."""
+        self.backend_args = ['service']
+        self._call_backend_app(
+            subcommand,
+            services=services,
+            options_args=options_args,
+            cmd_args=cmd_args,
+            _out=_out,
+            _err=_err,
+        )
+
+    def _call_node_command(
+        self,
+        subcommand: str,
+        nodes: list[str] = [],
+        options_args: list[str] = [],
+        cmd_args: list[str] = [],
+        _out: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stdout,
+        _err: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stderr,
+    ) -> None:
+        """Call docker node commands with proper structure."""
+        self.backend_args = ['node']
+        self._call_backend_app(
+            subcommand,
+            services=nodes,  # Reusing services parameter for nodes
+            options_args=options_args,
+            cmd_args=cmd_args,
+            _out=_out,
+            _err=_err,
+        )
 
     @docparams(doc_common_no_services)
     def _cmd_init(
@@ -227,53 +226,9 @@ class SugarSwarm(SugarBase):
 
         This command bypasses .sugar.yaml configuration completely.
         """
-        # For swarm init, bypass the Sugar configuration completely
-        # and directly call docker swarm init
+        # For swarm init, use the wrapper method instead
         options_args = self._get_list_args(options)
-
-        sh_extras = {
-            '_in': sys.stdin,
-            '_out': sys.stdout,
-            '_err': sys.stderr,
-            '_no_err': True,
-            '_env': os.environ,
-            '_bg': True,
-            '_bg_exc': False,
-        }
-
-        positional_parameters = [
-            'swarm',
-            'init',
-            *options_args,
-        ]
-
-        if self.verbose or self.dry_run:
-            SugarLogs.print_info(
-                f'>>> docker {" ".join(positional_parameters)}'
-            )
-            SugarLogs.print_info('-' * 80)
-
-        if self.dry_run:
-            SugarLogs.print_warning(
-                'Running it in dry-run mode, the command was skipped.'
-            )
-            return
-
-        p = sh.docker(
-            *positional_parameters,
-            **sh_extras,
-        )
-
-        try:
-            p.wait()
-        except sh.ErrorReturnCode as e:
-            SugarLogs.raise_error(str(e), SugarError.SH_ERROR_RETURN_CODE)
-        except KeyboardInterrupt:
-            pid = p.pid
-            p.kill()
-            SugarLogs.raise_error(
-                f'Process {pid} killed.', SugarError.SH_KEYBOARD_INTERRUPT
-            )
+        self._call_swarm_command('init', options_args=options_args)
 
     @docparams(doc_common_no_services)
     def _cmd_join(
@@ -282,7 +237,7 @@ class SugarSwarm(SugarBase):
     ) -> None:
         """Join a swarm as a node and/or manager."""
         options_args = self._get_list_args(options)
-        self._call_swarm_command('swarm', 'join', options_args=options_args)
+        self._call_swarm_command('join', options_args=options_args)
 
     @docparams(doc_common_service)
     def _cmd_create(
@@ -293,8 +248,7 @@ class SugarSwarm(SugarBase):
         """Create a new service."""
         service_name = self._get_service_name(service)
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'service',
+        self._call_service_command(
             'create',
             services=service_name,
             options_args=options_args,
@@ -310,8 +264,7 @@ class SugarSwarm(SugarBase):
         """Display detailed information on one or more services."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'service',
+        self._call_service_command(
             'inspect',
             services=services_names,
             options_args=options_args,
@@ -327,8 +280,7 @@ class SugarSwarm(SugarBase):
         """Fetch logs of a service or task."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'service',
+        self._call_service_command(
             'logs',
             services=services_names,
             options_args=options_args,
@@ -341,7 +293,7 @@ class SugarSwarm(SugarBase):
     ) -> None:
         """List services."""
         options_args = self._get_list_args(options)
-        self._call_swarm_command('service', 'ls', options_args=options_args)
+        self._call_service_command('ls', options_args=options_args)
 
     @docparams(doc_common_services)
     def _cmd_ps(
@@ -353,8 +305,8 @@ class SugarSwarm(SugarBase):
         """List the tasks of one or more services."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'service', 'ps', services=services_names, options_args=options_args
+        self._call_service_command(
+            'ps', services=services_names, options_args=options_args
         )
 
     @docparams(doc_common_services)
@@ -367,8 +319,8 @@ class SugarSwarm(SugarBase):
         """Remove one or more services."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'service', 'rm', services=services_names, options_args=options_args
+        self._call_service_command(
+            'rm', services=services_names, options_args=options_args
         )
 
     @docparams(doc_common_services)
@@ -381,8 +333,7 @@ class SugarSwarm(SugarBase):
         """Revert changes to a service's configuration."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'service',
+        self._call_service_command(
             'rollback',
             services=services_names,
             options_args=options_args,
@@ -398,8 +349,7 @@ class SugarSwarm(SugarBase):
         """Scale one or multiple replicated services."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'service',
+        self._call_service_command(
             'scale',
             services=services_names,
             options_args=options_args,
@@ -415,26 +365,14 @@ class SugarSwarm(SugarBase):
         """Update a service."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'service',
+        self._call_service_command(
             'update',
             services=services_names,
             options_args=options_args,
         )
 
     # Node commands
-    @docparams(
-        {
-            'demote': 'Demote one or more nodes from manager in the swarm',
-            'inspect': 'Display detailed information on one or more nodes',
-            'ls': 'List nodes in the swarm',
-            'promote': 'Promote one or more nodes to manager in the swarm',
-            'ps': ('List tasks running on one or more nodes, '
-                  'defaults to current node'),
-            'rm': 'Remove one or more nodes from the swarm',
-            'update': 'Update a node',
-        }
-    )
+    @docparams(doc_node_options)
     def _cmd_node(
         self,
         demote: str = '',
@@ -446,74 +384,146 @@ class SugarSwarm(SugarBase):
         update: str = '',
         options: str = '',
     ) -> None:
-        # Check which subcommand was provided
-        subcommand = None
-        node_names = []
-
-        # Map command options to subcommands
+        """Manage swarm nodes."""
+        # Route to the appropriate node subcommand
         if demote:
-            subcommand = 'demote'
-            node_names = demote.split(',')
+            self._subcmd_node_demote(nodes=demote, options=options)
         elif inspect:
-            subcommand = 'inspect'
-            node_names = inspect.split(',')
+            self._subcmd_node_inspect(nodes=inspect, options=options)
         elif ls:
-            subcommand = 'ls'
+            self._subcmd_node_ls(options=options)
         elif promote:
-            subcommand = 'promote'
-            node_names = promote.split(',')
+            self._subcmd_node_promote(nodes=promote, options=options)
         elif ps:
-            subcommand = 'ps'
-            node_names = ps.split(',')
+            self._subcmd_node_ps(nodes=ps, options=options)
         elif rm:
-            subcommand = 'rm'
-            node_names = rm.split(',')
+            self._subcmd_node_rm(nodes=rm, options=options)
         elif update:
-            subcommand = 'update'
-            node_names = update.split(',')
-
-        if not subcommand:
+            self._subcmd_node_update(nodes=update, options=options)
+        else:
             # If no subcommand is provided, show the help message
             self._print_node_help()
-            return
 
-        if subcommand == 'ls':
-            # For ls command, we don't need node names
-            self._call_swarm_command('node', subcommand)
-            return
-
-        # For other commands, we need node names
+    @docparams(doc_common_nodes)
+    def _subcmd_node_demote(
+        self,
+        nodes: str = '',
+        options: str = '',
+    ) -> None:
+        """Demote one or more nodes from manager in the swarm."""
+        node_names = nodes.split(',')
         if not node_names:
             SugarLogs.raise_error(
-                f'Node name(s) must be provided for the '
-                f'"{subcommand}" command.',
+                'Node name(s) must be provided for the "demote" command.',
                 SugarError.SUGAR_INVALID_PARAMETER,
             )
-
         options_args = self._get_list_args(options)
-        self._call_swarm_command(
-            'node', subcommand, services=node_names, options_args=options_args
+        self._call_node_command(
+            'demote', nodes=node_names, options_args=options_args
+        )
+
+    @docparams(doc_common_nodes)
+    def _subcmd_node_inspect(
+        self,
+        nodes: str = '',
+        options: str = '',
+    ) -> None:
+        """Display detailed information on one or more nodes."""
+        node_names = nodes.split(',')
+        if not node_names:
+            SugarLogs.raise_error(
+                'Node name(s) must be provided for the "inspect" command.',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+        options_args = self._get_list_args(options)
+        self._call_node_command(
+            'inspect', nodes=node_names, options_args=options_args
+        )
+
+    @docparams(doc_common_no_services)
+    def _subcmd_node_ls(
+        self,
+        options: str = '',
+    ) -> None:
+        """List nodes in the swarm."""
+        options_args = self._get_list_args(options)
+        self._call_node_command('ls', options_args=options_args)
+
+    @docparams(doc_common_nodes)
+    def _subcmd_node_promote(
+        self,
+        nodes: str = '',
+        options: str = '',
+    ) -> None:
+        """Promote one or more nodes to manager in the swarm."""
+        node_names = nodes.split(',')
+        if not node_names:
+            SugarLogs.raise_error(
+                'Node name(s) must be provided for the "promote" command.',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+        options_args = self._get_list_args(options)
+        self._call_node_command(
+            'promote', nodes=node_names, options_args=options_args
+        )
+
+    @docparams(doc_common_nodes)
+    def _subcmd_node_ps(
+        self,
+        nodes: str = '',
+        options: str = '',
+    ) -> None:
+        """List tasks running on one or more nodes."""
+        node_names = nodes.split(',')
+        if not node_names:
+            SugarLogs.raise_error(
+                'Node name(s) must be provided for the "ps" command.',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+        options_args = self._get_list_args(options)
+        self._call_node_command(
+            'ps', nodes=node_names, options_args=options_args
+        )
+
+    @docparams(doc_common_nodes)
+    def _subcmd_node_rm(
+        self,
+        nodes: str = '',
+        options: str = '',
+    ) -> None:
+        """Remove one or more nodes from the swarm."""
+        node_names = nodes.split(',')
+        if not node_names:
+            SugarLogs.raise_error(
+                'Node name(s) must be provided for the "rm" command.',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+        options_args = self._get_list_args(options)
+        self._call_node_command(
+            'rm', nodes=node_names, options_args=options_args
+        )
+
+    @docparams(doc_common_nodes)
+    def _subcmd_node_update(
+        self,
+        nodes: str = '',
+        options: str = '',
+    ) -> None:
+        """Update a node."""
+        node_names = nodes.split(',')
+        if not node_names:
+            SugarLogs.raise_error(
+                'Node name(s) must be provided for the "update" command.',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+        options_args = self._get_list_args(options)
+        self._call_node_command(
+            'update', nodes=node_names, options_args=options_args
         )
 
     def _print_node_help(self) -> None:
-        """Print a help message for the node.
-
-        command that matches Docker's format.
-        """
+        """Display help for node commands using the CLI's own help system."""
         help_text = """
-        Usage:  sugar swarm node COMMAND
-
-        Manage Swarm nodes
-
-        Commands:
-          demote      Demote one or more nodes from manager in the swarm
-          inspect     Display detailed information on one or more nodes
-          ls          List nodes in the swarm
-          promote     Promote one or more nodes to manager in the swarm
-          ps          List tasks running on one or more nodes, defaults to node
-          rm          Remove one or more nodes from the swarm
-          update      Update a node
-
-        Run 'sugar swarm node COMMAND --help' for more information on a command
+        Usage: sugar swarm node [OPTIONS] COMMAND [ARGS]..." \
         """
-        print(help_text)
+        SugarLogs.print_info(help_text)
