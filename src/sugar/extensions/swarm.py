@@ -402,7 +402,7 @@ class SugarSwarm(SugarBase):
             self._subcmd_node_update(nodes=update, options=options)
         else:
             # If no subcommand is provided, show the help message
-            self._print_node_help()
+            self._print_node_warning()
 
     @docparams(doc_common_nodes)
     def _subcmd_node_demote(
@@ -521,9 +521,12 @@ class SugarSwarm(SugarBase):
             'update', nodes=node_names, options_args=options_args
         )
 
-    def _print_node_help(self) -> None:
-        """Display help for node commands using the CLI's own help system."""
-        help_text = """
-        Usage: sugar swarm node [OPTIONS] COMMAND [ARGS]..." \
+    def _print_node_warning(self) -> None:
+        """Display warning for node commands using the CLI's own help system.
+
+        --help lists up all subcommands.
         """
-        SugarLogs.print_info(help_text)
+        help_text = """
+        Usage: sugar swarm node [OPTIONS] COMMAND [ARGS]...
+        """
+        SugarLogs.print_warning(help_text)
