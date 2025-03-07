@@ -23,11 +23,16 @@ def test_docparams() -> None:
     expected = {
         'title': 'Run a nice function.',
         'parameters': {
-            'arg1': {'type': 'str', 'help': 'this is the arg 1'},
+            'arg1': {
+                'type': 'str',
+                'help': 'this is the arg 1',
+                'positional_only': 'False',
+            },
             'arg2': {
                 'type': 'str',
                 'help': 'this is the arg 2',
                 'default': '1',
+                'positional_only': 'False',
             },
         },
     }

@@ -5,6 +5,7 @@ from __future__ import annotations
 import functools
 import inspect
 
+from inspect import _ParameterKind
 from typing import Any, Callable, Dict, Protocol, TypeVar, Union, cast
 
 from typing_extensions import TypeAlias
@@ -70,6 +71,11 @@ def docparams(
                 param_info['help'] = param_docs[name]
             if param.default != inspect.Parameter.empty:
                 param_info['default'] = param.default
+
+            param_info['positional_only'] = repr(
+                param.kind == _ParameterKind.POSITIONAL_ONLY
+            )
+
             parameters[name] = param_info
 
         # Build parameter documentation
