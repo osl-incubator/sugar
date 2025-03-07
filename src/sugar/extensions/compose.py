@@ -58,6 +58,7 @@ class SugarCompose(SugarBase):
     def _cmd_attach(
         self,
         service: str = '',
+        /,
         options: str = '',
     ) -> None:
         """

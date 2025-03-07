@@ -217,10 +217,17 @@ def create_args_string(args: dict[str, dict[str, str]]) -> str:
     """Return a string for arguments for a function for typer."""
     args_rendered = []
 
-    arg_template = (
+    arg_template_flag = (
         '{arg_name}: Optional[{arg_type}] = typer.Option('
         '{default_value}, '
         '"--{name_flag}", '
+        'help="{help_text}"'
+        ')'
+    )
+
+    arg_template_positional = (
+        '{arg_name}: Optional[{arg_type}] = typer.Argument('
+        '{default_value}, '
         'help="{help_text}"'
         ')'
     )
@@ -230,6 +237,7 @@ def create_args_string(args: dict[str, dict[str, str]]) -> str:
         arg_type = normalize_string_type(spec.get('type', 'str'))
         help_text = spec.get('help', '')
         default_value = 'None'
+        is_positional_only = spec.get('positional_only', False)
 
         if not spec.get('required', False) and not spec.get(
             'interactive', False
@@ -237,7 +245,13 @@ def create_args_string(args: dict[str, dict[str, str]]) -> str:
             default_value = spec.get('default', '')
             default_value = get_default_value_str(arg_type, default_value)
 
-        arg_str = arg_template.format(
+        selected_template = (
+            arg_template_flag
+            if is_positional_only == 'False'
+            else arg_template_positional
+        )
+
+        arg_str = selected_template.format(
             **{
                 'arg_name': name_clean,
                 'arg_type': arg_type,
