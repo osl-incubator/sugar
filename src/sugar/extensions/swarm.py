@@ -411,7 +411,7 @@ class SugarSwarm(SugarBase):
         options: str = '',
     ) -> None:
         """Demote one or more nodes from manager in the swarm."""
-        node_names = nodes.split(',')
+        node_names = [node for node in nodes.split(',') if node]
         if not node_names:
             SugarLogs.raise_error(
                 'Node name(s) must be provided for the "demote" command.',
@@ -429,7 +429,7 @@ class SugarSwarm(SugarBase):
         options: str = '',
     ) -> None:
         """Display detailed information on one or more nodes."""
-        node_names = nodes.split(',')
+        node_names = [node for node in nodes.split(',') if node]
         if not node_names:
             SugarLogs.raise_error(
                 'Node name(s) must be provided for the "inspect" command.',
@@ -456,7 +456,7 @@ class SugarSwarm(SugarBase):
         options: str = '',
     ) -> None:
         """Promote one or more nodes to manager in the swarm."""
-        node_names = nodes.split(',')
+        node_names = [node for node in nodes.split(',') if node]
         if not node_names:
             SugarLogs.raise_error(
                 'Node name(s) must be provided for the "promote" command.',
@@ -474,7 +474,7 @@ class SugarSwarm(SugarBase):
         options: str = '',
     ) -> None:
         """List tasks running on one or more nodes."""
-        node_names = nodes.split(',')
+        node_names = [node for node in nodes.split(',') if node]
         if not node_names:
             SugarLogs.raise_error(
                 'Node name(s) must be provided for the "ps" command.',
@@ -492,7 +492,7 @@ class SugarSwarm(SugarBase):
         options: str = '',
     ) -> None:
         """Remove one or more nodes from the swarm."""
-        node_names = nodes.split(',')
+        node_names = [node for node in nodes.split(',') if node]
         if not node_names:
             SugarLogs.raise_error(
                 'Node name(s) must be provided for the "rm" command.',
@@ -510,7 +510,7 @@ class SugarSwarm(SugarBase):
         options: str = '',
     ) -> None:
         """Update a node."""
-        node_names = nodes.split(',')
+        node_names = [node for node in nodes.split(',') if node]
         if not node_names:
             SugarLogs.raise_error(
                 'Node name(s) must be provided for the "update" command.',
