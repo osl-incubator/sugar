@@ -189,6 +189,41 @@ groups:
           sugar --verbose compose wait --help
           sugar --verbose compose watch --help
 
+      smoke-swarm:
+        help: Run smoke tests for swarm commands
+        hooks:
+          pre-run:
+            - task: docker.killall
+        env:
+          SUGAR_FLAGS: --verbose --profile profile1
+        run: |
+          # Initialize swarm
+          sugar ${{ vars.SUGAR_FLAGS }} swarm init --options --advertise-addr 127.0.0.1
+
+          # Test basic swarm commands
+          sugar ${{ vars.SUGAR_FLAGS }} ls
+
+          # Test service commands
+          # Still below commands are in experimental stage
+          # sugar ${{ vars.SUGAR_FLAGS }} create --service my-nginx --options --name my-web nginx:latest
+          # sugar ${{ vars.SUGAR_FLAGS }} ls
+          # sugar ${{ vars.SUGAR_FLAGS }} inspect --services my-web
+          # sugar ${{ vars.SUGAR_FLAGS }} ps --services my-web
+          # sugar ${{ vars.SUGAR_FLAGS }} scale --services my-web --options my-web=2
+          # sugar ${{ vars.SUGAR_FLAGS }} update --services my-web --options --replicas 1
+
+          # Test node commands
+          sugar ${{ vars.SUGAR_FLAGS }} node ls
+          NODE_ID=$(docker node ls --format "{{.ID}}" | head -n1)
+          sugar ${{ vars.SUGAR_FLAGS }} node inspect --options $NODE_ID
+          sugar ${{ vars.SUGAR_FLAGS }} node ps --options $NODE_ID
+
+          # Clean up services
+          sugar ${{ vars.SUGAR_FLAGS }} rm --services my-web
+
+          # Leave swarm
+          docker swarm leave --force
+
       smoke-hooks:
         help: Run simple text for experimental commands
         hooks:
