@@ -216,13 +216,18 @@ class SugarBase:
         if not services:
             return
 
+        # Handle the case where 'default' comes as a string (for backward compatibility)
+        default_services = services.get('default', [])
+        if isinstance(default_services, str) and default_services:
+            default_services = default_services.split(',')
+
         self.config['profiles'] = {
             'main': {
                 'project-name': services.get('project-name'),
                 'config-path': services.get('config-path'),
                 'env-file': services.get('env-file'),
                 'services': {
-                    'default': services.get('default'),
+                    'default': default_services,
                     'available': services.get('available'),
                 },
             }
@@ -264,9 +269,12 @@ class SugarBase:
                             'available', []
                         )
                     ]
-                    profile_data['services']['default'] = ','.join(
-                        default_services
-                    )
+                    profile_data['services']['default'] = default_services
+                else:
+                    # Handle the case where 'default' comes as a string (for backward compatibility)
+                    default_services = profile_data.get('services', {}).get('default', [])
+                    if isinstance(default_services, str) and default_services:
+                        profile_data['services']['default'] = default_services.split(',')
                 self.service_profile = profile_data
                 return
 
@@ -398,7 +406,11 @@ class SugarBase:
 
         services_config = self.service_profile['services']
         service_names: list[str] = []
-        services_default = services_config.get('default', '')
+        services_default = services_config.get('default', [])
+
+        # Handle the case where 'default' comes as a string (for backward compatibility)
+        if isinstance(services_default, str) and services_default:
+            services_default = services_default.split(',')
 
         if _arg_all:
             service_names = [
@@ -410,7 +422,7 @@ class SugarBase:
         elif _arg_services:
             service_names = _arg_services.split(',')
         elif services_default:
-            service_names = services_default.split(',')
+            service_names = services_default
         else:
             SugarLogs.raise_error(
                 'If you want to execute the operation for all services, '
