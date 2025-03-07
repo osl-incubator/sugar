@@ -114,6 +114,7 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install --verbose
+          poetry install --verbose --extras tui
 
       - name: Run style checks
         run: makim tests.linter
