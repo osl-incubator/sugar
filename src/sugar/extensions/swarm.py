@@ -224,7 +224,7 @@ class SugarSwarm(SugarBase):
     ) -> None:
         """Initialize a swarm.
 
-        This command bypasses .sugar.yaml configuration completely.
+        This command initializes a new swarm on the current Docker engine.
         """
         # For swarm init, use the wrapper method instead
         options_args = self._get_list_args(options)
