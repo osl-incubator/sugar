@@ -375,6 +375,7 @@ class SugarSwarm(SugarBase):
     @docparams(doc_node_options)
     def _cmd_node(
         self,
+        /,
         demote: str = '',
         inspect: str = '',
         ls: bool = False,
@@ -384,8 +385,13 @@ class SugarSwarm(SugarBase):
         update: str = '',
         options: str = '',
     ) -> None:
-        """Manage swarm nodes."""
-        # Route to the appropriate node subcommand
+        """
+        Manage Docker Swarm nodes.
+
+        This command provides access to node-related subcommands for
+
+        managing Docker Swarm nodes.
+        """
         if demote:
             self._subcmd_node_demote(nodes=demote, options=options)
         elif inspect:
@@ -401,8 +407,11 @@ class SugarSwarm(SugarBase):
         elif update:
             self._subcmd_node_update(nodes=update, options=options)
         else:
-            # If no subcommand is provided, show the help message
-            self._print_node_warning()
+            SugarLogs.print_warning(
+                'No node subcommand specified. '
+                """Please use one of: demote, inspect, ls,
+                  promote, ps, rm, update"""
+            )
 
     @docparams(doc_common_nodes)
     def _subcmd_node_demote(
