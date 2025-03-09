@@ -111,6 +111,19 @@ doc_logs_options = {
     'timestamps': 'Show timestamps',
 }
 
+doc_rollback_options = {
+    'detach': """Exit immediately instead
+    of waiting for the service to converge""",
+    'quiet': 'Suppress progress output',
+}
+
+doc_scale_options = {
+    'detach': """Exit immediately instead
+    of waiting for the service to converge""",
+    'replicas': """Number of replicas per service
+    (comma-separated list of service=replicas pairs)""",
+}
+
 
 class SugarSwarm(SugarBase):
     """SugarSwarm provides the docker swarm commands."""
@@ -523,32 +536,101 @@ class SugarSwarm(SugarBase):
             backend_args=['stack', 'rm'],
         )
 
-    @docparams(doc_common_services)
+    @docparams({**doc_common_services, **doc_rollback_options})
     def _cmd_rollback(
         self,
         services: str = '',
         all: bool = False,
+        detach: bool = False,
+        quiet: bool = False,
         options: str = '',
     ) -> None:
-        """Revert changes to a service's configuration."""
+        """
+        Revert changes to a service's configuration.
+
+        This command rolls back a service to its previous version.
+        """
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
+
+        # Add flag options
+        if detach:
+            options_args.append('--detach')
+        if quiet:
+            options_args.append('--quiet')
+
         self._call_service_command(
             'rollback',
             services=services_names,
             options_args=options_args,
         )
 
-    @docparams(doc_common_services)
+    @docparams({**doc_common_services, **doc_scale_options})
     def _cmd_scale(
         self,
         services: str = '',
         all: bool = False,
+        detach: bool = False,
+        replicas: str = '',
         options: str = '',
     ) -> None:
-        """Scale one or multiple replicated services."""
+        """
+        Scale one or multiple replicated services.
+
+        This command sets the desired number of
+        replicas for each specified service.
+
+        Format for replicas parameter: 'service1=3,service2=5'
+
+        Scale multiple services :
+
+        sugar swarm scale --services frontend,backend --replicas frontend=5
+        ,backend=3
+
+        """
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
+
+        # Add detach flag if specified
+        if detach:
+            options_args.append('--detach')
+
+        # If replicas are specified,
+        # we need to override the services_names list
+        # with SERVICE=REPLICAS format that Docker expects
+        if replicas:
+            service_replicas_pairs = []
+            replicas_dict = {}
+
+            # Parse the replicas parameter (service=replicas,service=replicas)
+            for pair in replicas.split(','):
+                if '=' in pair:
+                    service, count = pair.split('=', 1)
+                    replicas_dict[service.strip()] = count.strip()
+
+            # Create the properly formatted SERVICE=REPLICAS arguments
+            for service in services_names:
+                if service in replicas_dict:
+                    service_replicas_pairs.append(
+                        f'{service}={replicas_dict[service]}'
+                    )
+                else:
+                    SugarLogs.print_warning(
+                        f'No replica count specified for service: {service}'
+                    )
+
+            # Replace services_names with the SERVICE=REPLICAS format
+            services_names = service_replicas_pairs
+        elif services_names:
+            # If no replicas specified but services are, warn the user
+            SugarLogs.print_warning(
+                """No replica counts specified.
+                Use --replicas service1=3,service2=5"""
+            )
+
+        print(services_names)
+        print(options_args)
+
         self._call_service_command(
             'scale',
             services=services_names,
