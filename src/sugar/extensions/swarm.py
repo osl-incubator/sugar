@@ -242,6 +242,7 @@ class SugarSwarm(SugarBase):
     @docparams(doc_common_service)
     def _cmd_create(
         self,
+        /,
         service: str = '',
         options: str = '',
     ) -> None:
