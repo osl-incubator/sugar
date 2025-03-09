@@ -98,6 +98,19 @@ doc_node_options = {
     'update': 'Update a node',
 }
 
+doc_logs_options = {
+    'details': 'Show extra details provided to logs',
+    'follow': 'Follow log output',
+    'no_resolve': 'Do not map IDs to Names in output',
+    'no_task_ids': 'Do not include task IDs in output',
+    'no_trunc': 'Do not truncate output',
+    'raw': 'Do not neatly format logs',
+    'since': """Show logs since timestamp
+    (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)""",
+    'tail': 'Number of lines to show from the end of the logs (default all)',
+    'timestamps': 'Show timestamps',
+}
+
 
 class SugarSwarm(SugarBase):
     """SugarSwarm provides the docker swarm commands."""
@@ -359,15 +372,15 @@ class SugarSwarm(SugarBase):
             'size': 'Display total file sizes if the type is container',
             'type': 'Return JSON for specified type',
         }
-    )
+    )  # TODO: Need to add support for service names
     def _cmd_inspect(
         self,
         services: str = '',
         all: bool = False,
-        options: str = '',
         format: str = '',
         size: bool = False,
         type: str = '',
+        options: str = '',
     ) -> None:
         """
         Display detailed information on Docker objects.
@@ -380,9 +393,8 @@ class SugarSwarm(SugarBase):
 
         # Prepare the options with the format flag if provided
         options_list = self._get_list_args(options)
-
+        # TODO: Need to fix and Validate format and type values
         if format:
-            # TODO: Need to fix and Validate format
             options_list.extend(['--format=', format])
 
         if size:
@@ -401,16 +413,54 @@ class SugarSwarm(SugarBase):
             options_args=options_list,
         )
 
-    @docparams(doc_common_services)
+    @docparams({**doc_common_services, **doc_logs_options})
     def _cmd_logs(
         self,
         services: str = '',
         all: bool = False,
+        details: bool = False,
+        follow: bool = False,
+        no_resolve: bool = False,
+        no_task_ids: bool = False,
+        no_trunc: bool = False,
+        raw: bool = False,
+        since: str = '',
+        tail: str = '',
+        timestamps: bool = False,
         options: str = '',
     ) -> None:
-        """Fetch logs of a service or task."""
+        """
+        Fetch logs of a service or task.
+
+        Display the logs of the specified service or task with
+        advanced filtering and formatting options.
+        """
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
+
+        # TODO: Validate since and tail values
+        # Add flag options
+        if details:
+            options_args.append('--details')
+        if follow:
+            options_args.append('--follow')
+        if no_resolve:
+            options_args.append('--no-resolve')
+        if no_task_ids:
+            options_args.append('--no-task-ids')
+        if no_trunc:
+            options_args.append('--no-trunc')
+        if raw:
+            options_args.append('--raw')
+        if timestamps:
+            options_args.append('--timestamps')
+
+        # Add options with values
+        if since:
+            options_args.extend(['--since', since])
+        if tail:
+            options_args.extend(['--tail', tail])
+
         self._call_service_command(
             'logs',
             services=services_names,
