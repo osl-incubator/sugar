@@ -385,12 +385,8 @@ class SugarCompose(SugarBase):
         all: bool = False,
         options: str = '',
     ) -> None:
-        """Start services."""
-        services_names = self._get_services_names(services=services, all=all)
-        options_args = self._get_list_args(options)
-        self._call_backend_app(
-            'start', services=services_names, options_args=options_args
-        )
+        """Start services (compose up)."""
+        self._cmd_up(services=services, all=all, options=options)
 
     @docparams(doc_common_services)
     def _cmd_stop(
