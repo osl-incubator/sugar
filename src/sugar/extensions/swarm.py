@@ -34,6 +34,13 @@ doc_all_services = {'all': 'Use all services for the command.'}
 doc_all_nodes = {'all': 'Use all nodes for the command.'}
 doc_subcommand = {'subcommand': 'Subcommand to execute for the node command.'}
 
+doc_stack = {'stack': 'Name of the stack to deploy'}
+
+doc_compose_file = {
+    'file': """Path to a Compose file
+                     (overrides the one from profile)""",
+}
+
 doc_common_no_services = {
     **doc_profile,
     **doc_options,
@@ -49,6 +56,11 @@ doc_common_services = {
     **doc_profile,
     **doc_services,
     **doc_all_services,
+    **doc_options,
+}
+
+doc_stack_rm = {
+    **doc_stack,
     **doc_options,
 }
 
@@ -217,6 +229,32 @@ class SugarSwarm(SugarBase):
             _err=_err,
         )
 
+    def _call_stack_command(
+        self,
+        stack_name: str,
+        compose_file: str = '',
+        options_args: list[str] = [],
+        backend_args: list[str] = [],
+        compose_file_required: bool = False,
+        _out: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stdout,
+        _err: Union[io.TextIOWrapper, io.StringIO, Any] = sys.stderr,
+    ) -> None:
+        """Call docker stack commands with proper structure."""
+        # Build the full command: stack deploy -c file stackname
+
+        # Check if compose file should be included
+        self.backend_args = backend_args.copy()
+        if compose_file and compose_file_required:
+            self.backend_args.extend([compose_file])
+
+        # Call with the stack name as the main command/argument
+        self._call_backend_app(
+            stack_name,
+            options_args=options_args,
+            _out=_out,
+            _err=_err,
+        )
+
     @docparams(doc_common_no_services)
     def _cmd_init(
         self,
@@ -239,20 +277,79 @@ class SugarSwarm(SugarBase):
         options_args = self._get_list_args(options)
         self._call_swarm_command('join', options_args=options_args)
 
-    @docparams(doc_common_service)
+    @docparams(
+        {
+            **doc_profile,
+            **doc_stack,
+            **doc_compose_file,
+            **doc_options,
+        }
+    )
     def _cmd_create(
         self,
         /,
-        service: str = '',
+        stack: str = '',
+        file: str = '',
+        profile: str = '',
         options: str = '',
     ) -> None:
-        """Create a new service."""
-        service_name = self._get_service_name(service)
+        """Deploy a new stack from a compose file.
+
+        This command deploys a stack using the compose file specified
+        either directly or from the profile configuration.
+        """
+        # Validate stack name
+        if not stack:
+            SugarLogs.raise_error(
+                'Stack name must be provided for stack deployment',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+
+        compose_file = file
+        # If no file is provided, get it from the profile configuration
+        if not compose_file:
+            # Make sure configuration is loaded
+            if not hasattr(self, 'config') or not self.config:
+                # Use the load method from the parent class,
+                # which is the correct method
+                super().load(
+                    self.file,
+                    self.profile_selected,
+                    self.dry_run,
+                    self.verbose,
+                )
+
+            # Get the profile configuration
+            profile_name = profile or self.profile_selected
+            if profile_name and 'profiles' in self.config:
+                profile_config = self.config['profiles'].get(profile_name, {})
+                config_path = profile_config.get('config-path', '')
+
+                # config_path can be a string or a list
+                if isinstance(config_path, list) and config_path:
+                    compose_file = config_path[
+                        0
+                    ]  # Use the first file if multiple
+                else:
+                    compose_file = config_path
+
+        if not compose_file:
+            SugarLogs.raise_error(
+                """Compose file not specified and
+                not found in profile configuration""",
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+
+        # Parse options
         options_args = self._get_list_args(options)
-        self._call_service_command(
-            'create',
-            services=service_name,
+
+        # Use the helper method instead of direct call
+        self._call_stack_command(
+            stack_name=stack,
+            compose_file=compose_file,
             options_args=options_args,
+            compose_file_required=True,
+            backend_args=['stack', 'deploy', '-c'],
         )
 
     @docparams(doc_common_services)
@@ -296,32 +393,51 @@ class SugarSwarm(SugarBase):
         options_args = self._get_list_args(options)
         self._call_service_command('ls', options_args=options_args)
 
-    @docparams(doc_common_services)
+    @docparams(
+        {
+            **doc_stack_rm,
+            'quiet': 'Only display IDs',
+        }
+    )
     def _cmd_ps(
         self,
-        services: str = '',
-        all: bool = False,
+        /,
+        stack: str = '',
+        quiet: bool = False,
         options: str = '',
     ) -> None:
-        """List the tasks of one or more services."""
-        services_names = self._get_services_names(services=services, all=all)
+        """List the tasks in the stack."""
+        if not stack:
+            SugarLogs.raise_error(
+                'Stack name must be provided for stack ps command',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+
+        backend_args = ['stack', 'ps']
+        if quiet:
+            backend_args = ['stack', 'ps', '--quiet']
+
         options_args = self._get_list_args(options)
-        self._call_service_command(
-            'ps', services=services_names, options_args=options_args
+        self._call_stack_command(
+            stack_name=stack,
+            options_args=options_args,
+            compose_file_required=False,
+            backend_args=backend_args,
         )
 
-    @docparams(doc_common_services)
+    @docparams(doc_stack_rm)
     def _cmd_rm(
         self,
-        services: str = '',
-        all: bool = False,
+        /,
+        stack: str = '',
         options: str = '',
     ) -> None:
-        """Remove one or more services."""
-        services_names = self._get_services_names(services=services, all=all)
-        options_args = self._get_list_args(options)
-        self._call_service_command(
-            'rm', services=services_names, options_args=options_args
+        """Remove the stack from the swarm."""
+        self._call_stack_command(
+            stack_name=stack,
+            options_args=self._get_list_args(options),
+            compose_file_required=False,
+            backend_args=['stack', 'rm'],
         )
 
     @docparams(doc_common_services)
