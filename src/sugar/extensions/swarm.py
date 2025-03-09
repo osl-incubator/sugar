@@ -352,20 +352,53 @@ class SugarSwarm(SugarBase):
             backend_args=['stack', 'deploy', '-c'],
         )
 
-    @docparams(doc_common_services)
+    @docparams(
+        {
+            **doc_common_services,
+            'format': 'Format output using a custom template',
+            'size': 'Display total file sizes if the type is container',
+            'type': 'Return JSON for specified type',
+        }
+    )
     def _cmd_inspect(
         self,
         services: str = '',
         all: bool = False,
         options: str = '',
+        format: str = '',
+        size: bool = False,
+        type: str = '',
     ) -> None:
-        """Display detailed information on one or more services."""
+        """
+        Display detailed information on Docker objects.
+
+        Returns low-level information on Docker objects
+        (containers, images, volumes,
+        networks, nodes, services, tasks, etc).
+        """
         services_names = self._get_services_names(services=services, all=all)
-        options_args = self._get_list_args(options)
-        self._call_service_command(
+
+        # Prepare the options with the format flag if provided
+        options_list = self._get_list_args(options)
+
+        if format:
+            # TODO: Need to fix and Validate format
+            options_list.extend(['--format=', format])
+
+        if size:
+            options_list.append('--size')
+
+        if type:
+            options_list.extend(['--type', type])
+
+        # Use direct docker inspect command instead
+        # of service-specific inspect
+
+        self.backend_args = []  # Reset backend args use direct docker command
+        self._call_backend_app(
             'inspect',
             services=services_names,
-            options_args=options_args,
+            options_args=options_list,
         )
 
     @docparams(doc_common_services)
