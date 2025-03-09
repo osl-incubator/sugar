@@ -312,12 +312,9 @@ class SugarCompose(SugarBase):
         all: bool = False,
         options: str = '',
     ) -> None:
-        """Restart service containers."""
-        services_names = self._get_services_names(services=services, all=all)
-        options_args = self._get_list_args(options)
-        self._call_backend_app(
-            'restart', services=services_names, options_args=options_args
-        )
+        """Restart services (compose stop + up)."""
+        self._cmd_stop(services=services, all=all)
+        self._cmd_start(services=services, all=all, options=options)
 
     @docparams(doc_common_services)
     def _cmd_rm(
