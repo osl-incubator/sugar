@@ -1,0 +1,33 @@
+{
+    "profiles": [
+      {
+        "profile": "development",
+        "project_name": "project-dev",
+        "config_path": "containers/dev/compose.yaml",
+        "services": "frontend, api, db",
+        "status": "● Active"
+      },
+      {
+        "profile": "staging",
+        "project_name": "project-staging",
+        "config_path": "containers/staging/compose.yaml",
+        "services": "All services",
+        "status": "● Active"
+      },
+      {
+        "profile": "production",
+        "project_name": "project-prod",
+        "config_path": "containers/prod/compose.yaml",
+        "services": "web, api, db, cache",
+        "status": "○ Inactive"
+      },
+      {
+        "profile": "testing",
+        "project_name": "project-test",
+        "config_path": "containers/test/compose.yaml",
+        "services": "test-suite, mockdb",
+        "status": "○ Inactive"
+      }
+    ],
+    "total_profiles": 4
+  }

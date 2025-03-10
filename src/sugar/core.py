@@ -7,6 +7,8 @@ from typing import Optional, Type, cast
 from sugar.extensions.base import SugarBase
 from sugar.extensions.compose import SugarCompose
 from sugar.extensions.compose_ext import SugarComposeExt
+from sugar.extensions.tui import TUIExtension  # Add this import
+
 
 try:
     from sugar.extensions.stats import SugarStats
@@ -18,5 +20,6 @@ except ImportError:
 extensions: dict[str, Type[SugarBase]] = {
     'compose': SugarCompose,
     'compose-ext': SugarComposeExt,
+    'tui': TUIExtension,
     **{'stats': SugarStats for i in range(1) if SugarStats is not None},
 }
