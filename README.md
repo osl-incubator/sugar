@@ -82,28 +82,31 @@ project. This is an example of a configuration file:
 
 ```yaml
 backend: compose
-defaults:
-  profile: ${{ env.ENV }}
-profiles:
-  profile1:
+default:
+  group:  {% raw %} ${{ env.ENV }} {% endraw %}
+groups:
+  group1:
     project-name: project1
     config-path:
-      - containers/tests/profile1/compose.yaml
+      - containers/tests/group1/compose.yaml
     env-file: .env
     services:
-      default: service1,service3
+      default:
+        - service1
+        - service3
       available:
         - name: service1
         - name: service2
         - name: service3
-  profile2:
+  group2:
     project-name: null
-    config-path: containers/tests/profile2/compose.yaml
+    config-path: containers/tests/group2/compose.yaml
     env-file: .env
     services:
+      # default: null
       available:
         - name: service1
-        - name: service3
+        - name: service2
 ```
 
 Some examples of how to use it:
@@ -125,6 +128,6 @@ Some examples of how to use it:
 - restart service1 and service2 for profile1:
   `sugar ext restart --profile profile1 --services service1,service2`
 
-**NOTE**: If you use: `default: profile: ${{ env.ENV }}`, you don't need to give
-`--profile <PROFILE_NAME>`, except if you want a different profile than the
-default one.
+**NOTE**: If you use: `default: group: {% raw %} ${{ env.ENV }} {% endraw %}`,
+you don't need to give `--group <GROUP_NAME>`, except if you want a different
+group than the default one.
