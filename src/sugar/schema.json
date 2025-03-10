@@ -5,7 +5,7 @@
   "properties": {
     "backend": {
       "type": "string",
-      "enum": ["compose"]
+      "enum": ["compose", "podman-compose"]
     },
     "env-file": {
       "type": "string"
