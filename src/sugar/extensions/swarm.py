@@ -124,6 +124,20 @@ doc_scale_options = {
     (comma-separated list of service=replicas pairs)""",
 }
 
+doc_update_options = {
+    'detach': """Exit immediately instead of waiting
+    for the service to converge""",
+    'quiet': 'Suppress progress output',
+    'image': 'Service image tag',
+    'replicas': 'Number of tasks',
+    'force': 'Force update even if no changes require it',
+    'rollback': 'Rollback to previous specification',
+    'env_add': """Add or update environment variables
+    (comma-separated list of NAME=VALUE)""",
+    'label_add': """Add or update service labels
+      (comma-separated list of key=value)""",
+}
+
 
 class SugarSwarm(SugarBase):
     """SugarSwarm provides the docker swarm commands."""
@@ -637,16 +651,71 @@ class SugarSwarm(SugarBase):
             options_args=options_args,
         )
 
-    @docparams(doc_common_services)
+    @docparams({**doc_common_services, **doc_update_options})
     def _cmd_update(
         self,
         services: str = '',
         all: bool = False,
+        detach: bool = False,
+        quiet: bool = False,
+        image: str = '',
+        replicas: str = '',
+        force: bool = False,
+        rollback: bool = False,
+        env_add: str = '',
+        label_add: str = '',
         options: str = '',
     ) -> None:
-        """Update a service."""
+        """
+        Update a service.
+
+        This command updates the configuration of one or more services.
+
+        Examples
+        --------
+            # Update service image
+            sugar swarm update --services my-web --image nginx:latest
+
+            # Scale a service (update replicas)
+            sugar swarm update --services api --replicas 3
+
+            # Add environment variables
+            sugar swarm update --services app --env_add
+            "DEBUG=1,LOG_LEVEL=info"
+
+            # Update with force flag and detach
+            sugar swarm update --services backend --force --detach
+        """
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
+
+        # Add flag options
+        if detach:
+            options_args.append('--detach')
+        if quiet:
+            options_args.append('--quiet')
+        if force:
+            options_args.append('--force')
+        if rollback:
+            options_args.append('--rollback')
+
+        # Add options with values
+        if image:
+            options_args.extend(['--image', image])
+        if replicas:
+            options_args.extend(['--replicas', replicas])
+
+        # Process comma-separated key-value pairs
+        if env_add:
+            for env_pair in env_add.split(','):
+                if env_pair.strip():
+                    options_args.extend(['--env-add', env_pair.strip()])
+
+        if label_add:
+            for label_pair in label_add.split(','):
+                if label_pair.strip():
+                    options_args.extend(['--label-add', label_pair.strip()])
+
         self._call_service_command(
             'update',
             services=services_names,
