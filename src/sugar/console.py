@@ -6,17 +6,14 @@ import os
 
 
 def get_terminal_size() -> tuple[int, int]:
-    """Return the height (number of lines) of the terminal using os module."""
-    size = os.get_terminal_size()
+    """Return the width and height of the terminal using os module."""
     try:
+        size = os.get_terminal_size()
+        width = size.columns
         height = size.lines
     except OSError:
-        # Default to 24 lines if the terminal size cannot be determined.
+        # Default values if the terminal size cannot be determined.
+        width = 80
         height = 24
 
-    try:
-        width = size.columns
-    except OSError:
-        # Default to 24 lines if the terminal size cannot be determined.
-        height = 80
     return width, height
