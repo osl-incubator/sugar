@@ -75,29 +75,7 @@ class SugarPodmanComposeExt(SugarBase):
 
     def _load_backend_app(self) -> None:
         """Override to use podman instead of docker."""
-        backend_cmd = self.config.get('backend', '')
-
-        # Change to accept 'compose' as an alias for podman-compose
-        # This allows the same configuration to work with
-        # both Docker and Podman
-        supported_backends = ['podman-ext', 'compose']
-
-        if backend_cmd not in supported_backends:
-            SugarLogs.raise_error(
-                f'"{backend_cmd}" not supported by SugarPodmanCompose.'
-                f' Supported backends are: {", ".join(supported_backends)}.',
-                SugarError.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
-            )
-
-        try:
-            self.backend_app = sh.Command('podman-compose')
-            # self.backend_args.append('compose')
-        except sh.CommandNotFound:
-            SugarLogs.raise_error(
-                'The podman command was not found in the system. '
-                'Please install podman first.',
-                SugarError.SUGAR_COMMAND_NOT_FOUND,
-            )
+        self.backend_app = sh.Command('podman-compose')
 
     def _load_backend_args(self) -> None:
         """
@@ -124,9 +102,11 @@ class SugarPodmanComposeExt(SugarBase):
                 )
 
         config_path = []
-        backend_path_arg = get_absolute_path(
-            self.service_profile['config-path']
-        )
+        backend_path_arg = [
+            get_absolute_path(path)
+            for path in self.service_profile.get('config-path', [])
+        ]
+        # Handle config-path as string or list
         if isinstance(backend_path_arg, str):
             # Convert relative path to absolute using project root
             if not backend_path_arg.startswith('/'):
@@ -135,7 +115,14 @@ class SugarPodmanComposeExt(SugarBase):
                 )
             config_path.append(backend_path_arg)
         elif isinstance(backend_path_arg, list):
-            config_path.extend(backend_path_arg)
+            # Handle each path in the list
+            for p in backend_path_arg:
+                modified_path = (
+                    str(Path(self.file).parent / p)
+                    if not str(p).startswith('/')
+                    else p
+                )
+                config_path.append(modified_path)
         else:
             SugarLogs.raise_error(
                 'The attribute config-path` just supports the data '
