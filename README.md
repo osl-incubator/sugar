@@ -83,7 +83,7 @@ project. This is an example of a configuration file:
 ```yaml
 backend: compose
 defaults:
-  profile:{% raw %} ${{ env.ENV }} {% endraw %}
+  profile: {% raw %} ${{ env.ENV }} {% endraw %}
 profiles:
   profile1:
     project-name: project1
