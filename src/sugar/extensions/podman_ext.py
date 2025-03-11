@@ -11,6 +11,7 @@ from typing import Any, Union
 
 import dotenv
 import sh
+import yaml
 
 from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
@@ -434,6 +435,20 @@ class SugarPodmanComposeExt(SugarBase):
             'down', services=services_names, options_args=options_args
         )
 
+    # @docparams(doc_common_services)
+    # def _cmd_events(
+    #     self,
+    #     services: str = '',
+    #     all: bool = False,
+    #     options: str = '',
+    # ) -> None:
+    #     """Receive real time events from containers."""
+    #     services_names = self._get_services_names(services=services, all=all)
+    #     options_args = self._get_list_args(options)
+    #     self._call_backend_app(
+    #         'events', services=services_names, options_args=options_args
+    #     )
+
     @docparams(doc_common_services)
     def _cmd_events(
         self,
@@ -441,12 +456,63 @@ class SugarPodmanComposeExt(SugarBase):
         all: bool = False,
         options: str = '',
     ) -> None:
-        """Receive real time events from containers."""
-        services_names = self._get_services_names(services=services, all=all)
+        """
+        Monitor podman events.
+
+        Shows events from containers matching the specified services.
+        Use --filter to filter output (e.g. --options "--filter event=create").
+        """
+        if not services and not all:
+            SugarLogs.raise_error(
+                'Either service names or --all flag is required.',
+                SugarError.SUGAR_MISSING_PARAMETER,
+            )
+
+        # Use podman command directly instead of podman-compose
+        podman_cmd = sh.Command('podman')
         options_args = self._get_list_args(options)
-        self._call_backend_app(
-            'events', services=services_names, options_args=options_args
-        )
+        services_names = self._get_services_names(services=services, all=all)
+
+        # Get project name for container name prefixing
+        project_name = self.service_profile.get('project-name', 'sugar')
+
+        # Build container filters for each service
+        filters = []
+        for service in services_names:
+            container_name = f'{project_name}_{service}_1'
+            filters.extend(['--filter', f'container={container_name}'])
+
+        # Build command arguments
+        positional_parameters = [
+            'events',
+            *filters,
+            *options_args,
+        ]
+
+        if self.verbose or self.dry_run:
+            SugarLogs.print_info(
+                f'>>> podman {" ".join(positional_parameters)}'
+            )
+            SugarLogs.print_info('-' * 80)
+
+        if self.dry_run:
+            SugarLogs.print_warning(
+                'Running it in dry-run mode, the command was skipped.'
+            )
+            return
+
+        try:
+            podman_cmd(
+                *positional_parameters,
+                _fg=True,  # Run in foreground for live event stream
+            )
+        except sh.ErrorReturnCode as e:
+            SugarLogs.raise_error(str(e), SugarError.SH_ERROR_RETURN_CODE)
+        except KeyboardInterrupt:
+            SugarLogs.raise_error(
+                'Events monitoring interrupted.',
+                SugarError.SH_KEYBOARD_INTERRUPT,
+            )
 
     @docparams(doc_common_service_cmd)
     def _cmd_exec(
@@ -471,6 +537,52 @@ class SugarPodmanComposeExt(SugarBase):
             cmd_args=cmd_args,
         )
 
+    # @docparams(doc_common_services)
+    # def _cmd_images(
+    #     self,
+    #     services: str = '',
+    #     all: bool = False,
+    #     options: str = '',
+    # ) -> None:
+    #     """List images used by the created containers."""
+    #     services_names = self._get_services_names(services=services, all=all)
+    #     options_args = self._get_list_args(options)
+    #     self._call_backend_app(
+    #         'images', services=services_names, options_args=options_args
+    #     )
+
+    def _get_image_filters(self, services_names: list[str]) -> list[str]:
+        """Get image filters for the given services."""
+        filters = []
+        config_paths = self.service_profile.get('config-path', [])
+        if isinstance(config_paths, str):
+            config_paths = [config_paths]
+
+        for config_path in config_paths:
+            path_to_use = config_path
+            if not config_path.startswith('/'):
+                path_to_use = str(Path(self.file).parent / config_path)
+            try:
+                with open(path_to_use) as f:
+                    compose_config = yaml.safe_load(f)
+                    for service in services_names:
+                        if service in compose_config.get('services', {}):
+                            service_config = compose_config['services'][
+                                service
+                            ]
+                            if 'image' in service_config:
+                                filters.extend(
+                                    [
+                                        '--filter',
+                                        f'reference={service_config["image"]}',
+                                    ]
+                                )
+            except (yaml.YAMLError, FileNotFoundError) as e:
+                SugarLogs.print_warning(
+                    f'Error with compose file {path_to_use}: {e}'
+                )
+        return filters
+
     @docparams(doc_common_services)
     def _cmd_images(
         self,
@@ -479,11 +591,39 @@ class SugarPodmanComposeExt(SugarBase):
         options: str = '',
     ) -> None:
         """List images used by the created containers."""
-        services_names = self._get_services_names(services=services, all=all)
+        if not services and not all:
+            SugarLogs.raise_error(
+                'Either service names or --all flag is required.',
+                SugarError.SUGAR_MISSING_PARAMETER,
+            )
+
+        podman_cmd = sh.Command('podman')
         options_args = self._get_list_args(options)
-        self._call_backend_app(
-            'images', services=services_names, options_args=options_args
-        )
+        services_names = self._get_services_names(services=services, all=all)
+        filters = self._get_image_filters(services_names)
+
+        positional_parameters = ['images', *filters, *options_args]
+
+        if self.verbose or self.dry_run:
+            SugarLogs.print_info(
+                f'>>> podman {" ".join(positional_parameters)}'
+            )
+            SugarLogs.print_info('-' * 80)
+
+        if self.dry_run:
+            SugarLogs.print_warning(
+                'Running it in dry-run mode, the command was skipped.'
+            )
+            return
+
+        try:
+            podman_cmd(*positional_parameters, _fg=True)
+        except sh.ErrorReturnCode as e:
+            SugarLogs.raise_error(str(e), SugarError.SH_ERROR_RETURN_CODE)
+        except KeyboardInterrupt:
+            SugarLogs.raise_error(
+                'Image listing interrupted.', SugarError.SH_KEYBOARD_INTERRUPT
+            )
 
     @docparams(doc_common_services)
     def _cmd_kill(
