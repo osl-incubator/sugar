@@ -102,11 +102,18 @@ class SugarPodmanComposeExt(SugarBase):
                 )
 
         config_path = []
-        backend_path_arg = [
-            get_absolute_path(path)
-            for path in self.service_profile.get('config-path', [])
-        ]
-        # Handle config-path as string or list
+
+        # Handle config-path differently for Podman
+        if type(self.service_profile['config-path']) is list:
+            backend_path_arg = [
+                get_absolute_path(path)
+                for path in self.service_profile.get('config-path', [])
+            ]
+        else:
+            backend_path_arg = [
+                get_absolute_path(self.service_profile['config-path'])
+            ]
+
         if isinstance(backend_path_arg, str):
             # Convert relative path to absolute using project root
             if not backend_path_arg.startswith('/'):
@@ -115,14 +122,7 @@ class SugarPodmanComposeExt(SugarBase):
                 )
             config_path.append(backend_path_arg)
         elif isinstance(backend_path_arg, list):
-            # Handle each path in the list
-            for p in backend_path_arg:
-                modified_path = (
-                    str(Path(self.file).parent / p)
-                    if not str(p).startswith('/')
-                    else p
-                )
-                config_path.append(modified_path)
+            config_path.extend(backend_path_arg)
         else:
             SugarLogs.raise_error(
                 'The attribute config-path` just supports the data '
