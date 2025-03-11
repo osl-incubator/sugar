@@ -81,6 +81,28 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose run --service service1-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose down
 
+      smoke-podman-1:
+        help: Run smoke tests for profile 1
+        hooks:
+          pre-run:
+            - task: docker.killall
+        vars:
+          SUGAR_FLAGS: --verbose --profile profile1
+        run: |
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build --services service1-1
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext pull --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext pull
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext pull --services service1-1
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext start --all --options -d
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext restart --all --options -d
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext exec --service service1-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext stop --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext run --service service1-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext down
+
       smoke-2:
         help: Run smoke tests for profile 2
         hooks:
@@ -97,6 +119,22 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose run --service service2-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose down
 
+      smoke-podman-2:
+        help: Run smoke tests for profile 2
+        hooks:
+          pre-run:
+            - task: docker.killall
+        vars:
+          SUGAR_FLAGS: --verbose --profile profile2
+        run: |
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build --services service2-1
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext pull --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext stop --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext run --service service2-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext down
+
       smoke-services:
         help: Run smoke test for services
         hooks:
@@ -104,6 +142,14 @@ groups:
             - task: docker.killall
         run: |
           sugar --verbose --file tests/containers/.services.sugar.yaml compose build
+
+      smoke-podman-services:
+        help: Run smoke test for services
+        hooks:
+          pre-run:
+            - task: docker.killall
+        run: |
+          sugar --verbose --file tests/containers/.services.sugar.yaml podman-ext build
 
       smoke-mix:
         help: Run smoke tests for profile mix
@@ -125,6 +171,25 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose stop --all
           sugar ${{ vars.SUGAR_FLAGS }} compose run --service service2-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose down
+
+      smoke-podman-mix:
+        help: Run smoke tests for profile mix
+        hooks:
+          pre-run:
+            - task: docker.killall
+        vars:
+          SUGAR_FLAGS: --verbose --profile profile-mix
+        run: |
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build --services service1-1,service2-1
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext pull --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext pull
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext pull --services service1-1,service2-1
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext exec --service service2-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext stop --all
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext run --service service2-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext down
 
       smoke-main:
         help: Run smoke tests for profile main
@@ -162,6 +227,42 @@ groups:
           # docker ps|grep $SUGAR_PROJECT_NAME
           sugar ${{ vars.SUGAR_FLAGS }} compose-ext stop
 
+      smoke-podman-main:
+        help: Run smoke tests for profile main
+        hooks:
+          pre-run:
+            - task: docker.killall
+        vars:
+          SUGAR_FLAGS: --verbose --profile profile1
+        run: |
+          # general tests main profile/plugins
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext config
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext create
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext-ext start --options -d
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext-ext restart --options -d
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext exec --service service1-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext images
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext logs
+          # port is not complete supported
+          # sugar --verbose podman-ext port --service service1-1
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext ps
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext pull
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext push
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext run --service service1-1 --options -T --cmd env
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext top
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext up --options -d
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext version
+          # port is not complete supported
+          export SUGAR_PROJECT_NAME="test-`python -c 'from uuid import uuid4; print(uuid4().hex[:7])'`"
+          echo $SUGAR_PROJECT_NAME
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext build
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext-ext start --options -d
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext-ext restart --options -d
+          # TODO: it seems that the SUGAR_PROJECT_NAME is not used properly from this block
+          # docker ps|grep $SUGAR_PROJECT_NAME
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext stop
+
       smoke-final:
         help: Run final smoke tests
         hooks:
@@ -176,6 +277,20 @@ groups:
           sugar --verbose --profile profile1 compose rm --options --force
           sugar --verbose --profile profile1 compose down
 
+      smoke-podman-final:
+        help: Run final smoke tests
+        hooks:
+          pre-run:
+            - task: docker.killall
+        run: |
+          sugar --verbose --profile profile-defaults podman-ext restart --options -d
+          sugar --verbose --profile profile1 podman-ext pause
+          sugar --verbose --profile profile1 podman-ext unpause
+          sugar --verbose --profile profile1 podman-ext kill
+          sugar --verbose --profile profile1 podman-ext stop
+          sugar --verbose --profile profile1 podman-ext rm --options --force
+          sugar --verbose --profile profile1 podman-ext down
+
       smoke-experimental:
         help: Run simple text for experimental commands
         hooks:
@@ -188,6 +303,19 @@ groups:
           sugar --verbose compose scale --help
           sugar --verbose compose wait --help
           sugar --verbose compose watch --help
+
+      smoke-podman-experimental:
+        help: Run simple text for experimental commands
+        hooks:
+          pre-run:
+            - task: docker.killall
+        run: |
+          sugar --verbose podman-ext attach --help
+          sugar --verbose podman-ext cp --help
+          sugar --verbose podman-ext ls --help
+          sugar --verbose podman-ext scale --help
+          sugar --verbose podman-ext wait --help
+          sugar --verbose podman-ext watch --help
 
       smoke-hooks:
         help: Run simple text for experimental commands
@@ -203,6 +331,20 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose-ext config | grep "RUNNING PRE-RUN FOR CONFIG"
           sugar ${{ vars.SUGAR_FLAGS }} compose-ext config | grep "CONFIG EXECUTED WITH SUCCESS"
 
+      smoke-podman-hooks:
+        help: Run simple text for experimental commands
+        hooks:
+          pre-run:
+            - task: docker.killall
+        vars:
+          SUGAR_FLAGS: --file .hooks.sugar.yaml
+        dir: tests/containers
+        run: |
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext config | grep "RUNNING PRE-RUN FOR CONFIG"
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext config | grep "CONFIG EXECUTED WITH SUCCESS"
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext config | grep "RUNNING PRE-RUN FOR CONFIG"
+          sugar ${{ vars.SUGAR_FLAGS }} podman-ext config | grep "CONFIG EXECUTED WITH SUCCESS
+
       smoke:
         help: Run final smoke tests
         hooks:
@@ -216,6 +358,23 @@ groups:
             - task: tests.smoke-services
             - task: tests.smoke-experimental
             - task: tests.smoke-hooks
+        run: |
+          sugar --verbose compose --help
+          sugar --verbose compose version
+
+      smoke-podman:
+        help: Run final smoke tests
+        hooks:
+          pre-run:
+            - task: docker.killall
+            - task: tests.smoke-podman-1
+            - task: tests.smoke-podman-2
+            - task: tests.smoke-podman-mix
+            - task: tests.smoke-podman-main
+            - task: tests.smoke-podman-final
+            - task: tests.smoke-podman-services
+            - task: tests.smoke-podman-experimental
+            - task: tests.smoke-podman-hooks
         run: |
           sugar --verbose compose --help
           sugar --verbose compose version
