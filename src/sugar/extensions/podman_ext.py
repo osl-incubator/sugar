@@ -245,6 +245,23 @@ class SugarPodmanComposeExt(SugarBase):
 
         self._execute_hooks('post-run', extension, action)
 
+    # @docparams(doc_common_service)
+    # def _cmd_attach(
+    #     self,
+    #     service: str = '',
+    #     options: str = '',
+    # ) -> None:
+    #     """
+    #     Attach to a service.
+
+    #     Note: This is an experimental feature.
+    #     """
+    #     options_args = self._get_list_args(options)
+    #     self._call_backend_app(
+    #         'attach',
+    #         services=[service] if service else [],
+    #         options_args=options_args,
+    #     )
     @docparams(doc_common_service)
     def _cmd_attach(
         self,
@@ -252,16 +269,52 @@ class SugarPodmanComposeExt(SugarBase):
         options: str = '',
     ) -> None:
         """
-        Attach to a service.
+        Attach to a service's container.
 
-        Note: This is an experimental feature.
+        Attach local standard input, output, and error streams to a
+        running container.
         """
+        if not service:
+            SugarLogs.raise_error(
+                'The service parameter is required.',
+                SugarError.SUGAR_MISSING_PARAMETER,
+            )
+
+        # Use podman command directly instead of podman-compose
+        podman_cmd = sh.Command('podman')
         options_args = self._get_list_args(options)
-        self._call_backend_app(
-            'attach',
-            services=[service] if service else [],
-            options_args=options_args,
-        )
+
+        # Get the container name based on the service name
+        # This assumes container name follows podman-compose naming convention
+        project_name = self.service_profile.get('project-name', 'sugar')
+        container_name = f'{project_name}_{service}_1'
+
+        # Build command arguments
+        positional_parameters = ['attach', *options_args, container_name]
+
+        if self.verbose or self.dry_run:
+            SugarLogs.print_info(
+                f'>>> podman {" ".join(positional_parameters)}'
+            )
+            SugarLogs.print_info('-' * 80)
+
+        if self.dry_run:
+            SugarLogs.print_warning(
+                'Running it in dry-run mode, the command was skipped.'
+            )
+            return
+
+        try:
+            podman_cmd(
+                *positional_parameters,
+                _fg=True,  # Run in foreground to allow direct interaction
+            )
+        except sh.ErrorReturnCode as e:
+            SugarLogs.raise_error(str(e), SugarError.SH_ERROR_RETURN_CODE)
+        except KeyboardInterrupt:
+            SugarLogs.raise_error(
+                'Detached from container.', SugarError.SH_KEYBOARD_INTERRUPT
+            )
 
     @docparams(doc_common_services)
     def _cmd_build(
@@ -285,25 +338,73 @@ class SugarPodmanComposeExt(SugarBase):
         options: str = '',
     ) -> None:
         """Parse, resolve and render compose file in canonical format."""
-        services_names = self._get_services_names(services=services, all=all)
+        # Podman-compose config doesn't support filtering by services
         options_args = self._get_list_args(options)
         self._call_backend_app(
-            'config', services=services_names, options_args=options_args
+            'config',
+            services=[],  # Don't pass services to config command
+            options_args=options_args,
         )
+
+    # @docparams(doc_common_no_services)
+    # def _cmd_cp(
+    #     self,
+    #     options: str = '',
+    # ) -> None:
+    #     """Copy files/folders between a service container.
+
+    #        and the local filesystem.
+
+    #     Note: This is an experimental feature.
+    #     """
+    #     options_args = self._get_list_args(options)
+    #     self._call_backend_app('cp', services=[], options_args=options_args)
 
     @docparams(doc_common_no_services)
     def _cmd_cp(
         self,
         options: str = '',
     ) -> None:
-        """Copy files/folders between a service container.
-
-           and the local filesystem.
-
-        Note: This is an experimental feature.
         """
+        Copy files/folders between a container and the local filesystem.
+
+        Use SRC_PATH and DEST_PATH format where one of them should be a
+        container name.
+        Example: container_name:/path/to/file /local/path
+        """
+        # Use podman command directly instead of podman-compose
+        podman_cmd = sh.Command('podman')
         options_args = self._get_list_args(options)
-        self._call_backend_app('cp', services=[], options_args=options_args)
+
+        # Build command arguments
+        positional_parameters = [
+            'cp',
+            *options_args,
+        ]
+
+        if self.verbose or self.dry_run:
+            SugarLogs.print_info(
+                f'>>> podman {" ".join(positional_parameters)}'
+            )
+            SugarLogs.print_info('-' * 80)
+
+        if self.dry_run:
+            SugarLogs.print_warning(
+                'Running it in dry-run mode, the command was skipped.'
+            )
+            return
+
+        try:
+            podman_cmd(
+                *positional_parameters,
+                _fg=True,  # Run in foreground to allow direct interaction
+            )
+        except sh.ErrorReturnCode as e:
+            SugarLogs.raise_error(str(e), SugarError.SH_ERROR_RETURN_CODE)
+        except KeyboardInterrupt:
+            SugarLogs.raise_error(
+                'Copy operation interrupted.', SugarError.SH_KEYBOARD_INTERRUPT
+            )
 
     @docparams(doc_common_services)
     def _cmd_create(
@@ -412,18 +513,18 @@ class SugarPodmanComposeExt(SugarBase):
             'logs', services=services_names, options_args=options_args
         )
 
-    @docparams(doc_common_no_services)
-    def _cmd_ls(
-        self,
-        options: str = '',
-    ) -> None:
-        """
-        List running compose projects.
+    # @docparams(doc_common_no_services)
+    # def _cmd_ls(
+    #     self,
+    #     options: str = '',
+    # ) -> None:
+    #     """
+    #     List running compose projects.
 
-        Note: This is an experimental feature.
-        """
-        options_args = self._get_list_args(options)
-        self._call_backend_app('ls', services=[], options_args=options_args)
+    #     Note: This is an experimental feature.
+    #     """
+    #     options_args = self._get_list_args(options)
+    #     self._call_backend_app('ls', services=[], options_args=options_args)
 
     @docparams(doc_common_services)
     def _cmd_pause(
