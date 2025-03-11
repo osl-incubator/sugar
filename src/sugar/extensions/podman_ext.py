@@ -456,15 +456,18 @@ class SugarPodmanComposeExt(SugarBase):
     @docparams(doc_common_services)
     def _cmd_ps(
         self,
-        services: str = '',
-        all: bool = False,
+        # services: str = '',
+        # all: bool = False,
         options: str = '',
     ) -> None:
         """List containers."""
-        services_names = self._get_services_names(services=services, all=all)
+        # Podman-compose ps doesn't support service names as arguments
+        # so we'll just run the base command
         options_args = self._get_list_args(options)
         self._call_backend_app(
-            'ps', services=services_names, options_args=options_args
+            'ps',
+            services=[],  # Don't pass services names to podman-compose ps
+            options_args=options_args,
         )
 
     @docparams(doc_common_services)
@@ -593,18 +596,34 @@ class SugarPodmanComposeExt(SugarBase):
             'stop', services=services_names, options_args=options_args
         )
 
+    # @docparams(doc_common_services)
+    # def _cmd_top(
+    #     self,
+    #     services: str = '',
+    #     all: bool = False,
+    #     options: str = '',
+    # ) -> None:
+    #     """Display the running processes."""
+    #     services_names = self._get_services_names(services=services, all=all)
+    #     options_args = self._get_list_args(options)
+    #     self._call_backend_app(
+    #         'top', services=services_names, options_args=options_args
+    #     )
+
+    # Add after other _cmd_ methods in the SugarPodmanComposeExt class
+
     @docparams(doc_common_services)
-    def _cmd_top(
+    def _cmd_stats(
         self,
         services: str = '',
         all: bool = False,
         options: str = '',
     ) -> None:
-        """Display the running processes."""
+        """Display a live stream of container(s) resource usage statistics."""
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
         self._call_backend_app(
-            'top', services=services_names, options_args=options_args
+            'stats', services=services_names, options_args=options_args
         )
 
     @docparams(doc_common_services)
