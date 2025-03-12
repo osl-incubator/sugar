@@ -91,7 +91,7 @@ def main(
         help='Set the profile of services for running the sugar command.',
     ),
     version: bool = Option(
-        False,  # Changed from None
+        False,
         '--version',
         '-v',
         is_flag=True,
