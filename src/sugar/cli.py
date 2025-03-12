@@ -95,7 +95,7 @@ def main(
         '--version',
         '-v',
         is_flag=True,
-        callback=version_callback,  # Connecting to the callback
+        callback=version_callback,
         is_eager=True,
         help='Show the version of sugar.',
     ),
