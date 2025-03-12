@@ -83,7 +83,7 @@ project. This is an example of a configuration file:
 ```yaml
 backend: compose
 defaults:
-  profile: ${{ env.ENV }}
+  profile: {% raw %} ${{ env.ENV }} {% endraw %}
 profiles:
   profile1:
     project-name: project1
@@ -125,6 +125,6 @@ Some examples of how to use it:
 - restart service1 and service2 for profile1:
   `sugar ext restart --profile profile1 --services service1,service2`
 
-**NOTE**: If you use: `default: profile: ${{ env.ENV }}`, you don't need to give
+**NOTE**: If you use: `default: profile: {% raw %} ${{ env.ENV }} {% endraw %}`, you don't need to give
 `--profile <PROFILE_NAME>`, except if you want a different profile than the
 default one.
