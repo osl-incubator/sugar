@@ -9,6 +9,7 @@ import shlex
 import sys
 import tempfile
 
+from abc import ABC, abstractmethod
 from copy import deepcopy
 from pathlib import Path
 from typing import Any, Union
@@ -33,7 +34,7 @@ TEMPLATE = Environment(
 SUGAR_CURRENT_PATH = Path(__file__).parent.parent
 
 
-class SugarBase:
+class SugarBase(ABC):
     """SugarBase defined the base structure for the Sugar classes."""
 
     actions: list[str] = []
@@ -99,10 +100,20 @@ class SugarBase:
         self._load_defaults()
         self._load_root_services()
 
-        self._load_backend_app()
-        self._load_backend_args()
+        self._load_backend()
 
         self._verify_config()
+
+    @abstractmethod
+    def _load_backend(self) -> None:
+        """
+        Initialize the backend application and its arguments.
+        
+        This method must be implemented by subclasses to set:
+        - self.backend_app
+        - self.backend_args
+        """
+        pass
 
     def _call_backend_app(
         self,
@@ -300,50 +311,6 @@ class SugarBase:
 
         # Load hooks
         self.hooks = self.config.get('hooks', {})
-
-    def _load_backend_app(self) -> None:
-        backend_cmd = self.config.get('backend', '')
-        supported_backends = ['compose']
-
-        if backend_cmd not in supported_backends:
-            SugarLogs.raise_error(
-                f'"{self.config["backend"]}" not supported yet.'
-                f' Supported backends are: {", ".join(supported_backends)}.',
-                SugarError.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
-            )
-
-        self.backend_app = sh.docker
-        self.backend_args.append(backend_cmd)
-
-    def _load_backend_args(self) -> None:
-        self._filter_service_profile()
-
-        if self.service_profile.get('env-file'):
-            self.backend_args.extend(
-                ['--env-file', self.service_profile['env-file']]
-            )
-
-        config_path = []
-        backend_path_arg = self.service_profile['config-path']
-        if isinstance(backend_path_arg, str):
-            config_path.append(backend_path_arg)
-        elif isinstance(backend_path_arg, list):
-            config_path.extend(backend_path_arg)
-        else:
-            SugarLogs.raise_error(
-                'The attribute config-path` just supports the data '
-                f'types `string` or `list`, {type(backend_path_arg)} '
-                'received.',
-                SugarError.SUGAR_INVALID_CONFIGURATION,
-            )
-
-        for p in config_path:
-            self.backend_args.extend(['--file', p])
-
-        if self.service_profile.get('project-name'):
-            self.backend_args.extend(
-                ['--project-name', self.service_profile['project-name']]
-            )
 
     def _load_defaults(self) -> None:
         _defaults = self.config.get('defaults', {})
