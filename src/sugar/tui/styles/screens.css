@@ -1,0 +1,263 @@
+/* src/sugar/tui/styles/screens.css */
+Screen {
+    background: #151515;
+}
+
+.title {
+    text-align: center;
+    text-style: bold;
+    width: 100%;
+    padding: 0;
+    color: #ffffff;
+    background: #1d2064;
+    border-bottom: heavy #3355aa;
+    margin-bottom: 0;
+}
+
+.subtitle {
+    text-align: left;
+    /* Reduced padding */
+    padding-left: 1;
+    color: #aaaaee;
+    /* No margin */
+    margin: 0;
+}
+
+.subtitle-right {
+    text-align: right;
+    color: #aaaaee;
+}
+
+#screen-container {
+    height: 100%;
+    width: 100%;
+}
+
+#screen-content {
+    height: 100%;
+    width: 100%;
+    /* Reduced padding */
+    padding: 0;
+}
+
+#screen-header {
+    width: 100%;
+    height: 2;
+    content-align-horizontal: center;
+
+    /* Reduced margin */
+    margin-bottom: 0;
+}
+
+/* Table container with proper sizing and less margin */
+#main-table-container {
+    height: 18;
+    min-height: 1;
+    margin-bottom: 0;
+}
+
+/* Table styling to ensure visibility */
+#profiles-detail-table {
+    height: 10;        /* Fixed height of 8 rows */
+    max-height: 10;    /* Maximum height of 8 rows */
+    margin-bottom: 0; /* No bottom margin */
+}
+
+/* Make DataTable headers stand out but smaller */
+DataTable > .datatable--header {
+    background: #4d4dbe;
+    color: #ffffff;
+    text-style: bold;
+    /* Smaller header */
+    height: 1;
+}
+
+/* Highlight the selected row */
+DataTable > .datatable--cursor {
+    background: #3a3a6a;
+}
+
+/* Smaller profile details section */
+/* #profile-details {
+    padding: 0;
+    margin-top: 0;
+    background: #1c1c2a;
+    border: solid #444466;
+} */
+
+#profile-details {
+    padding: 0;
+    margin-top: 0;
+    height: 7;        /* Fixed height */
+    max-height: 7;    /* Maximum height */
+    background: #1c1c2a;
+    border: solid #444466;
+}
+
+
+.section-title {
+    background: #2a2a4a;
+    color: #ffffff;
+    text-align: center;
+    text-style: bold;
+    /* Smaller padding */
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.detail-label {
+    color: #aaaaee;
+    width: 30%;
+    text-align: right;
+    padding-right: 1;
+}
+
+.detail-value {
+    color: #ffffff;
+    width: 70%;
+}
+
+/* Reduced margin for action buttons */
+#profile-actions {
+    margin-top: 1;    /* Add a small margin */
+    height: 4;        /* Ensure height for buttons */
+    min-height: 4;    /* Minimum height */
+}
+
+/* Add this to your existing src/sugar/tui/styles/screens.css */
+
+/* Service details section */
+#service-details {
+    padding: 0;
+    margin-top: 0;
+    height: 9;        /* Fixed height */
+    max-height: 9;    /* Maximum height */
+    background: #1c1c2a;
+    border: solid #444466;
+}
+
+/* Make service table match profile table styling */
+#services-table {
+    height: 10;
+    max-height: 10;
+    margin-bottom: 0;
+}
+
+/* Style for service status indicators */
+#service-status {
+    color: #ffffff;
+    width: 70%;
+}
+
+/* Additional service-specific styling */
+#service-ports, #service-image, #container-id {
+    color: #ffffff;
+    width: 70%;
+}
+
+/* Service actions should match profile actions */
+#service-actions {
+    margin-top: 1;
+    height: 3;
+    min-height: 3;
+}
+
+#service-actions Button {
+    margin: 0 1 0 0;
+    min-width: 14;
+    height: 1;
+    min-height: 1;
+}
+
+.small-button {
+    text-style: none;  /* Reset text style */
+    height: 4;         /* Reduced height */
+    min-height: 4;     /* Ensure minimum height */
+    padding: 0;        /* Remove padding */
+    width: auto;       /* Auto width */
+    min-width: 10;  
+    border: none;
+    /* Minimum width */
+}
+
+
+Button {
+    /* Smaller buttons */
+    min-width: 20;
+    min-height: 4;
+    /* padding: 1; */
+    height: 4;
+    margin: 1;
+    border: none;
+    
+    /* margin: 0; */
+}
+
+/* Style button variants */
+Button.primary {
+    background: #0e86d4;
+    color: #ffffff;
+}
+
+Button.error {
+    background: #d41e11;
+    color: #ffffff;
+}
+
+Button.default {
+    background: #333348;
+    color: #ffffff;
+}
+
+/* Smaller rule */
+Rule {
+    color: #3355aa;
+    height: 1;
+    margin: 0;
+}
+
+/* Add this to src/sugar/tui/styles/screens.css */
+
+/* Logs display styling */
+.logs-display {
+    height: 14;  /* More height for logs */
+    min-height: 14;
+    background: #0d0d1a;
+    color: #ffffff;
+    border: solid #444466;
+    padding: 0 1;
+    overflow: auto;
+    margin: 1 0;
+}
+
+/* Auto-refresh status indicators */
+.auto-refresh-on {
+    color: #00cc00;
+    text-align: right;
+    padding-right: 2;
+}
+
+.auto-refresh-off {
+    color: #cc0000;
+    text-align: right;
+    padding-right: 2;
+}
+
+/* Log level filter buttons container */
+#log-level-filters {
+    margin: 0;
+    height: 4;
+ 
+}
+
+/* Logs action buttons */
+#logs-actions {
+    margin-top: 1;
+    height: 3;
+}
+
+#logs-actions Button {
+    margin: 0 1 0 0;
+    min-width: 8;
+    
+}
