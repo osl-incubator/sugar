@@ -222,8 +222,8 @@ class SugarBase:
                 'config-path': services.get('config-path'),
                 'env-file': services.get('env-file'),
                 'services': {
-                    'default': services.get('default'),
-                    'available': services.get('available'),
+                    'default': services.get('default', []),
+                    'available': services.get('available', []),
                 },
             }
         }
@@ -264,9 +264,7 @@ class SugarBase:
                             'available', []
                         )
                     ]
-                    profile_data['services']['default'] = ','.join(
-                        default_services
-                    )
+                    profile_data['services']['default'] = default_services
                 self.service_profile = profile_data
                 return
 
@@ -398,7 +396,7 @@ class SugarBase:
 
         services_config = self.service_profile['services']
         service_names: list[str] = []
-        services_default = services_config.get('default', '')
+        services_default = services_config.get('default', [])
 
         if _arg_all:
             service_names = [
@@ -410,7 +408,7 @@ class SugarBase:
         elif _arg_services:
             service_names = _arg_services.split(',')
         elif services_default:
-            service_names = services_default.split(',')
+            service_names = services_default
         else:
             SugarLogs.raise_error(
                 'If you want to execute the operation for all services, '
