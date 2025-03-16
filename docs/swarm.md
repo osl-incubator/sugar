@@ -19,17 +19,29 @@ To use the swarm extension, you need to set the backend to `swarm` in your
 `.sugar.yaml` configuration file:
 
 ```yaml
-backend: swarm
+backend: compose
 env-file: .env
 defaults:
-  profile: "profile-defaults"
+  profile: profile1
+  project-name: sugar
 profiles:
-  profile-defaults:
-    config-path: docker-compose.yml
+  profile1:
+    project-name: project1
+    config-path: tests/containers/profile1/compose.yaml
+    env-file: .env
+    services:
+      default: service1-1,service1-3
+      available:
+        - name: service1-1
+        - name: service1-2
+        - name: service1-3
+  profile2:
+    config-path: tests/containers/profile2/compose.yaml
+    env-file: .env
     services:
       available:
-        - name: service1
-        - name: service2
+        - name: service2-1
+        - name: service2-2
 ```
 
 ## Basic Commands
@@ -54,16 +66,24 @@ $ sugar swarm join --options "--token SWMTKN-1-... 192.168.1.1:2377"
 
 ### Deploy a Stack
 
-Deploy a stack from a compose file:
+Deploy a stack from a sugar compose file:
 
 ```bash
-$ sugar swarm deploy --stack myapp --file ./docker-compose.yml
+$ sugar swarm deploy --stack my_stack --file ./.sugar-prod.yml
 ```
 
-You can also use a profile-defined compose file:
+or
+
+if `.sugar.yml` file is present in the your current project root directory
 
 ```bash
-$ sugar swarm deploy --stack myapp --profile profile-defaults
+$ sugar swarm deploy --stack my_stack
+```
+
+You can also use a `profile2` compose file:
+
+```bash
+$ sugar swarm deploy --stack my_stack --profile profile2
 ```
 
 ### List Services in a Stack
@@ -71,7 +91,7 @@ $ sugar swarm deploy --stack myapp --profile profile-defaults
 List services in a specific stack:
 
 ```bash
-$ sugar swarm ls --stack myapp
+$ sugar swarm ls --stack my_stack
 ```
 
 ### List Tasks in a Stack
@@ -79,7 +99,7 @@ $ sugar swarm ls --stack myapp
 List the tasks in a stack:
 
 ```bash
-$ sugar swarm ps --stack myapp
+$ sugar swarm ps --stack my_stack
 ```
 
 ### Remove a Stack
@@ -87,7 +107,7 @@ $ sugar swarm ps --stack myapp
 Remove a deployed stack:
 
 ```bash
-$ sugar swarm rm --stack myapp
+$ sugar swarm rm --stack my_stack
 ```
 
 ## Service Management
@@ -100,12 +120,18 @@ List all services in the swarm:
 $ sugar swarm ls
 ```
 
+List all services in a specific stack in the swarm
+
+```bash
+$ sugar swarm ls --stack my_stack
+```
+
 ### Inspect Services
 
 Get detailed information about a service:
 
 ```bash
-$ sugar swarm inspect --services myservice
+$ sugar  swarm inspect --services service1-1 --stack my_stack
 ```
 
 ### View Service Logs
@@ -113,13 +139,13 @@ $ sugar swarm inspect --services myservice
 View logs for a specific service:
 
 ```bash
-$ sugar swarm logs --services myservice
+$ sugar swarm logs --services service1-1 --stack my_stack
 ```
 
 With additional options:
 
 ```bash
-$ sugar swarm logs --services myservice --follow --tail 100
+$ sugar swarm logs --services myservice --stack my_stack --follow --tail 100
 ```
 
 ### Scale Services
@@ -127,10 +153,10 @@ $ sugar swarm logs --services myservice --follow --tail 100
 Scale services within a stack:
 
 ```bash
-$ sugar swarm scale --stack myapp --replicas service1=3,service2=5
+$ sugar swarm scale --stack my_stack --replicas service1=3,service2=5
 ```
 
-### Update Services
+### Update Services (Currently in experemental stage)
 
 Update service configuration:
 
@@ -146,16 +172,16 @@ $ sugar swarm update --services myservice --env_add "DEBUG=1,LOG_LEVEL=info"
 
 ### Rollback Services
 
-Rollback a service to its previous configuration:
+Rollback a set of services to its previous configuration:
 
 ```bash
-$ sugar swarm rollback --services myservice
+$  sugar swarm rollback --services service1-1,service1-3 --stack my_stack
 ```
 
 Rollback all services in a stack:
 
 ```bash
-$ sugar swarm rollback --stack myapp --all
+$ sugar swarm rollback --stack my_stack --all
 ```
 
 ## Node Management
@@ -233,8 +259,22 @@ $ sugar swarm update --services web-service --image nginx:alpine --replicas 3 --
 
 Leverage Sugar profiles to manage different Swarm configurations:
 
+Production Profile:
+
 ```bash
-$ sugar --profile production swarm deploy --stack myapp
+$ sugar --profile production swarm deploy --stack my_stack
+```
+
+Development Profile:
+
+```bash
+$ sugar --profile dev swarm deploy --stack my_stack
+```
+
+Testing Profile:
+
+```bash
+$ sugar --profile test swarm deploy --stack my_stack
 ```
 
 This allows you to maintain different configurations for different environments
