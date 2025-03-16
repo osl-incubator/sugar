@@ -70,9 +70,11 @@ def _check_sugar_file(file_path: str = '.sugar.yaml') -> bool:
     return Path(file_path).exists()
 
 
-def version_callback() -> None:
-    """Print the Sugar version."""
-    SugarLogs.print_info(f'Sugar version: {__version__}')
+def version_callback(value: bool) -> None:
+    """Print the Sugar version and exit if flag is set."""
+    if value:
+        SugarLogs.print_info(f'Sugar version: {__version__}')
+        raise typer.Exit()
 
 
 @app.callback(invoke_without_command=True)
@@ -89,10 +91,11 @@ def main(
         help='Set the profile of services for running the sugar command.',
     ),
     version: bool = Option(
-        None,
+        False,
         '--version',
         '-v',
         is_flag=True,
+        callback=version_callback,
         is_eager=True,
         help='Show the version of sugar.',
     ),
