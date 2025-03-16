@@ -12,6 +12,7 @@ import sh
 from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
 from sugar.logs import SugarError, SugarLogs
+from sugar.utils import prepend_stack_name
 
 doc_profile = {
     'profile': 'Specify the profile name of the services you want to use.'
@@ -100,6 +101,7 @@ doc_node_options = {
 
 doc_logs_options = {
     'details': 'Show extra details provided to logs',
+    'stack': 'Name of the stack to inspect',
     'follow': 'Follow log output',
     'no_resolve': 'Do not map IDs to Names in output',
     'no_task_ids': 'Do not include task IDs in output',
@@ -120,6 +122,7 @@ doc_rollback_options = {
 doc_scale_options = {
     'detach': """Exit immediately instead
     of waiting for the service to converge""",
+    'stack': 'Name of the stack to scale',
     'replicas': """Number of replicas per service
     (comma-separated list of service=replicas pairs)""",
 }
@@ -325,7 +328,7 @@ class SugarSwarm(SugarBase):
             **doc_options,
         }
     )
-    def _cmd_create(
+    def _cmd_deploy(
         self,
         /,
         stack: str = '',
@@ -360,7 +363,9 @@ class SugarSwarm(SugarBase):
                 )
 
             # Get the profile configuration
-            profile_name = profile or self.profile_selected
+            profile_name = (
+                profile or self.profile_selected or 'profile-defaults'
+            )
             if profile_name and 'profiles' in self.config:
                 profile_config = self.config['profiles'].get(profile_name, {})
                 config_path = profile_config.get('config-path', '')
@@ -395,6 +400,7 @@ class SugarSwarm(SugarBase):
     @docparams(
         {
             **doc_common_services,
+            'stack': 'Name of the stack to inspect',
             'format': 'Format output using a custom template',
             'size': 'Display total file sizes if the type is container',
             'type': 'Return JSON for specified type',
@@ -403,6 +409,7 @@ class SugarSwarm(SugarBase):
     def _cmd_inspect(
         self,
         services: str = '',
+        stack: str = '',
         all: bool = False,
         format: str = '',
         size: bool = False,
@@ -416,7 +423,10 @@ class SugarSwarm(SugarBase):
         (containers, images, volumes,
         networks, nodes, services, tasks, etc).
         """
-        services_names = self._get_services_names(services=services, all=all)
+        services_names = prepend_stack_name(
+            stack_name=stack,
+            services=self._get_services_names(services=services, all=all),
+        )
 
         # Prepare the options with the format flag if provided
         options_list = self._get_list_args(options)
@@ -445,6 +455,7 @@ class SugarSwarm(SugarBase):
         self,
         services: str = '',
         all: bool = False,
+        stack: str = '',
         details: bool = False,
         follow: bool = False,
         no_resolve: bool = False,
@@ -462,7 +473,10 @@ class SugarSwarm(SugarBase):
         Display the logs of the specified service or task with
         advanced filtering and formatting options.
         """
-        services_names = self._get_services_names(services=services, all=all)
+        services_names = prepend_stack_name(
+            stack_name=stack,
+            services=self._get_services_names(services=services, all=all),
+        )
         options_args = self._get_list_args(options)
 
         # TODO: Validate since and tail values
@@ -494,14 +508,36 @@ class SugarSwarm(SugarBase):
             options_args=options_args,
         )
 
-    @docparams(doc_common_no_services)
+    @docparams(
+        {
+            **doc_common_services,
+            'stack': 'Name of the stack to list services from',
+        }
+    )
     def _cmd_ls(
         self,
         options: str = '',
+        stack: str = '',
+        all: bool = False,
+        services: str = '',
     ) -> None:
-        """List services."""
+        """List services.
+
+        If a stack name is provided, lists only services in that stack.
+        Otherwise, lists all services in the swarm.
+        """
         options_args = self._get_list_args(options)
-        self._call_service_command('ls', options_args=options_args)
+
+        if stack:
+            self.backend_args = ['stack', 'services']
+            self._call_stack_command(
+                stack_name=stack,
+                options_args=options_args,
+                backend_args=self.backend_args,
+                compose_file_required=False,
+            )
+        else:
+            self._call_service_command('ls', options_args=options_args)
 
     @docparams(
         {
@@ -550,11 +586,112 @@ class SugarSwarm(SugarBase):
             backend_args=['stack', 'rm'],
         )
 
-    @docparams({**doc_common_services, **doc_rollback_options})
+    def _get_services_from_stack(self, stack: str) -> list[str]:
+        """Get all services from a stack."""
+        try:
+            output = io.StringIO()
+            self.backend_app(
+                'stack',
+                'services',
+                stack,
+                '--format',
+                '{{.Name}}',
+                _out=output,
+            )
+            services_output = output.getvalue()
+
+            services = [
+                service
+                for service in services_output.strip().split('\n')
+                if service
+            ]
+            if not services:
+                SugarLogs.raise_error(
+                    f'No services found in stack {stack}',
+                    SugarError.SUGAR_INVALID_PARAMETER,
+                )
+            return services
+        except Exception as e:
+            SugarLogs.raise_error(
+                f'Failed to get services from stack {stack}: {e!s}',
+                SugarError.SUGAR_COMMAND_ERROR,
+            )
+            return []  # This line won't execute due to raise_error
+
+    def _perform_service_rollback(
+        self, service: str, options_args: list[str]
+    ) -> bool:
+        """Perform rollback for a single service.
+
+        Returns True if rollback was successful, False otherwise.
+        """
+        try:
+            output = io.StringIO()
+            error = io.StringIO()
+
+            self.backend_app(
+                'service',
+                'rollback',
+                *options_args,
+                service,
+                _out=output,
+                _err=error,
+                _ok_code=[0, 1],  # Accept both success and error codes
+            )
+
+            error_output = error.getvalue()
+            if 'does not have a previous spec' in error_output:
+                SugarLogs.print_warning(
+                    f"""Service {service} has no
+                      previous version to roll back to"""
+                )
+                return False
+            elif error_output:
+                SugarLogs.print_warning(
+                    f"""Failed to rollback service {service}:
+                      {error_output.strip()}"""
+                )
+                return False
+            else:
+                print(f'Successfully rolled back service {service}')
+                return True
+
+        except Exception as e:
+            SugarLogs.print_warning(
+                f'Error rolling back service {service}: {e!s}'
+            )
+            return False
+
+    def _get_services_to_rollback(
+        self, services: str, all: bool, stack: str
+    ) -> list[str]:
+        """Determine which services to roll back based on parameters."""
+        if stack:
+            if all or not services:
+                # Get all services from the stack
+                return self._get_services_from_stack(stack)
+
+            # Process specified services with stack prefix
+            services_to_rollback = []
+            for service in services.split(','):
+                if service:
+                    prefixed_service = (
+                        service
+                        if service.startswith(f'{stack}_')
+                        else f'{stack}_{service}'
+                    )
+                    services_to_rollback.append(prefixed_service)
+            return services_to_rollback
+        else:
+            # No stack specified, use services directly
+            return self._get_services_names(services=services, all=all)
+
+    @docparams({**doc_common_services, **doc_rollback_options, **doc_stack})
     def _cmd_rollback(
         self,
         services: str = '',
         all: bool = False,
+        stack: str = '',
         detach: bool = False,
         quiet: bool = False,
         options: str = '',
@@ -563,8 +700,14 @@ class SugarSwarm(SugarBase):
         Revert changes to a service's configuration.
 
         This command rolls back a service to its previous version.
+
+        If a stack name is provided without services, all services in the stack
+        will be rolled back.
+        If both stack and services are provided, only the specified services in
+        the stack will be rolled back.
+        If both stack and --all are provided, all services in the stack will
+        be rolled back.
         """
-        services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
 
         # Add flag options
@@ -573,19 +716,37 @@ class SugarSwarm(SugarBase):
         if quiet:
             options_args.append('--quiet')
 
-        self._call_service_command(
-            'rollback',
-            services=services_names,
-            options_args=options_args,
+        # Get services to rollback
+        services_to_rollback = self._get_services_to_rollback(
+            services, all, stack
         )
 
-    @docparams({**doc_common_services, **doc_scale_options})
+        # Perform rollbacks
+        success_count = 0
+        failure_count = 0
+
+        for service in services_to_rollback:
+            success = self._perform_service_rollback(service, options_args)
+            if success:
+                success_count += 1
+            else:
+                failure_count += 1
+
+        # Summary message
+        if services_to_rollback:
+            print(
+                f"""Rollback complete: {success_count}
+                  succeeded, {failure_count} failed"""
+            )
+        else:
+            SugarLogs.print_warning('No services specified for rollback')
+
+    @docparams({**doc_stack, **doc_scale_options})
     def _cmd_scale(
         self,
-        services: str = '',
-        all: bool = False,
-        detach: bool = False,
+        stack: str = '',
         replicas: str = '',
+        detach: bool = False,
         options: str = '',
     ) -> None:
         """
@@ -598,56 +759,45 @@ class SugarSwarm(SugarBase):
 
         Scale multiple services :
 
-        sugar swarm scale --services frontend,backend --replicas frontend=5
-        ,backend=3
+        sugar swarm scale --stack my_stack --replicas service1=3,service2=5
 
         """
-        services_names = self._get_services_names(services=services, all=all)
+        if not stack:
+            SugarLogs.raise_error(
+                'Stack name must be provided for scaling services',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+
         options_args = self._get_list_args(options)
 
         # Add detach flag if specified
         if detach:
             options_args.append('--detach')
 
-        # If replicas are specified,
-        # we need to override the services_names list
-        # with SERVICE=REPLICAS format that Docker expects
-        if replicas:
-            service_replicas_pairs = []
-            replicas_dict = {}
-
-            # Parse the replicas parameter (service=replicas,service=replicas)
-            for pair in replicas.split(','):
-                if '=' in pair:
-                    service, count = pair.split('=', 1)
-                    replicas_dict[service.strip()] = count.strip()
-
-            # Create the properly formatted SERVICE=REPLICAS arguments
-            for service in services_names:
-                if service in replicas_dict:
-                    service_replicas_pairs.append(
-                        f'{service}={replicas_dict[service]}'
-                    )
-                else:
-                    SugarLogs.print_warning(
-                        f'No replica count specified for service: {service}'
-                    )
-
-            # Replace services_names with the SERVICE=REPLICAS format
-            services_names = service_replicas_pairs
-        elif services_names:
-            # If no replicas specified but services are, warn the user
-            SugarLogs.print_warning(
-                """No replica counts specified.
-                Use --replicas service1=3,service2=5"""
+        if not replicas:
+            SugarLogs.raise_error(
+                """Replicas must be specified in the format
+                service1=3,service2=5""",
+                SugarError.SUGAR_INVALID_PARAMETER,
             )
 
-        print(services_names)
-        print(options_args)
+        service_replicas_pairs = []
+        replicas_dict = {}
+
+        # Parse the replicas parameter (service=replicas,service=replicas)
+        for pair in replicas.split(','):
+            if '=' in pair:
+                service, count = pair.split('=', 1)
+                replicas_dict[service.strip()] = count.strip()
+
+        # Create the properly formatted SERVICE=REPLICAS arguments
+        for service, count in replicas_dict.items():
+            full_service_name = f'{stack}_{service}'
+            service_replicas_pairs.append(f'{full_service_name}={count}')
 
         self._call_service_command(
             'scale',
-            services=services_names,
+            services=service_replicas_pairs,
             options_args=options_args,
         )
 

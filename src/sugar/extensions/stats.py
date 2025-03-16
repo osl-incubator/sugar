@@ -198,7 +198,7 @@ class StatsPlot:
             )
 
 
-class StatsPlotWidget(Widget):
+class StatsPlotWidget(Widget):  # type: ignore
     """Plot Docker Stats Widget."""
 
     content: Reactive[str] = Reactive('')
@@ -243,7 +243,7 @@ class StatsPlotWidget(Widget):
         return Text.from_ansi(self.content)
 
 
-class StatsPlotApp(App[str]):
+class StatsPlotApp(App[str]):  # type: ignore
     """StatsPlotApp app class."""
 
     TITLE = 'Sugar Containers Stats'
