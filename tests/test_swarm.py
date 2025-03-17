@@ -77,8 +77,9 @@ class TestSugarSwarm:
         self, sugar_swarm: SugarSwarm
     ) -> None:
         """Test  raises error when all=True but no services."""
-        with pytest.raises(SystemExit):
+        with mock.patch('sugar.logs.SugarLogs.raise_error') as mock_error:
             sugar_swarm._get_services_names(all=True)
+            mock_error.assert_called_once()
 
     def test_get_nodes_names_empty(self, sugar_swarm: SugarSwarm) -> None:
         """Test _get_nodes_names returns empty list when no nodes specified."""
@@ -94,8 +95,11 @@ class TestSugarSwarm:
         self, sugar_swarm: SugarSwarm
     ) -> None:
         """Test _get_nodes_names raises error when all=True but no nodes."""
-        with pytest.raises(SystemExit):
+        # with pytest.raises(SystemExit):
+        #     sugar_swarm._get_nodes_names(all=True)
+        with mock.patch('sugar.logs.SugarLogs.raise_error') as mock_error:
             sugar_swarm._get_nodes_names(all=True)
+            mock_error.assert_called_once()
 
     def test_call_swarm_command(self, sugar_swarm: SugarSwarm) -> None:
         """Test _call_swarm_command properly sets backend_args."""
@@ -200,8 +204,12 @@ class TestSugarSwarm:
 
     def test_cmd_deploy_missing_stack(self, sugar_swarm: SugarSwarm) -> None:
         """Test _cmd_deploy raises error when stack name is missing."""
-        with pytest.raises(SystemExit):
-            sugar_swarm._cmd_deploy()
+        # with pytest.raises(FileNotFoundError):
+        #     sugar_swarm._cmd_deploy()
+        with mock.patch('sugar.logs.SugarLogs.raise_error') as mock_error:
+            with pytest.raises(FileNotFoundError):
+                sugar_swarm._cmd_deploy()
+            mock_error.assert_called_once()
 
     @mock.patch('sugar.extensions.base.SugarBase.load')
     def test_cmd_deploy_with_file(
@@ -230,8 +238,12 @@ class TestSugarSwarm:
     ) -> None:
         """Test _cmd_inspect sets correct parameters."""
         with mock.patch.object(sugar_swarm, '_get_list_args', return_value=[]):
-            with pytest.raises(SystemExit):
-                sugar_swarm._cmd_inspect(service='svc1,svc2')
+            with mock.patch(
+                'sugar.logs.SugarLogs.raise_error', side_effect=SystemExit
+            ) as mock_error:
+                with pytest.raises(SystemExit):
+                    sugar_swarm._cmd_inspect(service='svc1,svc2')
+                mock_error.assert_called_once()
 
     def test_cmd_inspect_single_service(self, sugar_swarm: SugarSwarm) -> None:
         """Test _cmd_inspect sets correct parameters for a single service."""
@@ -239,9 +251,9 @@ class TestSugarSwarm:
             with mock.patch.object(
                 sugar_swarm, '_call_backend_app'
             ) as mock_call:
-                sugar_swarm._cmd_inspect(service='svc1')
+                sugar_swarm._cmd_inspect(service='svc1', stack='test-stack')
                 mock_call.assert_called_once_with(
-                    'inspect', services=['svc1'], options_args=[]
+                    'inspect', services=['test-stack_svc1'], options_args=[]
                 )
 
     def test_cmd_inspect_service_without_stack_message(
@@ -283,6 +295,7 @@ class TestSugarSwarm:
                 ) as mock_call:
                     sugar_swarm._cmd_logs(
                         services='svc1',
+                        stack='test-stack',
                         details=True,
                         follow=True,
                         since='2h',
@@ -290,7 +303,7 @@ class TestSugarSwarm:
                     )
                     mock_call.assert_called_once_with(
                         'logs',
-                        services=['svc1'],
+                        services=['test-stack_svc1'],
                         options_args=[
                             '--details',
                             '--follow',
@@ -326,8 +339,12 @@ class TestSugarSwarm:
 
     def test_cmd_ps_missing_stack(self, sugar_swarm: SugarSwarm) -> None:
         """Test _cmd_ps raises error when stack name is missing."""
-        with pytest.raises(SystemExit):
-            sugar_swarm._cmd_ps()
+        with mock.patch(
+            'sugar.logs.SugarLogs.raise_error', side_effect=SystemExit
+        ) as mock_error:
+            with pytest.raises(SystemExit):
+                sugar_swarm._cmd_ps()
+            mock_error.assert_called_once()
 
     def test_cmd_ps_with_stack(self, sugar_swarm: SugarSwarm) -> None:
         """Test _cmd_ps with stack parameter."""
@@ -467,13 +484,21 @@ class TestSugarSwarm:
 
     def test_cmd_scale_missing_stack(self, sugar_swarm: SugarSwarm) -> None:
         """Test _cmd_scale raises error when stack name is missing."""
-        with pytest.raises(SystemExit):
-            sugar_swarm._cmd_scale()
+        with mock.patch(
+            'sugar.logs.SugarLogs.raise_error', side_effect=SystemExit
+        ) as mock_error:
+            with pytest.raises(SystemExit):
+                sugar_swarm._cmd_scale()
+            mock_error.assert_called_once()
 
     def test_cmd_scale_missing_replicas(self, sugar_swarm: SugarSwarm) -> None:
         """Test _cmd_scale raises error when replicas is missing."""
-        with pytest.raises(SystemExit):
-            sugar_swarm._cmd_scale(stack='test-stack')
+        with mock.patch(
+            'sugar.logs.SugarLogs.raise_error', side_effect=SystemExit
+        ) as mock_error:
+            with pytest.raises(SystemExit):
+                sugar_swarm._cmd_scale(stack='test-stack')
+            mock_error.assert_called_once()
 
     def test_cmd_scale(self, sugar_swarm: SugarSwarm) -> None:
         """Test _cmd_scale formats arguments correctly."""
