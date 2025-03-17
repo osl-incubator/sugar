@@ -399,40 +399,63 @@ class SugarSwarm(SugarBase):
 
     @docparams(
         {
-            **doc_common_services,
+            **doc_profile,
+            'service': 'Name of the service to inspect',
             'stack': 'Name of the stack to inspect',
             'format': 'Format output using a custom template',
             'size': 'Display total file sizes if the type is container',
             'type': 'Return JSON for specified type',
+            **doc_options,
         }
-    )  # TODO: Need to add support for service names
+    )
     def _cmd_inspect(
         self,
-        services: str = '',
+        service: str = '',
         stack: str = '',
-        all: bool = False,
         format: str = '',
         size: bool = False,
         type: str = '',
         options: str = '',
     ) -> None:
         """
-        Display detailed information on Docker objects.
+        Display detailed information on a Docker service.
 
-        Returns low-level information on Docker objects
-        (containers, images, volumes,
-        networks, nodes, services, tasks, etc).
+        Returns low-level information on a single Docker service.
+        For inspecting multiple objects, use docker inspect directly.
         """
-        services_names = prepend_stack_name(
-            stack_name=stack,
-            services=self._get_services_names(services=services, all=all),
-        )
+        # Validate only one service is provided (no commas)
+        if ',' in service:
+            SugarLogs.raise_error(
+                'Only one service can be inspected at a time. '
+                'Multiple services are not supported.',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+        # Raise error if only stack is provided without service, or only
+        # service without stack
+        if (service and not stack) or (stack and not service):
+            SugarLogs.raise_error(
+                """Both service name and stack name must be
+              provided together for inspect""",
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
+
+        # Create a single-item list with the service name
+        service_name = service.strip() if service else ''
+
+        if service_name:
+            services_names = [service_name]
+            if stack:
+                # Prepend stack name if specified
+                services_names = [f'{stack}_{service_name}']
+        else:
+            services_names = []
 
         # Prepare the options with the format flag if provided
         options_list = self._get_list_args(options)
-        # TODO: Need to fix and Validate format and type values
+
+        # Process formatting options
         if format:
-            options_list.extend(['--format=', format])
+            options_list.extend(['--format', format])
 
         if size:
             options_list.append('--size')
@@ -442,7 +465,6 @@ class SugarSwarm(SugarBase):
 
         # Use direct docker inspect command instead
         # of service-specific inspect
-
         self.backend_args = []  # Reset backend args use direct docker command
         self._call_backend_app(
             'inspect',

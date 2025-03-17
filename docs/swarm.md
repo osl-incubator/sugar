@@ -131,7 +131,7 @@ $ sugar swarm ls --stack my_stack
 Get detailed information about a service:
 
 ```bash
-$ sugar  swarm inspect --services service1-1 --stack my_stack
+$ sugar  swarm inspect --service service1-1 --stack my_stack
 ```
 
 ### View Service Logs
