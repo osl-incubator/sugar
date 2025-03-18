@@ -318,10 +318,13 @@ class SugarBase:
     def _load_backend_args(self) -> None:
         self._filter_service_profile()
 
-        if self.service_profile.get('env-file'):
-            self.backend_args.extend(
-                ['--env-file', self.service_profile['env-file']]
-            )
+        env_files = self.service_profile.get('env-file')
+        if env_files:
+            if isinstance(env_files, str):
+                env_files = [env_files]
+
+            for env_file in filter(None, env_files):
+                self.backend_args.extend(['--env-file', env_file])
 
         config_path = []
         backend_path_arg = self.service_profile['config-path']
