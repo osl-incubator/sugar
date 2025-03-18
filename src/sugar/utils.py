@@ -2,6 +2,8 @@
 
 import re
 
+from pathlib import Path
+
 
 def camel_to_snake(name: str, sep: str = '-') -> str:
     """
@@ -22,3 +24,11 @@ def camel_to_snake(name: str, sep: str = '-') -> str:
     # Add underscore before a sequence of uppercase letters
     snake_case = re.sub('([a-z0-9])([A-Z])', r'\1' + sep + r'\2', s1).lower()
     return snake_case
+
+
+# relative path to the root path parse for configuration files
+
+
+def get_absolute_path(relative_path: str) -> str:
+    """Get the root path of the project."""
+    return str(Path(relative_path).resolve())
