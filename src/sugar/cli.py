@@ -374,7 +374,7 @@ def create_dynamic_command(
         dynamic_command = apply_click_options(dynamic_command, options_data)
 
 
-# Add this new function to create a callback for each Typer profile
+# function to create a callback for each Typer profile
 def create_subcommand_callback(ext_name: str) -> Callable[..., None]:
     """Create a callback function for a subcommand Typer instance."""
 
@@ -625,8 +625,7 @@ def _setup_typer_app(commands: dict[str, list[MetaDocs]]) -> None:
             invoke_without_command=True,
         )
 
-        # Add callback to show help when subcommand is invoked without
-        # operation
+        # callback to show help when subcommand is invoked without operation
         typer_profile.callback()(create_subcommand_callback(ext_name))
 
         typer_profiles[ext_name] = typer_profile
