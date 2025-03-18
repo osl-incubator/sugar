@@ -75,12 +75,23 @@ class SugarCompose(SugarBase):
     def _load_compose_args(self) -> None:
         self._filter_service_profile()
 
-        if self.service_profile.get('env-file'):
-            self.backend_args.extend(
-                ['--env-file', self.service_profile['env-file']]
-            )
+        _env_files = self.service_profile.get('env-file')
 
-        config_path = []
+        env_files: list[str] = []
+        if isinstance(_env_files, str):
+            env_files = [_env_files]
+        elif isinstance(_env_files, list):
+            if any(not isinstance(f, str) for f in _env_files):
+                SugarLogs.raise_error(
+                    'The attribute `env-file` must be a list of strings.',
+                    SugarError.SUGAR_INVALID_CONFIGURATION,
+                )
+            env_files = _env_files
+
+        for env_file in env_files:
+            self.backend_args.extend(['--env-file', env_file])
+
+        config_path: list[str] = []
         backend_path_arg = self.service_profile['config-path']
         if isinstance(backend_path_arg, str):
             config_path.append(backend_path_arg)
