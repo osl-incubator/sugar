@@ -115,7 +115,10 @@
               "type": "object",
               "properties": {
                 "default": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "available": {
                   "type": "array",
@@ -151,7 +154,10 @@
           "type": "string"
         },
         "default": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "available": {
           "type": "array",
