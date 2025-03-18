@@ -18,6 +18,8 @@ from sugar.core import extensions
 from sugar.docs import MetaDocs, MetaDocsParams
 from sugar.logs import SugarLogs
 
+EXIT_CODE_CONSTANT = 2
+
 # "count" means the number of parameters expected for each flag
 CLI_ROOT_FLAGS_VALUES_COUNT = {
     '--dry-run': 0,
@@ -372,6 +374,21 @@ def create_dynamic_command(
         dynamic_command = apply_click_options(dynamic_command, options_data)
 
 
+# Add this new function to create a callback for each Typer profile
+def create_subcommand_callback(ext_name: str) -> Callable[..., None]:
+    """Create a callback function for a subcommand Typer instance."""
+
+    def callback(ctx: typer.Context) -> None:
+        """Show help when subcommand is invoked without an operation."""
+        if ctx.invoked_subcommand is None:
+            ctx.obj = ctx.obj or {}
+            ctx.obj['show_help'] = True
+            typer.echo(ctx.command.get_help(ctx))
+            raise typer.Exit()
+
+    return callback
+
+
 def extract_options_and_cmd_args() -> tuple[list[str], list[str]]:
     """Extract arg `options` and `cmd` from the CLI calling."""
     args = list(sys.argv)
@@ -531,19 +548,15 @@ def _show_warning_config_file_not_found(config_file_path: str) -> None:
         )
 
 
-def run_app() -> None:
-    """Run the typer app."""
-    root_config = extract_root_config()
-    help_requested = _is_help_requested()
-
-    config_file_path = cast(str, root_config.get('file', '.sugar.yaml'))
-
+def _handle_autocomplete(
+    help_requested: bool, config_file_path: str
+) -> tuple[dict[str, str | bool], str]:
+    """Handle autocomplete when config file is not found."""
     cli_completion_words = [
         w for w in os.getenv('COMP_WORDS', '').split('\n') if w
     ]
 
-    # Show warning if config file not found while showing help
-    _show_warning_config_file_not_found(config_file_path)
+    root_config = extract_root_config()
 
     if (
         not help_requested
@@ -553,11 +566,16 @@ def run_app() -> None:
         # autocomplete call
         root_config = extract_root_config(cli_completion_words)
         config_file_path = cast(str, root_config.get('file', '.sugar.yaml'))
-        if not _check_sugar_file(config_file_path):
-            return
 
-    _handle_config_file(help_requested, config_file_path)
+    return root_config, config_file_path
 
+
+def _process_extensions(
+    help_requested: bool,
+    config_file_path: str,
+    root_config: dict[str, str | bool],
+) -> dict[str, list[MetaDocs]]:
+    """Process extensions and extract commands."""
     for sugar_ext in sugar_exts.values():
         if not help_requested:
             sugar_ext.load(
@@ -568,15 +586,12 @@ def run_app() -> None:
             )
 
     commands: dict[str, list[MetaDocs]] = {}
-    actions: list[str] = []
 
     for ext_name, ext_class in extensions.items():
         ext_obj = ext_class()
         commands[ext_name] = []
 
-        actions = ext_obj.actions
-
-        for action in actions:
+        for action in ext_obj.actions:
             fn_name = f'_cmd_{action}'
             fn = getattr(ext_obj, fn_name)
             title = fn._meta_docs.get('title', '')
@@ -594,7 +609,11 @@ def run_app() -> None:
                 )
             )
 
-    # Add dynamically created commands to Typer app
+    return commands
+
+
+def _setup_typer_app(commands: dict[str, list[MetaDocs]]) -> None:
+    """Set up the Typer app with commands."""
     for ext_name, actions_meta in commands.items():
         ext_obj = extensions[ext_name]()
 
@@ -605,26 +624,60 @@ def run_app() -> None:
             help=ext_obj.__doc__,
             invoke_without_command=True,
         )
+
+        # Add callback to show help when subcommand is invoked without
+        # operation
+        typer_profile.callback()(create_subcommand_callback(ext_name))
+
         typer_profiles[ext_name] = typer_profile
 
         for action_meta in actions_meta:
             create_dynamic_command(ext_name, typer_profile, action_meta)
 
+    # Add each profile to the main app
     for ext_name, typer_profile in typer_profiles.items():
         app.add_typer(typer_profile, name=ext_name, rich_help_panel='COMMAND')
 
+
+def run_app() -> None:
+    """Run the typer app."""
+    root_config = extract_root_config()
+    help_requested = _is_help_requested()
+
+    config_file_path = cast(str, root_config.get('file', '.sugar.yaml'))
+
+    # Show warning if config file not found while showing help
+    _show_warning_config_file_not_found(config_file_path)
+
+    # Handle autocomplete
+    root_config, config_file_path = _handle_autocomplete(
+        help_requested, config_file_path
+    )
+
+    if not _check_sugar_file(config_file_path) and not help_requested:
+        return
+
+    _handle_config_file(help_requested, config_file_path)
+
+    # Process extensions and extract commands
+    commands = _process_extensions(
+        help_requested, config_file_path, root_config
+    )
+
+    # Set up Typer app with commands
+    _setup_typer_app(commands)
+
     try:
-        app()
+        if len(sys.argv) == 1:
+            app(['--help'])
+        else:
+            app()
     except SystemExit as e:
-        # code 2 means code not found
-        error_code = 2
-        if e.code != error_code:
+        # code 2 means command not found
+        if e.code == EXIT_CODE_CONSTANT:
+            app(['--help'])
+        else:
             raise e
-
-        command_used = _get_command_from_cli()
-        typer.secho(f'Command {command_used} not found.', fg='red')
-
-        raise e
 
 
 if __name__ == '__main__':
