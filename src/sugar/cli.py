@@ -378,7 +378,6 @@ def create_dynamic_command(
 def subcommand_callback() -> Callable[..., None]:
     """Create a callback function for a subcommand Typer instance."""
 
-    @app.callback(invoke_without_command=True)
     def callback(ctx: typer.Context) -> None:
         """Show help when subcommand is invoked without an operation."""
         if ctx.invoked_subcommand is None:
