@@ -375,14 +375,14 @@ def create_dynamic_command(
 
 
 # function to create a callback for each Typer profile
-def create_subcommand_callback(ext_name: str) -> Callable[..., None]:
+def subcommand_callback() -> Callable[..., None]:
     """Create a callback function for a subcommand Typer instance."""
 
+    @app.callback(invoke_without_command=True)
     def callback(ctx: typer.Context) -> None:
         """Show help when subcommand is invoked without an operation."""
         if ctx.invoked_subcommand is None:
             ctx.obj = ctx.obj or {}
-            ctx.obj['show_help'] = True
             typer.echo(ctx.command.get_help(ctx))
             raise typer.Exit()
 
@@ -626,7 +626,7 @@ def _setup_typer_app(commands: dict[str, list[MetaDocs]]) -> None:
         )
 
         # callback to show help when subcommand is invoked without operation
-        typer_profile.callback()(create_subcommand_callback(ext_name))
+        typer_profile.callback()(subcommand_callback())
 
         typer_profiles[ext_name] = typer_profile
 
