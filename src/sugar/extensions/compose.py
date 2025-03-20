@@ -69,9 +69,9 @@ class SugarCompose(SugarBase):
 
         self.backend_app = sh.docker
         self.backend_args.append(backend_cmd)
-        
+
         self._load_compose_args()
-        
+
     def _load_compose_args(self) -> None:
         self._filter_service_profile()
 

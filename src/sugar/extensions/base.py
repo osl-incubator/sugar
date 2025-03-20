@@ -108,7 +108,7 @@ class SugarBase(ABC):
     def _load_backend(self) -> None:
         """
         Initialize the backend application and its arguments.
-        
+
         This method must be implemented by subclasses to set:
         - self.backend_app
         - self.backend_args
