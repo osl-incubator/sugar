@@ -1,0 +1,214 @@
+Screen {
+  background: #151515;
+}
+
+.title {
+  text-align: center;
+  text-style: bold;
+  width: 100%;
+
+  padding: 0 1;
+  color: #ffffff;
+  background: #1a1a4a;
+  border-bottom: heavy #3355aa;
+
+  margin-bottom: 0;
+}
+
+.subtitle {
+  text-align: left;
+  padding-left: 2;
+  color: #aaaaee;
+
+  margin: 0;
+  padding: 0 2;
+}
+
+.timestamp {
+  text-align: right;
+  color: #888888;
+}
+
+#dashboard-header {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.dashboard-panel {
+  height: 100%;
+  border: solid #444466;
+  background: #1c1c2a;
+
+  padding: 0;
+}
+
+.profiles-panel,
+.services-panel {
+  height: 55;
+}
+
+.metrics-panel,
+.actions-panel {
+  height: 45;
+}
+
+.metrics-panel {
+  grid-size: 2 2;
+  grid-gutter: 1;
+}
+
+.dashboard-header {
+  background: #2a2a4a;
+  color: #ffffff;
+  text-align: center;
+  text-style: bold;
+
+  padding: 0;
+  border-bottom: solid #444466;
+}
+
+.dashboard-data {
+  color: #cccccc;
+
+  padding: 0;
+}
+
+.data-label {
+  color: #888888;
+  width: 40%;
+  text-align: right;
+  padding-right: 1;
+}
+
+.data-value {
+  color: #ffffff;
+  width: 60%;
+}
+
+.data-value-highlight {
+  color: #ffaa44;
+  width: 60%;
+  text-style: bold;
+}
+
+.data-value-blue {
+  color: #44aaff;
+  width: 60%;
+}
+
+.data-value-purple {
+  color: #bb88ff;
+  width: 60%;
+}
+
+.status-running {
+  color: #00ff00;
+  text-style: bold;
+}
+
+.status-stopped {
+  color: #ff0000;
+  text-style: bold;
+}
+
+#app-container {
+  height: 100%;
+  width: 100%;
+}
+
+#main-content {
+  height: 100%;
+  width: 100%;
+}
+
+#dashboard-grid {
+  height: 1fr;
+  grid-size: 2 2;
+
+  grid-gutter: 0;
+  padding: 0;
+}
+
+DataTable {
+  height: 1fr;
+  margin: 0;
+}
+
+DataTable > .datatable--header {
+  background: #8966b1;
+  color: #ffffff;
+  text-style: bold;
+}
+
+DataTable > .datatable--cursor {
+  background: #3a3a6a;
+}
+
+.action-buttons {
+  layout: grid;
+
+  grid-size: 4;
+
+  grid-gutter: 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+
+  margin: 0;
+}
+
+Button {
+  min-width: 12;
+  min-height: 4;
+  height: 3;
+  margin: 1;
+  content-align: center middle;
+}
+
+Button.success {
+  background: #1d4a2d;
+  color: #ffffff;
+}
+
+Button.error {
+  background: #4a1d1d;
+  color: #ffffff;
+}
+
+Button.warning {
+  background: #4a3d1d;
+  color: #ffffff;
+}
+
+Button.primary {
+  background: #1d2d4a;
+  color: #ffffff;
+}
+
+Button.default {
+  background: #2a2a3a;
+  color: #ffffff;
+}
+
+Button:hover {
+  background: #3a3a5a;
+}
+
+Header {
+  background: #1a1a3a;
+  color: #ffffff;
+
+  height: 1;
+}
+
+Footer {
+  background: #1a1a3a;
+  color: #ffffff;
+
+  height: 1;
+}
+
+Rule {
+  color: #3355aa;
+  height: 1;
+}

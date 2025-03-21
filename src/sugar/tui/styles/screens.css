@@ -1,0 +1,227 @@
+Screen {
+  background: #151515;
+}
+
+.title {
+  text-align: center;
+  text-style: bold;
+  width: 100%;
+  padding: 0;
+  color: #ffffff;
+  background: #1d2064;
+  border-bottom: heavy #3355aa;
+  margin-bottom: 0;
+}
+
+.subtitle {
+  text-align: left;
+
+  padding-left: 1;
+  color: #aaaaee;
+
+  margin: 0;
+}
+
+.subtitle-right {
+  text-align: right;
+  color: #aaaaee;
+}
+
+#screen-container {
+  height: 100%;
+  width: 100%;
+}
+
+#screen-content {
+  height: 100%;
+  width: 100%;
+
+  padding: 0;
+}
+
+#screen-header {
+  width: 100%;
+  height: 2;
+  content-align-horizontal: center;
+
+  margin-bottom: 0;
+}
+
+#main-table-container {
+  height: 18;
+  min-height: 1;
+  margin-bottom: 0;
+}
+
+#profiles-detail-table {
+  height: 10;
+  max-height: 10;
+  margin-bottom: 0;
+}
+
+DataTable > .datatable--header {
+  background: #4d4dbe;
+  color: #ffffff;
+  text-style: bold;
+
+  height: 1;
+}
+
+DataTable > .datatable--cursor {
+  background: #3a3a6a;
+}
+
+#profile-details {
+  padding: 0;
+  margin-top: 0;
+  height: 7;
+  max-height: 7;
+  background: #1c1c2a;
+  border: solid #444466;
+}
+
+.section-title {
+  background: #2a2a4a;
+  color: #ffffff;
+  text-align: center;
+  text-style: bold;
+
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.detail-label {
+  color: #aaaaee;
+  width: 30%;
+  text-align: right;
+  padding-right: 1;
+}
+
+.detail-value {
+  color: #ffffff;
+  width: 70%;
+}
+
+#profile-actions {
+  margin-top: 1;
+  height: 4;
+  min-height: 4;
+}
+
+#service-details {
+  padding: 0;
+  margin-top: 0;
+  height: 9;
+  max-height: 9;
+  background: #1c1c2a;
+  border: solid #444466;
+}
+
+#services-table {
+  height: 10;
+  max-height: 10;
+  margin-bottom: 0;
+}
+
+#service-status {
+  color: #ffffff;
+  width: 70%;
+}
+
+#service-ports,
+#service-image,
+#container-id {
+  color: #ffffff;
+  width: 70%;
+}
+
+#service-actions {
+  margin-top: 1;
+  height: 3;
+  min-height: 3;
+}
+
+#service-actions Button {
+  margin: 0 1 0 0;
+  min-width: 14;
+  height: 1;
+  min-height: 1;
+}
+
+.small-button {
+  text-style: none;
+  height: 4;
+  min-height: 4;
+  padding: 0;
+  width: auto;
+  min-width: 10;
+  border: none;
+}
+
+Button {
+  min-width: 20;
+  min-height: 4;
+
+  height: 4;
+  margin: 1;
+  border: none;
+}
+
+Button.primary {
+  background: #0e86d4;
+  color: #ffffff;
+}
+
+Button.error {
+  background: #d41e11;
+  color: #ffffff;
+}
+
+Button.default {
+  background: #333348;
+  color: #ffffff;
+}
+
+Rule {
+  color: #3355aa;
+  height: 1;
+  margin: 0;
+}
+
+.logs-display {
+  height: 14;
+  min-height: 14;
+  background: #0d0d1a;
+  color: #ffffff;
+  border: solid #444466;
+  padding: 0 1;
+  overflow: auto;
+  margin: 1 0;
+}
+
+.auto-refresh-on {
+  color: #00cc00;
+  text-align: right;
+  padding-right: 2;
+}
+
+.auto-refresh-off {
+  color: #cc0000;
+  text-align: right;
+  padding-right: 2;
+}
+
+#log-level-filters {
+  margin: 0;
+  height: 4;
+}
+
+#logs-actions {
+  margin-top: 1;
+  height: 3;
+}
+
+#logs-actions Button {
+  margin: 0 1 0 0;
+  min-width: 8;
+}

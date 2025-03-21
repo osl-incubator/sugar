@@ -1,0 +1,74 @@
+{
+  "profiles": [
+    {
+      "profile": "development",
+      "services": "frontend, api, db",
+      "status": "● Active"
+    },
+    { "profile": "staging", "services": "All services", "status": "● Active" },
+    {
+      "profile": "production",
+      "services": "web, api, db, cache",
+      "status": "○ Inactive"
+    },
+    {
+      "profile": "testing",
+      "services": "test-suite, mockdb",
+      "status": "○ Inactive"
+    }
+  ],
+  "services": [
+    {
+      "service": "frontend",
+      "status": "● Running",
+      "ports": "3000:3000",
+      "cpu": "2.1%",
+      "memory": "124MB"
+    },
+    {
+      "service": "api",
+      "status": "● Running",
+      "ports": "8000:8000",
+      "cpu": "3.5%",
+      "memory": "256MB"
+    },
+    {
+      "service": "db",
+      "status": "● Running",
+      "ports": "5432:5432",
+      "cpu": "5.2%",
+      "memory": "512MB"
+    },
+    {
+      "service": "redis",
+      "status": "● Running",
+      "ports": "6379:6379",
+      "cpu": "1.0%",
+      "memory": "64MB"
+    },
+    {
+      "service": "nginx",
+      "status": "● Running",
+      "ports": "80:80, 443:443",
+      "cpu": "0.8%",
+      "memory": "32MB"
+    },
+    {
+      "service": "worker",
+      "status": "○ Stopped",
+      "ports": "-",
+      "cpu": "-",
+      "memory": "-"
+    }
+  ],
+  "system_metrics": {
+    "active_profiles": "2/4",
+    "running_containers": "5/6",
+    "cpu_usage": "12.6%",
+    "memory_usage": "988MB / 2GB",
+    "disk_usage": "1.2GB / 10GB",
+    "network_in": "1.2MB/s",
+    "network_out": "0.3MB/s",
+    "uptime": "2d 3h 45m"
+  }
+}
