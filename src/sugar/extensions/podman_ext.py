@@ -246,23 +246,6 @@ class SugarPodmanComposeExt(SugarBase):
 
         self._execute_hooks('post-run', extension, action)
 
-    # @docparams(doc_common_service)
-    # def _cmd_attach(
-    #     self,
-    #     service: str = '',
-    #     options: str = '',
-    # ) -> None:
-    #     """
-    #     Attach to a service.
-
-    #     Note: This is an experimental feature.
-    #     """
-    #     options_args = self._get_list_args(options)
-    #     self._call_backend_app(
-    #         'attach',
-    #         services=[service] if service else [],
-    #         options_args=options_args,
-    #     )
     @docparams(doc_common_service)
     def _cmd_attach(
         self,
