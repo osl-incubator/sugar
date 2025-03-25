@@ -1,4 +1,10 @@
-# Get Started
+# Sugar
+
+![CI](https://img.shields.io/github/actions/workflow/status/osl-incubator/sugar/main.yaml?logo=github&label=CI)
+[![Python Versions](https://img.shields.io/pypi/pyversions/containers-sugar)](https://pypi.org/project/containers-sugar/)
+[![Package Version](https://img.shields.io/pypi/v/containers-sugar?color=blue)](https://pypi.org/project/containers-sugar/)
+![License](https://img.shields.io/pypi/l/containers-sugar?color=blue)
+![Discord](https://img.shields.io/discord/796786891798085652?logo=discord&color=blue)
 
 Simplify the usage of containers.
 
@@ -21,7 +27,7 @@ So, the idea of this project is to organize your stack of containers, gathering
 some useful scripts and keeping this information centralized in a configuration
 file. So the command line would be very simple.
 
-- License: BSD 3 Clause
+- Software License: BSD 3 Clause
 - Documentation: https://osl-incubator.github.io/sugar
 
 ## How to Install
@@ -62,7 +68,7 @@ These commands are available in the main profile/plugin, so you don't need to
 specify any extra parameter to access them.
 
 For extra commands, we are gathering them into a profile/plugin called `ext`, so
-you can access them using something like: `sugar ext restart`.
+you can access them using something like: `sugar compose-ext restart`.
 
 The current available **ext** commands are:
 
@@ -76,52 +82,50 @@ project. This is an example of a configuration file:
 
 ```yaml
 backend: compose
-default:
-  group:  {% raw %} ${{ env.ENV }} {% endraw %}
-groups:
-  group1:
+defaults:
+  profile: {% raw %} ${{ env.ENV }} {% endraw %}
+profiles:
+  profile1:
     project-name: project1
     config-path:
-      - containers/tests/group1/compose.yaml
+      - containers/tests/profile1/compose.yaml
     env-file: .env
     services:
-      default:
-        - service1
-        - service3
+      default: service1,service3
       available:
         - name: service1
         - name: service2
         - name: service3
-  group2:
+  profile2:
     project-name: null
-    config-path: containers/tests/group2/compose.yaml
+    config-path: containers/tests/profile2/compose.yaml
     env-file: .env
     services:
-      # default: null
       available:
         - name: service1
-        - name: service2
+        - name: service3
 ```
 
 Some examples of how to use it:
 
-- build the defaults services (service1,service3) for group1:
-  `sugar build --group group1`
+- build the defaults services (service1,service3) for profile1:
+  `sugar build --profile profile1`
 
-- build the all services (there is no default service defined) for group2:
-  `sugar build --group group2`
+- build the all services (there is no default service defined) for profile2:
+  `sugar build --profile profile2`
 
-- build all services (ignore default) for group1:
-  `sugar build --group group1 --all`
+- build all services (ignore default) for profile1:
+  `sugar build --profile profile1 --all`
 
-- start the default services for group1: `sugar ext start --group group1`
+- start the default services for profile1:
+  `sugar compose-ext start --profile profile1`
 
-- restart all services (ignore defaults) for group1:
-  `sugar ext restart --group group1 --all`
+- restart all services (ignore defaults) for profile1:
+  `sugar compose-ext restart --profile profile1 --all`
 
-- restart service1 and service2 for group1:
-  `sugar ext restart --group group1 --services service1,service2`
+- restart service1 and service2 for profile1:
+  `sugar compose-ext restart --profile profile1 --services service1,service2`
 
-**NOTE**: If you use: `default: group: {% raw %} ${{ env.ENV }} {% endraw %}`,
-you don't need to give `--group <GROUP_NAME>`, except if you want a different
-group than the default one.
+**NOTE**: If you use: `default: profile: {% raw %} ${{ env.ENV }} {% endraw %}`, you don't need to give
+`--profile <PROFILE_NAME>`, except if you want a different profile than the
+default one.
