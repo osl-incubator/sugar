@@ -50,7 +50,7 @@
                 "type": "string"
               }
             },
-            "required": ["name", "targets", "run"],
+            "required": ["name", "run"],
             "additionalProperties": false
           }
         },
@@ -78,12 +78,11 @@
                 "type": "string"
               }
             },
-            "required": ["name", "targets", "run"],
+            "required": ["name", "run"],
             "additionalProperties": false
           }
         }
       },
-      "required": [],
       "additionalProperties": false
     },
     "profiles": {
@@ -168,6 +167,26 @@
         }
       },
       "required": ["config-path", "available"],
+      "additionalProperties": false
+    },
+    "extensions": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_-]+$": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "config": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "required": ["enabled"],
+          "additionalProperties": false
+        }
+      },
       "additionalProperties": false
     }
   },
