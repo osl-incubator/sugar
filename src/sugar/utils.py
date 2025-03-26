@@ -26,9 +26,6 @@ def camel_to_snake(name: str, sep: str = '-') -> str:
     return snake_case
 
 
-# relative path to the root path parse for configuration files
-
-
 def get_absolute_path(relative_path: str) -> str:
     """Get the root path of the project."""
     return str(Path(relative_path).resolve())

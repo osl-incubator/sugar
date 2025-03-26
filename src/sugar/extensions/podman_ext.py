@@ -330,20 +330,6 @@ class SugarPodmanComposeExt(SugarBase):
             options_args=options_args,
         )
 
-    # @docparams(doc_common_no_services)
-    # def _cmd_cp(
-    #     self,
-    #     options: str = '',
-    # ) -> None:
-    #     """Copy files/folders between a service container.
-
-    #        and the local filesystem.
-
-    #     Note: This is an experimental feature.
-    #     """
-    #     options_args = self._get_list_args(options)
-    #     self._call_backend_app('cp', services=[], options_args=options_args)
-
     @docparams(doc_common_no_services)
     def _cmd_cp(
         self,
@@ -417,20 +403,6 @@ class SugarPodmanComposeExt(SugarBase):
         self._call_backend_app(
             'down', services=services_names, options_args=options_args
         )
-
-    # @docparams(doc_common_services)
-    # def _cmd_events(
-    #     self,
-    #     services: str = '',
-    #     all: bool = False,
-    #     options: str = '',
-    # ) -> None:
-    #     """Receive real time events from containers."""
-    #     services_names = self._get_services_names(services=services, all=all)
-    #     options_args = self._get_list_args(options)
-    #     self._call_backend_app(
-    #         'events', services=services_names, options_args=options_args
-    #     )
 
     @docparams(doc_common_services)
     def _cmd_events(
@@ -519,20 +491,6 @@ class SugarPodmanComposeExt(SugarBase):
             options_args=options_args,
             cmd_args=cmd_args,
         )
-
-    # @docparams(doc_common_services)
-    # def _cmd_images(
-    #     self,
-    #     services: str = '',
-    #     all: bool = False,
-    #     options: str = '',
-    # ) -> None:
-    #     """List images used by the created containers."""
-    #     services_names = self._get_services_names(services=services, all=all)
-    #     options_args = self._get_list_args(options)
-    #     self._call_backend_app(
-    #         'images', services=services_names, options_args=options_args
-    #     )
 
     def _get_image_filters(self, services_names: list[str]) -> list[str]:
         """Get image filters for the given services."""
@@ -636,19 +594,6 @@ class SugarPodmanComposeExt(SugarBase):
             'logs', services=services_names, options_args=options_args
         )
 
-    # @docparams(doc_common_no_services)
-    # def _cmd_ls(
-    #     self,
-    #     options: str = '',
-    # ) -> None:
-    #     """
-    #     List running compose projects.
-
-    #     Note: This is an experimental feature.
-    #     """
-    #     options_args = self._get_list_args(options)
-    #     self._call_backend_app('ls', services=[], options_args=options_args)
-
     @docparams(doc_common_services)
     def _cmd_pause(
         self,
@@ -680,17 +625,14 @@ class SugarPodmanComposeExt(SugarBase):
     @docparams(doc_common_services)
     def _cmd_ps(
         self,
-        # services: str = '',
-        # all: bool = False,
         options: str = '',
     ) -> None:
         """List containers."""
-        # Podman-compose ps doesn't support service names as arguments
-        # so we'll just run the base command
+        # Podman-compose ps doesn't support filtering by services
         options_args = self._get_list_args(options)
         self._call_backend_app(
             'ps',
-            services=[],  # Don't pass services names to podman-compose ps
+            services=[],
             options_args=options_args,
         )
 
@@ -819,22 +761,6 @@ class SugarPodmanComposeExt(SugarBase):
         self._call_backend_app(
             'stop', services=services_names, options_args=options_args
         )
-
-    # @docparams(doc_common_services)
-    # def _cmd_top(
-    #     self,
-    #     services: str = '',
-    #     all: bool = False,
-    #     options: str = '',
-    # ) -> None:
-    #     """Display the running processes."""
-    #     services_names = self._get_services_names(services=services, all=all)
-    #     options_args = self._get_list_args(options)
-    #     self._call_backend_app(
-    #         'top', services=services_names, options_args=options_args
-    #     )
-
-    # Add after other _cmd_ methods in the SugarPodmanComposeExt class
 
     @docparams(doc_common_services)
     def _cmd_stats(
