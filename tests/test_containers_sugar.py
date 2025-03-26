@@ -27,7 +27,7 @@ COMPOSE_EXT.load(**SUGAR_ARGS)  # type: ignore
 STATS.load(**SUGAR_ARGS)  # type: ignore
 
 
-@pytest.mark.parametrize(  # type: ignore[misc]
+@pytest.mark.parametrize(
     'ext,action,args',
     [
         (COMPOSE, 'version', {}),

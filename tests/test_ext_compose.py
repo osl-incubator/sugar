@@ -8,7 +8,7 @@ from pytest import CaptureFixture
 from sugar.extensions.compose import SugarCompose
 
 
-@pytest.fixture  # type: ignore[misc]
+@pytest.fixture
 def sugar_ext() -> SugarCompose:
     """Return a fixture for the Sugar extension instance."""
     test_path = Path(__file__).parent
