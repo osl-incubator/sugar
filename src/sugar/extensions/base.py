@@ -327,22 +327,31 @@ class SugarBase(ABC):
     def _load_env(self) -> None:
         self.env = dict(os.environ)
 
-        env_file = self.config.get('env-file', '')
+        env_files = self.config.get('env-file', '')
 
-        if not env_file:
+        if isinstance(env_files, str):
+            env_files = [env_files] if env_files else []
+
+        if not env_files:
             return
 
-        if not env_file.startswith('/'):
-            # use .sugar file as reference for the working
-            # directory for the .env file
-            env_file = str(Path(self.file).parent / env_file)
+        for env_file in env_files:
+            if not env_file:
+                continue
 
-        if not Path(env_file).exists():
-            SugarLogs.raise_error(
-                'The given env-file was not found.',
-                SugarError.SUGAR_INVALID_CONFIGURATION,
-            )
-        self.env.update(dotenv.dotenv_values(env_file))  # type: ignore
+            env_file_path = env_file
+
+            if not env_file.startswith('/'):
+                # use .sugar file as reference for the working
+                # directory for the .env file
+                env_file_path = str(Path(self.file).parent / env_file)
+
+            if not Path(env_file_path).exists():
+                SugarLogs.raise_error(
+                    f'Env file was not found: {env_file_path}',
+                    SugarError.SUGAR_INVALID_CONFIGURATION,
+                )
+            self.env.update(dotenv.dotenv_values(env_file_path))  # type: ignore
 
     def _get_list_args(self, args: str) -> list[str]:
         """Return a list with the name of the service if any."""
