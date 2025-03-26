@@ -74,6 +74,16 @@ doc_common_services_no_options = {
 class SugarPodmanComposeExt(SugarBase):
     """SugarPodmanCompose provides the podman compose commands."""
 
+    def _load_backend(self) -> None:
+        """
+        Initialize the backend application and its arguments.
+
+        This method implements the required abstract method from SugarBase
+        and ensures proper podman-compose setup.
+        """
+        self._load_backend_app()
+        self._load_backend_args()
+
     def _load_backend_app(self) -> None:
         """Override to use podman instead of docker."""
         self.backend_app = sh.Command('podman-compose')
