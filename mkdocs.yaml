@@ -11,6 +11,7 @@ nav:
   - Installation: installation.md
   - Changelog: changelog.md
   - Contributing: contributing.md
+  - Swarm Usage: swarm.md
   # - API: api/references.md
   # - Notebook page: example.ipynb
 theme:
