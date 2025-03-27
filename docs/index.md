@@ -114,8 +114,7 @@ Some examples of how to use it:
 - build all services (ignore default) for group1:
   `sugar build --group group1 --all`
 
-- start the default services for group1:
-  `sugar compose-ext start --group group`
+- start the default services for group1: `sugar compose-ext start --group group`
 
 - restart all services (ignore defaults) for group1:
   `sugar compose-ext restart --group group1 --all`
