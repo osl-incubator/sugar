@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import sh
+
 from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
 from sugar.logs import SugarError, SugarLogs
@@ -53,6 +55,63 @@ doc_common_services_no_options = {
 
 class SugarCompose(SugarBase):
     """SugarCompose provides the docker compose commands."""
+
+    def _load_backend(self) -> None:
+        backend_cmd = self.config.get('backend', '')
+        supported_backends = ['compose']
+
+        if backend_cmd not in supported_backends:
+            SugarLogs.raise_error(
+                f'"{self.config["backend"]}" not supported yet.'
+                f' Supported backends are: {", ".join(supported_backends)}.',
+                SugarError.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
+            )
+
+        self.backend_app = sh.docker
+        self.backend_args.append(backend_cmd)
+
+        self._load_compose_args()
+
+    def _load_compose_args(self) -> None:
+        self._filter_service_profile()
+
+        _env_files = self.service_profile.get('env-file')
+
+        env_files: list[str] = []
+        if isinstance(_env_files, str):
+            env_files = [_env_files]
+        elif isinstance(_env_files, list):
+            if any(not isinstance(f, str) for f in _env_files):
+                SugarLogs.raise_error(
+                    'The attribute `env-file` must be a list of strings.',
+                    SugarError.SUGAR_INVALID_CONFIGURATION,
+                )
+            env_files = _env_files
+
+        for env_file in env_files:
+            self.backend_args.extend(['--env-file', env_file])
+
+        config_path: list[str] = []
+        backend_path_arg = self.service_profile['config-path']
+        if isinstance(backend_path_arg, str):
+            config_path.append(backend_path_arg)
+        elif isinstance(backend_path_arg, list):
+            config_path.extend(backend_path_arg)
+        else:
+            SugarLogs.raise_error(
+                'The attribute config-path` just supports the data '
+                f'types `string` or `list`, {type(backend_path_arg)} '
+                'received.',
+                SugarError.SUGAR_INVALID_CONFIGURATION,
+            )
+
+        for p in config_path:
+            self.backend_args.extend(['--file', p])
+
+        if self.service_profile.get('project-name'):
+            self.backend_args.extend(
+                ['--project-name', self.service_profile['project-name']]
+            )
 
     @docparams(doc_common_service)
     def _cmd_attach(

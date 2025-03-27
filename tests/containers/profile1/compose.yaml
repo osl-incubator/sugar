@@ -2,6 +2,9 @@ version: "3.4"
 
 services:
   service1-1:
+    env_file:
+      - ../../../.env
+      - ../../../.env2
     hostname: service1-1
     image: python:latest
     ports:
@@ -16,6 +19,9 @@ services:
     command: python -m http.server
 
   service1-3:
+    env_file:
+      - ../../../.env
+      - ../../../.env2
     hostname: service1-3
     image: python:latest
     ports:
