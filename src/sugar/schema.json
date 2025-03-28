@@ -8,7 +8,17 @@
       "enum": ["compose"]
     },
     "env-file": {
-      "type": "string"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "defaults": {
       "type": "object",
@@ -109,13 +119,26 @@
               ]
             },
             "env-file": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
             },
             "services": {
               "type": "object",
               "properties": {
                 "default": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "available": {
                   "type": "array",
@@ -151,7 +174,10 @@
           "type": "string"
         },
         "default": {
-          "type": "string"
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "available": {
           "type": "array",
