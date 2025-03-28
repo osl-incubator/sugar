@@ -19,7 +19,7 @@ from textual.widgets import (
 T = TypeVar('T')
 
 
-class ServiceScreen(Screen[T]):  # type: ignore[misc]
+class ServiceScreen(Screen[T]):
     """Screen to display and manage services."""
 
     CSS_PATH = Path(__file__).parent.parent / 'styles/screens.css'

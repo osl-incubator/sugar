@@ -10,6 +10,10 @@ from sugar.logs import SugarLogs
 class SugarTUI(SugarBase):
     """Terminal User Interface extension for Sugar."""
 
+    def _load_backend(self) -> None:
+        """Load backend and backend parameters."""
+        pass
+
     @docparams({})  # Empty dict since we don't have parameters
     def _cmd_tui(self) -> None:
         """Launch the Sugar Terminal User Interface."""

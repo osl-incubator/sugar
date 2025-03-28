@@ -20,7 +20,7 @@ from textual.widgets import (
 T = TypeVar('T')
 
 
-class ProfileScreen(Screen[T]):  # type: ignore[misc]
+class ProfileScreen(Screen[T]):
     """Screen for managing profiles."""
 
     # Define CSS path for screen-specific styles

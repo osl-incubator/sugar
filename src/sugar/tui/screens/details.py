@@ -18,7 +18,7 @@ from textual.widgets import (
 T = TypeVar('T')
 
 
-class DetailsScreen(Screen[T]):  # type: ignore[misc]
+class DetailsScreen(Screen[T]):
     """Screen to display service details."""
 
     BINDINGS = [

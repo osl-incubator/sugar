@@ -26,7 +26,7 @@ A = TypeVar('A', bound=object)
 T = TypeVar('T', bound=object)
 
 
-class SugarTUI(App[A]):  # type: ignore[misc]
+class SugarTUI(App[A]):
     """Sugar Terminal User Interface application."""
 
     TITLE = 'Sugar TUI — Container Management Simplified'
@@ -258,25 +258,26 @@ class SugarTUI(App[A]):  # type: ignore[misc]
         """Handle button presses on the dashboard."""
         button = event.button
         button_text = button.label if hasattr(button, 'label') else ''
+        button_text_str = str(button_text)
 
-        if 'Start' in button_text:
+        if 'Start' in button_text_str:
             self.notify('Starting all services...', title='Starting')
-        elif 'Stop' in button_text:
+        elif 'Stop' in button_text_str:
             self.notify('Stopping all services...', title='Stopping')
-        elif 'Restart' in button_text:
+        elif 'Restart' in button_text_str:
             self.notify('Restarting all services...', title='Restarting')
-        elif 'Logs' in button_text:
+        elif 'Logs' in button_text_str:
             self.action_logs()
-        elif 'Details' in button_text:
+        elif 'Details' in button_text_str:
             self.action_details()
-        elif 'Health' in button_text:
+        elif 'Health' in button_text_str:
             self.notify('Running health checks...', title='Health Check')
 
     def _create_basic_screens(self) -> None:
         """Create basic screen files if they don't exist."""
         from textual.widgets import Static
 
-        class BasicScreen(Screen[T]):  # type: ignore[misc]
+        class BasicScreen(Screen[T]):
             def compose(self) -> ComposeResult:
                 yield Static('Coming soon...', classes='title')
 

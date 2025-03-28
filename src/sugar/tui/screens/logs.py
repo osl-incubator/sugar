@@ -17,7 +17,7 @@ MAX_LOG_LINES = 20
 T = TypeVar('T', bound=object)
 
 
-class LogsScreen(Screen[T]):  # type: ignore[misc]
+class LogsScreen(Screen[T]):
     """Screen to display service logs with filtering and real-time updates."""
 
     # Match the same CSS path
