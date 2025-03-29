@@ -81,6 +81,9 @@ jobs:
       - name: CLI tests
         run: makim --verbose tests.smoke
 
+      - name: CLI tests for podman
+        run: makim --verbose tests.smoke-podman
+
       - name: Setup tmate session
         if: "${{ failure() && (contains(github.event.pull_request.labels.*.name, 'ci:enable-debugging')) }}"
         uses: mxschmitt/action-tmate@v3
