@@ -16,9 +16,11 @@ import yaml
 from sugar.docs import docparams
 from sugar.extensions.base import SugarBase
 from sugar.logs import SugarError, SugarLogs
-from sugar.utils import camel_to_snake, get_absolute_path
+from sugar.utils import (
+    camel_to_snake,
+    get_absolute_path,
+)
 
-# Reuse the parameter documentation structure similar to compose.py
 doc_profile = {
     'profile': 'Specify the profile name of the services you want to use.'
 }
@@ -82,7 +84,7 @@ class SugarPodmanComposeExt(SugarBase):
         and loads backend arguments.
         """
         backend_cmd = self.config.get('backend', '')
-        supported_backends = ['podman', 'compose']  # Support both backends
+        supported_backends = ['podman', 'compose']
 
         if backend_cmd not in supported_backends:
             SugarLogs.raise_error(
@@ -91,21 +93,13 @@ class SugarPodmanComposeExt(SugarBase):
                 SugarError.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
             )
 
-        # For podman, we use podman-compose directly
         self.backend_app = sh.Command('podman-compose')
-
-        # No need to append backend cmd as we're using podman-compose directly
-        # unlike docker compose which uses docker as app and compose as
-        #  subcommand
-
-        # Load specific arguments for podman-compose
         self._load_podman_compose_args()
 
     def _load_podman_compose_args(self) -> None:
         """Load arguments specific to podman-compose."""
         self._filter_service_profile()
 
-        # Handle config-path for podman-compose
         config_path = []
 
         if type(self.service_profile['config-path']) is list:
@@ -134,13 +128,11 @@ class SugarPodmanComposeExt(SugarBase):
                 'received.',
                 SugarError.SUGAR_INVALID_CONFIGURATION,
             )
-
+        print(config_path)
         # Use -f instead of --file for podman compose
         for p in config_path:
             self.backend_args.extend(['-f', p])
 
-        # Add project-name if specified - use -p instead of
-        # --project-name for podman
         if self.service_profile.get('project-name'):
             self.backend_args.extend(
                 ['-p', self.service_profile['project-name']]
@@ -173,14 +165,10 @@ class SugarPodmanComposeExt(SugarBase):
         env_file = self.service_profile.get('env-file')
         if env_file:
             if not env_file.startswith('/'):
-                # use .sugar file as reference for the working directory
-                # for the .env file
                 env_file = str(Path(self.file).parent / env_file)
 
             if Path(env_file).exists():
                 try:
-                    # Update env_vars with content from env_file
-                    # Cast the result to Dict[str, str] to satisfy mypy
                     dotenv_values = {
                         k: str(v)
                         for k, v in dotenv.dotenv_values(env_file).items()
@@ -248,6 +236,57 @@ class SugarPodmanComposeExt(SugarBase):
             )
 
         self._execute_hooks('post-run', extension, action)
+
+    def podman_check_services(
+        self,
+        all: bool,
+        services: str,
+    ) -> list[str]:
+        """Check if difference between default and available podman services.
+
+        Check if difference between default and available
+        podman services in .sugar.yml file.
+        """
+        if all:
+            default = self._get_services_names(services=services, all=True)
+            available = self._get_services_names(services=services, all=False)
+            diffence = set(default) - set(available)
+            return list(diffence)
+        else:
+            default = self._get_services_names(services=services, all=False)
+            return default
+
+    def _get_image_filters(self, services_names: list[str]) -> list[str]:
+        """Get image filters for the given services."""
+        filters = []
+        config_paths = self.service_profile.get('config-path', [])
+        if isinstance(config_paths, str):
+            config_paths = [config_paths]
+
+        for config_path in config_paths:
+            path_to_use = config_path
+            if not config_path.startswith('/'):
+                path_to_use = str(Path(self.file).parent / config_path)
+            try:
+                with open(path_to_use) as f:
+                    compose_config = yaml.safe_load(f)
+                    for service in services_names:
+                        if service in compose_config.get('services', {}):
+                            service_config = compose_config['services'][
+                                service
+                            ]
+                            if 'image' in service_config:
+                                filters.extend(
+                                    [
+                                        '--filter',
+                                        f'reference={service_config["image"]}',
+                                    ]
+                                )
+            except (yaml.YAMLError, FileNotFoundError) as e:
+                SugarLogs.print_warning(
+                    f'Error with compose file {path_to_use}: {e}'
+                )
+        return filters
 
     @docparams(doc_common_service)
     def _cmd_attach(
@@ -325,11 +364,10 @@ class SugarPodmanComposeExt(SugarBase):
         options: str = '',
     ) -> None:
         """Parse, resolve and render compose file in canonical format."""
-        # Podman-compose config doesn't support filtering by services
         options_args = self._get_list_args(options)
         self._call_backend_app(
             'config',
-            services=[],  # Don't pass services to config command
+            services=[],
             options_args=options_args,
         )
 
@@ -390,7 +428,7 @@ class SugarPodmanComposeExt(SugarBase):
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
         self._call_backend_app(
-            'create', services=services_names, options_args=options_args
+            'run', services=services_names, options_args=options_args
         )
 
     @docparams(doc_common_services)
@@ -494,38 +532,6 @@ class SugarPodmanComposeExt(SugarBase):
             options_args=options_args,
             cmd_args=cmd_args,
         )
-
-    def _get_image_filters(self, services_names: list[str]) -> list[str]:
-        """Get image filters for the given services."""
-        filters = []
-        config_paths = self.service_profile.get('config-path', [])
-        if isinstance(config_paths, str):
-            config_paths = [config_paths]
-
-        for config_path in config_paths:
-            path_to_use = config_path
-            if not config_path.startswith('/'):
-                path_to_use = str(Path(self.file).parent / config_path)
-            try:
-                with open(path_to_use) as f:
-                    compose_config = yaml.safe_load(f)
-                    for service in services_names:
-                        if service in compose_config.get('services', {}):
-                            service_config = compose_config['services'][
-                                service
-                            ]
-                            if 'image' in service_config:
-                                filters.extend(
-                                    [
-                                        '--filter',
-                                        f'reference={service_config["image"]}',
-                                    ]
-                                )
-            except (yaml.YAMLError, FileNotFoundError) as e:
-                SugarLogs.print_warning(
-                    f'Error with compose file {path_to_use}: {e}'
-                )
-        return filters
 
     @docparams(doc_common_services)
     def _cmd_images(
@@ -675,6 +681,11 @@ class SugarPodmanComposeExt(SugarBase):
         options: str = '',
     ) -> None:
         """Restart services."""
+        if '-d' in options.split(' '):
+            SugarLogs.raise_error(
+                'The -d option is not supported for the restart command.',
+                SugarError.SUGAR_INVALID_PARAMETER,
+            )
         services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
         self._call_backend_app(
@@ -690,9 +701,9 @@ class SugarPodmanComposeExt(SugarBase):
     ) -> None:
         """Remove stopped containers."""
         services_names = self._get_services_names(services=services, all=all)
-        options_args = self._get_list_args(options)
+        options_args = self._get_list_args('-v ' + options)
         self._call_backend_app(
-            'rm', services=services_names, options_args=options_args
+            'down', services=services_names, options_args=options_args
         )
 
     @docparams(doc_common_service_cmd)
@@ -745,10 +756,20 @@ class SugarPodmanComposeExt(SugarBase):
         options: str = '',
     ) -> None:
         """Start services."""
-        services_names = self._get_services_names(services=services, all=all)
         options_args = self._get_list_args(options)
+        diff_service = self.podman_check_services(services=services, all=all)
+        if diff_service != []:
+            SugarLogs.print_info(
+                'Running un initated service ' + ','.join(diff_service)
+            )
+
+            self._call_backend_app(
+                'up', services=diff_service, options_args=options_args
+            )
+        services_names = self._get_services_names(services=services, all=all)
+        print(services_names)
         self._call_backend_app(
-            'start', services=services_names, options_args=options_args
+            'up', services=services_names, options_args=options_args
         )
 
     @docparams(doc_common_services)
