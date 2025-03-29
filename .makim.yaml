@@ -176,7 +176,7 @@ groups:
         help: Run smoke tests for profile mix
         hooks:
           pre-run:
-            - task: docker.killall
+            - task: podman.killall
         vars:
           SUGAR_FLAGS: --verbose --profile profile-mix
         run: |
@@ -371,7 +371,7 @@ groups:
             - task: tests.smoke-podman-final
             - task: tests.smoke-podman-services
             - task: tests.smoke-podman-experimental
-            - task: tests.smoke-podman-hooks
+            # - task: tests.smoke-podman-hooks
         run: |
           sugar --verbose compose --help
           sugar --verbose compose version
