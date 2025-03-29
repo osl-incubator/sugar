@@ -233,8 +233,8 @@ class SugarBase(ABC):
                 'config-path': services.get('config-path'),
                 'env-file': services.get('env-file'),
                 'services': {
-                    'default': services.get('default'),
-                    'available': services.get('available'),
+                    'default': services.get('default', []),
+                    'available': services.get('available', []),
                 },
             }
         }
@@ -275,9 +275,7 @@ class SugarBase(ABC):
                             'available', []
                         )
                     ]
-                    profile_data['services']['default'] = ','.join(
-                        default_services
-                    )
+                    profile_data['services']['default'] = default_services
                 self.service_profile = profile_data
                 return
 
@@ -327,22 +325,31 @@ class SugarBase(ABC):
     def _load_env(self) -> None:
         self.env = dict(os.environ)
 
-        env_file = self.config.get('env-file', '')
+        env_files = self.config.get('env-file', '')
 
-        if not env_file:
+        if isinstance(env_files, str):
+            env_files = [env_files] if env_files else []
+
+        if not env_files:
             return
 
-        if not env_file.startswith('/'):
-            # use .sugar file as reference for the working
-            # directory for the .env file
-            env_file = str(Path(self.file).parent / env_file)
+        for env_file in env_files:
+            if not env_file:
+                continue
 
-        if not Path(env_file).exists():
-            SugarLogs.raise_error(
-                'The given env-file was not found.',
-                SugarError.SUGAR_INVALID_CONFIGURATION,
-            )
-        self.env.update(dotenv.dotenv_values(env_file))  # type: ignore
+            env_file_path = env_file
+
+            if not env_file.startswith('/'):
+                # use .sugar file as reference for the working
+                # directory for the .env file
+                env_file_path = str(Path(self.file).parent / env_file)
+
+            if not Path(env_file_path).exists():
+                SugarLogs.raise_error(
+                    f'Env file was not found: {env_file_path}',
+                    SugarError.SUGAR_INVALID_CONFIGURATION,
+                )
+            self.env.update(dotenv.dotenv_values(env_file_path))  # type: ignore
 
     def _get_list_args(self, args: str) -> list[str]:
         """Return a list with the name of the service if any."""
@@ -365,7 +372,7 @@ class SugarBase(ABC):
 
         services_config = self.service_profile['services']
         service_names: list[str] = []
-        services_default = services_config.get('default', '')
+        services_default = services_config.get('default', [])
 
         if _arg_all:
             service_names = [
@@ -377,7 +384,7 @@ class SugarBase(ABC):
         elif _arg_services:
             service_names = _arg_services.split(',')
         elif services_default:
-            service_names = services_default.split(',')
+            service_names = services_default
         else:
             SugarLogs.raise_error(
                 'If you want to execute the operation for all services, '
