@@ -156,6 +156,12 @@ Podman Compose, there are some differences to be aware of:
 3. Podman Compose doesn't directly support the `--env-file` flag, so Sugar loads
    the environment variables before executing commands
 
+## Note
+
+1. There is no such flag `-d` present in `--options` for
+   `sugar podman-ext start` .
+2.
+
 ## Troubleshooting
 
 If you encounter issues with the Podman extension:

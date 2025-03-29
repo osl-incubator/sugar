@@ -75,40 +75,39 @@ class SugarPodmanComposeExt(SugarBase):
     """SugarPodmanCompose provides the podman compose commands."""
 
     def _load_backend(self) -> None:
-        """Load backend and backend parameters."""
-        pass
+        """
+        Initialize the backend application and its arguments.
 
-    def _load_backend_app(self) -> None:
-        """Override to use podman instead of docker."""
+        This method checks if the backend is supported, sets the backend app,
+        and loads backend arguments.
+        """
+        backend_cmd = self.config.get('backend', '')
+        supported_backends = ['podman', 'compose']  # Support both backends
+
+        if backend_cmd not in supported_backends:
+            SugarLogs.raise_error(
+                f'"{self.config["backend"]}" not supported yet.'
+                f' Supported backends are: {", ".join(supported_backends)}.',
+                SugarError.SUGAR_COMPOSE_APP_NOT_SUPPORTED,
+            )
+
+        # For podman, we use podman-compose directly
         self.backend_app = sh.Command('podman-compose')
 
-    def _load_backend_args(self) -> None:
-        """
-        Override to handle backend arguments differently for Podman.
+        # No need to append backend cmd as we're using podman-compose directly
+        # unlike docker compose which uses docker as app and compose as
+        #  subcommand
 
-        Podman compose doesn't support the --env-file flag directly,
-        so we use environment variables instead.
-        Podman also uses -f instead of --file for specifying compose files.
-        """
+        # Load specific arguments for podman-compose
+        self._load_podman_compose_args()
+
+    def _load_podman_compose_args(self) -> None:
+        """Load arguments specific to podman-compose."""
         self._filter_service_profile()
 
-        # Handle env file differently for Podman
-        env_file = self.service_profile.get('env-file')
-        if env_file:
-            if not env_file.startswith('/'):
-                # use .sugar file as reference for the working directory
-                # for the .env file
-                env_file = str(Path(self.file).parent / env_file)
-
-            if not Path(env_file).exists():
-                SugarLogs.print_warning(
-                    f"""The env-file {env_file} was not found.
-                    Continuing without it."""
-                )
-
+        # Handle config-path for podman-compose
         config_path = []
 
-        # Handle config-path differently for Podman
         if type(self.service_profile['config-path']) is list:
             backend_path_arg = [
                 get_absolute_path(path)
