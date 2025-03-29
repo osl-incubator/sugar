@@ -1,4 +1,11 @@
-# Podman Extension
+# Podman Extension (Experimental)
+
+!!! warning "Experimental" This feature is experimental and may change in future
+releases.
+
+!!! info Sugar's podman-ext extension includes both standard Podman commands and
+experimental features like `attach`, `cp`, `ls`, `scale`, and `watch` that won't
+work currently in container operations.
 
 Sugar provides support for Podman Compose through the `podman-ext` extension.
 This extension allows you to use Podman as a container engine backend instead of
@@ -156,11 +163,13 @@ Podman Compose, there are some differences to be aware of:
 3. Podman Compose doesn't directly support the `--env-file` flag, so Sugar loads
    the environment variables before executing commands
 
-## Note
+!!! note Note
 
-1. There is no such flag `-d` present in `--options` for
-   `sugar podman-ext start` .
-2.
+    1. There is no such flag `-d` present in `--options` for
+       `sugar podman-ext start`.
+    2. Experimental commands like `attach`, `cp`, `ls`, `scale`, and `watch` may have
+       different behavior between Podman versions. These commands are not supported currently in Sugar
+    3. The `wait` command is still in development.
 
 ## Troubleshooting
 

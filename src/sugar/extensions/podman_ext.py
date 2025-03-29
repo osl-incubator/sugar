@@ -74,7 +74,7 @@ doc_common_services_no_options = {
 
 
 class SugarPodmanComposeExt(SugarBase):
-    """SugarPodmanCompose provides the podman compose commands."""
+    """(Experimental)SugarPodmanCompose provide the podman compose commands."""
 
     def _load_backend(self) -> None:
         """
