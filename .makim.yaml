@@ -235,7 +235,7 @@ groups:
 
           # Test service inspection
           echo $'\033[32mTesting service inspection...\033[0m'
-          sugar ${{ vars.SUGAR_FLAGS }} swarm inspect --services service1-1 --stack test-stack
+          sugar ${{ vars.SUGAR_FLAGS }} swarm inspect --service service1-1 --stack test-stack
 
           # Test service1-1 , service1-2 and service1-3 service three times ping
           for port in 18000 18001 18002; do
