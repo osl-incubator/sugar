@@ -1,11 +1,14 @@
 # Podman Extension (Experimental)
 
-!!! warning "Experimental" This feature is experimental and may change in future
-releases.
+<div class="admonition warning">
+  <p class="admonition-title">Experimental</p>
+  <p>This feature is experimental and may change in future releases.</p>
+</div>
 
-!!! info Sugar's podman-ext extension includes both standard Podman commands and
-experimental features like `attach`, `cp`, `ls`, `scale`, and `watch` that won't
-work currently in container operations.
+<div class="admonition info">
+  <p class="admonition-title">Info</p>
+  <p>Sugar's podman-ext extension includes both standard Podman commands and experimental features like <code>attach</code>, <code>cp</code>, <code>ls</code>, <code>scale</code>, and <code>watch</code> that won't work currently in container operations.</p>
+</div>
 
 Sugar provides support for Podman Compose through the `podman-ext` extension.
 This extension allows you to use Podman as a container engine backend instead of
