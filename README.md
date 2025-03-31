@@ -68,7 +68,7 @@ These commands are available in the main profile/plugin, so you don't need to
 specify any extra parameter to access them.
 
 For extra commands, we are gathering them into a profile/plugin called `ext`, so
-you can access them using something like: `sugar ext restart`.
+you can access them using something like: `sugar compose-ext restart`.
 
 The current available **ext** commands are:
 
@@ -91,7 +91,9 @@ profiles:
       - containers/tests/profile1/compose.yaml
     env-file: .env
     services:
-      default: service1,service3
+      default:
+        - service1
+        - service3
       available:
         - name: service1
         - name: service2
@@ -117,13 +119,14 @@ Some examples of how to use it:
 - build all services (ignore default) for profile1:
   `sugar build --profile profile1 --all`
 
-- start the default services for profile1: `sugar ext start --profile profile1`
+- start the default services for profile1:
+  `sugar compose-ext start --profile profile1`
 
 - restart all services (ignore defaults) for profile1:
-  `sugar ext restart --profile profile1 --all`
+  `sugar compose-ext restart --profile profile1 --all`
 
 - restart service1 and service2 for profile1:
-  `sugar ext restart --profile profile1 --services service1,service2`
+  `sugar compose-ext restart --profile profile1 --services service1,service2`
 
 **NOTE**: If you use: `default: profile: ${{ env.ENV }}`, you don't need to give
 `--profile <PROFILE_NAME>`, except if you want a different profile than the

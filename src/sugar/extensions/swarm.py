@@ -145,23 +145,16 @@ doc_update_options = {
 class SugarSwarm(SugarBase):
     """SugarSwarm provides the docker swarm commands."""
 
-    # Override the prefix for commands that should be hidden from CLI
-    # The CLI framework only looks for methods starting with _cmd_
-    # By renaming these methods to start with _subcmd_ instead,
-    # they won't be automatically exposed in the CLI
+    def _load_backend(self) -> None:
+        """Load the backend for the swarm commands."""
+        self._load_backend_app()
+        self._load_backend_args()
 
     def _load_backend_app(self) -> None:
         self.backend_app = sh.docker
-        # Don't add a compose subcommand
         self.backend_args = []
 
     def _load_backend_args(self) -> None:
-        """Override to prevent adding compose-specific arguments."""
-        # For swarm commands, we don't need any of the
-        # compose-specific arguments
-        # like --env-file, --file, or --project-name
-        # Deliberately override the parent's method \
-        # with an empty implementation
         self.backend_args = []
 
     def _get_services_names(self, **kwargs: Any) -> list[str]:
@@ -638,7 +631,7 @@ class SugarSwarm(SugarBase):
                 f'Failed to get services from stack {stack}: {e!s}',
                 SugarError.SUGAR_COMMAND_ERROR,
             )
-            return []  # This line won't execute due to raise_error
+            return []
 
     def _perform_service_rollback(
         self, service: str, options_args: list[str]
