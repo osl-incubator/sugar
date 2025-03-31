@@ -731,24 +731,6 @@ class SugarPodmanComposeExt(SugarBase):
         )
 
     @docparams(doc_common_services)
-    def _cmd_scale(
-        self,
-        services: str = '',
-        all: bool = False,
-        options: str = '',
-    ) -> None:
-        """
-        Scale services.
-
-        Note: This is an experimental feature.
-        """
-        services_names = self._get_services_names(services=services, all=all)
-        options_args = self._get_list_args(options)
-        self._call_backend_app(
-            'scale', services=services_names, options_args=options_args
-        )
-
-    @docparams(doc_common_services)
     def _cmd_start(
         self,
         services: str = '',
@@ -831,8 +813,6 @@ class SugarPodmanComposeExt(SugarBase):
     @docparams(doc_common_services)
     def _cmd_version(
         self,
-        services: str = '',
-        all: bool = False,
         options: str = '',
     ) -> None:
         """Show the podman-compose version information."""
@@ -857,24 +837,4 @@ class SugarPodmanComposeExt(SugarBase):
         options_args = self._get_list_args(options)
         self._call_backend_app(
             'wait', services=services_names, options_args=options_args
-        )
-
-    @docparams(doc_common_services)
-    def _cmd_watch(
-        self,
-        services: str = '',
-        all: bool = False,
-        options: str = '',
-    ) -> None:
-        """
-        Watch build context for service source code changes and.
-
-        rebuild/refresh containers.
-
-        Note: This is an experimental feature.
-        """
-        services_names = self._get_services_names(services=services, all=all)
-        options_args = self._get_list_args(options)
-        self._call_backend_app(
-            'watch', services=services_names, options_args=options_args
         )
