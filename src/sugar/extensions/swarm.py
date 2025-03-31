@@ -403,7 +403,7 @@ class SugarSwarm(SugarBase):
     )
     def _cmd_inspect(
         self,
-        service: str = '',
+        services: str = '',
         stack: str = '',
         format: str = '',
         size: bool = False,
@@ -417,7 +417,7 @@ class SugarSwarm(SugarBase):
         For inspecting multiple objects, use docker inspect directly.
         """
         # Validate only one service is provided (no commas)
-        if ',' in service:
+        if ',' in services:
             SugarLogs.raise_error(
                 'Only one service can be inspected at a time. '
                 'Multiple services are not supported.',
@@ -425,7 +425,7 @@ class SugarSwarm(SugarBase):
             )
         # Raise error if only stack is provided without service, or only
         # service without stack
-        if (service and not stack) or (stack and not service):
+        if (services and not stack) or (stack and not services):
             SugarLogs.raise_error(
                 """Both service name and stack name must be
               provided together for inspect""",
@@ -433,7 +433,7 @@ class SugarSwarm(SugarBase):
             )
 
         # Create a single-item list with the service name
-        service_name = service.strip() if service else ''
+        service_name = services.strip() if services else ''
 
         if service_name:
             services_names = [service_name]
