@@ -81,6 +81,9 @@ jobs:
       - name: CLI tests
         run: makim --verbose tests.smoke
 
+      - name: CLI tests for podman
+        run: makim --verbose tests.smoke-podman
+
       - name: CLI tests for Swarm
         run: makim --verbose tests.smoke-swarm
 

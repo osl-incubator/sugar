@@ -5,7 +5,7 @@
   "properties": {
     "backend": {
       "type": "string",
-      "enum": ["compose", "swarm"]
+      "enum": ["compose", "swarm", "podman-compose"]
     },
     "env-file": {
       "anyOf": [
