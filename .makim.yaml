@@ -313,6 +313,7 @@ groups:
             - task: podman.killall
         run: |
           sugar --verbose podman-ext wait --help
+
       smoke-swarm:
         help: Run smoke tests for swarm commands
         hooks:
@@ -426,7 +427,7 @@ groups:
       leave_node:
         help: Leave the swarm
         run: docker node inspect self --format '{{.Spec.Role}}' &>/dev/null && { docker node leave --force && echo "Node left the swarm"; } || echo "Node already left the swarm"
-
+        
   podman:
     help: Commands for podman
     tasks:

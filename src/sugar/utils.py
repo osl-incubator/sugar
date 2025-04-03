@@ -29,6 +29,7 @@ def camel_to_snake(name: str, sep: str = '-') -> str:
 def get_absolute_path(relative_path: str) -> str:
     """Get the root path of the project."""
     return str(Path(relative_path).resolve())
+
 # prepend stack name to the services list and stack is should be provided
 # if not throw error
 def prepend_stack_name(stack_name: str, services: list[str]) -> list[str]:

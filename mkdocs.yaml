@@ -10,8 +10,8 @@ nav:
   - Home: index.md
   - Podman Extension: podman-ext.md
   - Contributing: contributing.md
-  - Changelog: changelog.md
   - Swarm Usage: swarm.md
+  - Changelog: changelog.md
   # - API: api/references.md
   # - Notebook page: example.ipynb
 theme:
