@@ -69,6 +69,16 @@ The current available **ext** commands are:
 - start -> alias for `up`
 - restart -> runs `stop` and `up`
 
+Sugar also provides support for Docker Swarm through the `swarm` plugin, which
+includes:
+
+- Initialize and manage swarm clusters
+- Deploy and manage stacks
+- Manage services (scaling, updating, rollback)
+- Manage swarm nodes
+
+See the [Swarm documentation](swarm.md) for more details.
+
 ## How to use it
 
 First you need to place the config file `.sugar.yaml` in the root of your

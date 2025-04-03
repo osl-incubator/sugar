@@ -83,6 +83,8 @@ jobs:
 
       - name: CLI tests for podman
         run: makim --verbose tests.smoke-podman
+      - name: CLI tests for Swarm
+        run: makim --verbose tests.smoke-swarm
 
       - name: Setup tmate session
         if: "${{ failure() && (contains(github.event.pull_request.labels.*.name, 'ci:enable-debugging')) }}"

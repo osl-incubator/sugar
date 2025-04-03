@@ -11,6 +11,9 @@ nav:
   - Podman Extension: podman-ext.md
   - Contributing: contributing.md
   - Changelog: changelog.md
+  - Swarm Usage: swarm.md
+  # - API: api/references.md
+  # - Notebook page: example.ipynb
 theme:
   name: material
   features:

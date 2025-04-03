@@ -313,6 +313,47 @@ groups:
             - task: podman.killall
         run: |
           sugar --verbose podman-ext wait --help
+      smoke-swarm:
+        help: Run smoke tests for swarm commands
+        hooks:
+          pre-run:
+            # - task: docker.killall
+            - task: docker.leave_node
+        env:
+          SUGAR_FLAGS: --verbose --profile profile1
+        run: |
+          # Initialize swarm
+          sugar ${{ vars.SUGAR_FLAGS }} swarm init --options "--advertise-addr 127.0.0.1"
+
+
+          # Test stack commands
+          echo $'\033[32mTesting stack deployment...\033[0m'
+          sugar ${{ vars.SUGAR_FLAGS }} swarm deploy --stack test-stack
+
+          # List services (with and without stack filter)
+          echo $'\033[32mTesting service listing...\033[0m'
+          sugar ${{ vars.SUGAR_FLAGS }} swarm ls
+          sugar ${{ vars.SUGAR_FLAGS }} swarm ls --stack test-stack
+
+          # Test stack ps command
+          echo $'\033[32mTesting stack ps command...\033[0m'
+          sugar ${{ vars.SUGAR_FLAGS }} swarm ps --stack test-stack
+
+          # Test stack rm command
+          echo $'\033[32mTesting stack removal...\033[0m'
+          sugar ${{ vars.SUGAR_FLAGS }} swarm rm --stack test-stack
+
+          # Test node commands
+          echo $'\033[32mTesting node commands...\033[0m'
+          sugar swarm node --ls
+          NODE_ID=$(docker node ls --format "{{.ID}}" )
+          echo $'\033[32mNode ID: $NODE_ID\033[0m'
+          sugar swarm node --inspect $NODE_ID
+          sugar swarm node --ps $NODE_ID
+
+
+          # Leave swarm
+          docker swarm leave --force
 
       smoke-hooks:
         help: Run simple text for experimental commands
@@ -382,6 +423,9 @@ groups:
       killall:
         help: Kill all running Docker containers
         run: docker kill `docker ps -q` || true
+      leave_node:
+        help: Leave the swarm
+        run: docker node inspect self --format '{{.Spec.Role}}' &>/dev/null && { docker node leave --force && echo "Node left the swarm"; } || echo "Node already left the swarm"
 
   podman:
     help: Commands for podman
