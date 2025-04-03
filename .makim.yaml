@@ -119,6 +119,24 @@ groups:
           sugar ${{ vars.SUGAR_FLAGS }} compose run --service service2-1 --options -T --cmd env
           sugar ${{ vars.SUGAR_FLAGS }} compose down
 
+      smoke-env-files:
+        help: Run smoke test for multiple .env files
+        hooks:
+          pre-run:
+            - task: docker.killall
+        vars:
+          SUGAR_FLAGS: --verbose --file tests/containers/.multiple-env.sugar.yaml --profile profile1
+        run: |
+          sugar ${{ vars.SUGAR_FLAGS }} compose build
+          sugar ${{ vars.SUGAR_FLAGS }} compose up --options -d
+
+          for service in service1-1 service1-3; do
+            sugar ${{ vars.SUGAR_FLAGS }} compose exec --service $service --options -T --cmd env | grep "ENV_VAR_1=value1"
+            sugar ${{ vars.SUGAR_FLAGS }} compose exec --service $service --options -T --cmd env | grep "ENV_VAR_2=value2"
+          done
+
+          sugar ${{ vars.SUGAR_FLAGS }} compose down
+
       smoke-podman-2:
         help: Run smoke tests for profile 2
         hooks:
