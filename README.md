@@ -131,3 +131,18 @@ Some examples of how to use it:
 **NOTE**: If you use: `default: profile: ${{ env.ENV }}`, you don't need to give
 `--profile <PROFILE_NAME>`, except if you want a different profile than the
 default one.
+
+## Podman Extension (Experimental)
+
+Sugar now includes experimental support for Podman through the `podman-ext`
+extension. This extension allows you to use Podman as a container engine backend
+instead of Docker, with both standard container operations and experimental
+commands.
+
+### Key Features
+
+- Full support for standard
+  [podman-compose](https://github.com/containers/podman-compose) cli commands
+
+See the [Podman Extension documentation](docs/podman-ext.md) for detailed usage
+instructions and configuration options.
