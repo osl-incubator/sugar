@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from sugar.healthcheck import *
+from sugar.healthcheck import get_container_name, get_container_stats, check_container_health
 
 
 class TestHealthCheck(unittest.TestCase):

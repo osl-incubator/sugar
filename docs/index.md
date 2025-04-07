@@ -62,7 +62,7 @@ These commands are available in the main profile/plugin, so you don't need to
 specify any extra parameter to access them.
 
 For extra commands, we are gathering them into a profile/plugin called `ext`, so
-you can access them using something like: `sugar ext restart`.
+you can access them using something like: `sugar compose-ext restart`.
 
 The current available **ext** commands are:
 
@@ -76,7 +76,7 @@ project. This is an example of a configuration file:
 
 ```yaml
 backend: compose
-default:
+defaults:
   group:  {% raw %} ${{ env.ENV }} {% endraw %}
 groups:
   group1:
@@ -114,13 +114,13 @@ Some examples of how to use it:
 - build all services (ignore default) for group1:
   `sugar build --group group1 --all`
 
-- start the default services for group1: `sugar ext start --group group1`
+- start the default services for group1: `sugar compose-ext start --group group`
 
 - restart all services (ignore defaults) for group1:
-  `sugar ext restart --group group1 --all`
+  `sugar compose-ext restart --group group1 --all`
 
 - restart service1 and service2 for group1:
-  `sugar ext restart --group group1 --services service1,service2`
+  `sugar compose-ext restart --group group1 --services service1,service2`
 
 **NOTE**: If you use: `default: group: {% raw %} ${{ env.ENV }} {% endraw %}`,
 you don't need to give `--group <GROUP_NAME>`, except if you want a different
