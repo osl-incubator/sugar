@@ -148,7 +148,7 @@ class TestSugarPodmanComposeExt:
                 podman_ext._load_podman_compose_args()
 
             # Verify it's the correct TypeError from pathlib
-            assert 'argument should be a str or an os.PathLike' in str(
+            assert 'argument should be a str or an os.PathLike object' in str(
                 excinfo.value
             )
             assert "not 'int'" in str(excinfo.value)
