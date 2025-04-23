@@ -369,7 +369,6 @@ class TestSugarPodmanComposeExt:
 
     def test_cmd_build(self, podman_ext: SugarPodmanComposeExt) -> None:
         """Test _cmd_build method."""
-        """Test _cmd_build method."""
         with (
             patch.object(
                 podman_ext, '_get_services_names'
@@ -388,7 +387,6 @@ class TestSugarPodmanComposeExt:
 
     def test_cmd_config(self, podman_ext: SugarPodmanComposeExt) -> None:
         """Test _cmd_config method."""
-        """Test _cmd_config method."""
         with (
             patch.object(podman_ext, '_call_backend_app') as mock_call_backend,
             patch.object(podman_ext, '_get_list_args') as mock_get_list_args,
@@ -402,7 +400,6 @@ class TestSugarPodmanComposeExt:
             )
 
     def test_cmd_create(self, podman_ext: SugarPodmanComposeExt) -> None:
-        """Test _cmd_create method."""
         """Test _cmd_create method."""
         with (
             patch.object(
@@ -421,7 +418,6 @@ class TestSugarPodmanComposeExt:
             )
 
     def test_cmd_down(self, podman_ext: SugarPodmanComposeExt) -> None:
-        """Test _cmd_down method."""
         """Test _cmd_down method."""
         with (
             patch.object(
@@ -444,7 +440,6 @@ class TestSugarPodmanComposeExt:
             )
 
     def test_cmd_exec(self, podman_ext: SugarPodmanComposeExt) -> None:
-        """Test _cmd_exec method."""
         """Test _cmd_exec method."""
         with (
             patch.object(podman_ext, '_call_backend_app') as mock_call_backend,
@@ -469,7 +464,6 @@ class TestSugarPodmanComposeExt:
         self, podman_ext: SugarPodmanComposeExt
     ) -> None:
         """Test _cmd_exec method with no service specified."""
-        """Test _cmd_exec method with no service specified."""
         with mock.patch(
             'sugar.logs.SugarLogs.raise_error', side_effect=SystemExit
         ) as mock_error:
@@ -478,7 +472,6 @@ class TestSugarPodmanComposeExt:
             mock_error.assert_called_once()
 
     def test_cmd_kill(self, podman_ext: SugarPodmanComposeExt) -> None:
-        """Test _cmd_kill method."""
         """Test _cmd_kill method."""
         with (
             patch.object(
@@ -498,7 +491,6 @@ class TestSugarPodmanComposeExt:
 
     def test_cmd_logs(self, podman_ext: SugarPodmanComposeExt) -> None:
         """Test _cmd_logs method."""
-        """Test _cmd_logs method."""
         with (
             patch.object(
                 podman_ext, '_get_services_names'
@@ -516,7 +508,6 @@ class TestSugarPodmanComposeExt:
             )
 
     def test_cmd_start(self, podman_ext: SugarPodmanComposeExt) -> None:
-        """Test _cmd_start method."""
         """Test _cmd_start method."""
         with (
             patch.object(
@@ -541,7 +532,6 @@ class TestSugarPodmanComposeExt:
     def test_cmd_start_with_diff_services_correct(
         self, podman_ext: SugarPodmanComposeExt
     ) -> None:
-        """Test _cmd_start method with services that don't exist."""
         """Test _cmd_start method with services that don't exist."""
         with (
             mock.patch.object(
@@ -581,7 +571,6 @@ class TestSugarPodmanComposeExt:
         self, podman_ext: SugarPodmanComposeExt
     ) -> None:
         """Test _cmd_start when _call_backend_app raises SystemExit."""
-        """Test _cmd_start when _call_backend_app raises SystemExit."""
         with (
             mock.patch.object(podman_ext, '_get_services_names'),
             mock.patch.object(
@@ -608,7 +597,6 @@ class TestSugarPodmanComposeExt:
         self, podman_ext: SugarPodmanComposeExt
     ) -> None:
         """Test _cmd_start logs info message for uninitiated services."""
-        """Test _cmd_start logs info message for uninitiated services."""
         with (
             mock.patch.object(podman_ext, '_get_services_names'),
             mock.patch.object(
@@ -628,7 +616,6 @@ class TestSugarPodmanComposeExt:
     def test_cmd_start_with_all_flag(
         self, podman_ext: SugarPodmanComposeExt
     ) -> None:
-        """Test _cmd_start method with all flag set to True."""
         """Test _cmd_start method with all flag set to True."""
         with (
             mock.patch.object(
@@ -665,7 +652,6 @@ class TestSugarPodmanComposeExt:
         self, podman_ext: SugarPodmanComposeExt
     ) -> None:
         """Test _cmd_start method captures the print statement."""
-        """Test _cmd_start method captures the print statement."""
         with (
             mock.patch.object(
                 podman_ext, '_get_services_names'
@@ -684,7 +670,6 @@ class TestSugarPodmanComposeExt:
             mock_print.assert_called_once_with(['service1', 'service2'])
 
     def test_cmd_run(self, podman_ext: SugarPodmanComposeExt) -> None:
-        """Test _cmd_run method."""
         """Test _cmd_run method."""
         with (
             patch.object(podman_ext, '_call_backend_app') as mock_call_backend,
@@ -709,7 +694,6 @@ class TestSugarPodmanComposeExt:
         self, podman_ext: SugarPodmanComposeExt
     ) -> None:
         """Test _cmd_run method with no service specified."""
-        """Test _cmd_run method with no service specified."""
         with mock.patch(
             'sugar.logs.SugarLogs.raise_error', side_effect=SystemExit
         ) as mock_error:
@@ -718,7 +702,6 @@ class TestSugarPodmanComposeExt:
             mock_error.assert_called_once()
 
     def test_cmd_rm(self, podman_ext: SugarPodmanComposeExt) -> None:
-        """Test _cmd_rm method."""
         """Test _cmd_rm method."""
         with (
             patch.object(
@@ -739,7 +722,6 @@ class TestSugarPodmanComposeExt:
     def test_cmd_restart_with_detach_flag(
         self, podman_ext: SugarPodmanComposeExt
     ) -> None:
-        """Test _cmd_restart method with -d flag."""
         """Test _cmd_restart method with -d flag."""
         with mock.patch(
             'sugar.logs.SugarLogs.raise_error', side_effect=SystemExit
