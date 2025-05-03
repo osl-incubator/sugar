@@ -1,6 +1,25 @@
 # Release Notes
 ---
 
+# [1.17.0](https://github.com/osl-incubator/sugar/compare/1.16.1...1.17.0) (2025-05-03)
+
+
+### Bug Fixes
+
+* **docs:** Update README.md according to schema.json ([#143](https://github.com/osl-incubator/sugar/issues/143)) ([1ec5a60](https://github.com/osl-incubator/sugar/commit/1ec5a601285f7a8fd2097b61426bb0661e61a5dd))
+* Fix the get_terminal_size() ([#164](https://github.com/osl-incubator/sugar/issues/164)) ([dc9353b](https://github.com/osl-incubator/sugar/commit/dc9353b61b5fc7ad67d4a9fa6a1f1ae560d44114))
+
+
+### Features
+
+* Add help flag support to CLI in any OS path  ([#136](https://github.com/osl-incubator/sugar/issues/136)) ([9ec2a34](https://github.com/osl-incubator/sugar/commit/9ec2a34c7b7a5eeb47d29167cb2870f9d77dc2c6))
+* Add initial support for 'podman-compose' in sugar ([#167](https://github.com/osl-incubator/sugar/issues/167)) ([0e4ee08](https://github.com/osl-incubator/sugar/commit/0e4ee083dbcbc80f8f8413cdd3905dfff48e0907))
+* Add Initial support for 'swarm' backend in schema ,cli and core extensions ([#149](https://github.com/osl-incubator/sugar/issues/149)) ([0631be0](https://github.com/osl-incubator/sugar/commit/0631be04032927edcdcca006550a34d55f439a5a))
+* Add support for multiple `.env` files ([#175](https://github.com/osl-incubator/sugar/issues/175)) ([076480e](https://github.com/osl-incubator/sugar/commit/076480e9d226cf322f69bf9c0c0f2b704c56690c))
+* Add support for positional only ([#157](https://github.com/osl-incubator/sugar/issues/157)) ([97c04de](https://github.com/osl-incubator/sugar/commit/97c04de0cb3f309efcc28219957535dcf0b9dd71))
+* Change services/default property from string to array(list) format ([#181](https://github.com/osl-incubator/sugar/issues/181)) ([5b96464](https://github.com/osl-incubator/sugar/commit/5b96464cc3c52aa7c7114428d760413f1e72a722))
+* **cli:** enhance Typer app with subcommand help fallback upon empty command args ([#176](https://github.com/osl-incubator/sugar/issues/176)) ([13271c2](https://github.com/osl-incubator/sugar/commit/13271c2a4a8ce52678a08b542d9fb5cb938bea4e))
+
 ## [1.16.1](https://github.com/osl-incubator/sugar/compare/1.16.0...1.16.1) (2024-10-17)
 
 
