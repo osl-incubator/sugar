@@ -340,11 +340,32 @@
   
   
     <li class="md-nav__item">
-      <a href="changelog/" class="md-nav__link">
+      <a href="swarm/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Changelog
+    Swarm Usage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="podman-ext/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Podman Extension
     
   </span>
   
@@ -366,6 +387,27 @@
   
   <span class="md-ellipsis">
     Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
     
   </span>
   
@@ -499,17 +541,26 @@ file. So the command line would be very simple.</p>
 <p>These commands are available in the main profile/plugin, so you don't need to
 specify any extra parameter to access them.</p>
 <p>For extra commands, we are gathering them into a profile/plugin called <code>ext</code>, so
-you can access them using something like: <code>sugar ext restart</code>.</p>
+you can access them using something like: <code>sugar compose-ext restart</code>.</p>
 <p>The current available <strong>ext</strong> commands are:</p>
 <ul>
 <li>start -&gt; alias for <code>up</code></li>
 <li>restart -&gt; runs <code>stop</code> and <code>up</code></li>
 </ul>
+<p>Sugar also provides support for Docker Swarm through the <code>swarm</code> plugin, which
+includes:</p>
+<ul>
+<li>Initialize and manage swarm clusters</li>
+<li>Deploy and manage stacks</li>
+<li>Manage services (scaling, updating, rollback)</li>
+<li>Manage swarm nodes</li>
+</ul>
+<p>See the <a href="swarm/">Swarm documentation</a> for more details.</p>
 <h2 id="how-to-use-it">How to use it</h2>
 <p>First you need to place the config file <code>.sugar.yaml</code> in the root of your
 project. This is an example of a configuration file:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compose</span>
-<span class="nt">default</span><span class="p">:</span>
+<span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">group</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">${{ env.ENV }}</span><span class="w"> </span>
 <span class="nt">groups</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">group1</span><span class="p">:</span>
@@ -550,15 +601,15 @@ project. This is an example of a configuration file:</p>
   <code>sugar build --group group1 --all</code></p>
 </li>
 <li>
-<p>start the default services for group1: <code>sugar ext start --group group1</code></p>
+<p>start the default services for group1: <code>sugar compose-ext start --group group</code></p>
 </li>
 <li>
 <p>restart all services (ignore defaults) for group1:
-  <code>sugar ext restart --group group1 --all</code></p>
+  <code>sugar compose-ext restart --group group1 --all</code></p>
 </li>
 <li>
 <p>restart service1 and service2 for group1:
-  <code>sugar ext restart --group group1 --services service1,service2</code></p>
+  <code>sugar compose-ext restart --group group1 --services service1,service2</code></p>
 </li>
 </ul>
 <p><strong>NOTE</strong>: If you use: <code>default: group:  ${{ env.ENV }}</code>,

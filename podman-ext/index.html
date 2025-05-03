@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://osl-incubator.github.io/sugar/contributing/">
+        <link rel="canonical" href="https://osl-incubator.github.io/sugar/podman-ext/">
       
       
-        <link rel="prev" href="../podman-ext/">
+        <link rel="prev" href="../swarm/">
       
       
-        <link rel="next" href="../changelog/">
+        <link rel="next" href="../contributing/">
       
       
       <link rel="icon" href="../images/favicon.ico">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Contributing - Sugar</title>
+        <title>Podman Extension - Sugar</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#contributing" class="md-skip">
+        <a href="#podman-extension-experimental" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Contributing
+              Podman Extension
             
           </span>
         </div>
@@ -292,27 +292,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../podman-ext/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Podman Extension
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -329,7 +308,7 @@
           
   
   <span class="md-ellipsis">
-    Contributing
+    Podman Extension
     
   </span>
   
@@ -341,7 +320,7 @@
         
   
   <span class="md-ellipsis">
-    Contributing
+    Podman Extension
     
   </span>
   
@@ -364,55 +343,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-you-can-contribute" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      How You Can Contribute
+      Overview
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="How You Can Contribute">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Commands
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#report-bugs" class="md-nav__link">
+  <a href="#basic-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Report Bugs
+      Basic Commands
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#fix-bugs" class="md-nav__link">
+  <a href="#experimental-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Fix Bugs
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#implement-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Implement Features
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#write-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Write Documentation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#submit-feedback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Submit Feedback
+      Experimental Commands
     </span>
   </a>
   
@@ -424,55 +403,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
+  <a href="#how-to-use" class="md-nav__link">
     <span class="md-ellipsis">
-      Requirements
+      How to Use
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Requirements">
+    <nav class="md-nav" aria-label="How to Use">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#conda-environment" class="md-nav__link">
+  <a href="#building-services" class="md-nav__link">
     <span class="md-ellipsis">
-      Conda Environment
+      Building Services
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#git" class="md-nav__link">
+  <a href="#running-services" class="md-nav__link">
     <span class="md-ellipsis">
-      Git
+      Running Services
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#python" class="md-nav__link">
+  <a href="#executing-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Python
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#docker" class="md-nav__link">
-    <span class="md-ellipsis">
-      Docker
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#how-to-get-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      How to Get Support
+      Executing Commands
     </span>
   </a>
   
@@ -484,35 +445,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setting-up-for-local-development" class="md-nav__link">
+  <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting Up for Local Development
+      Environment Variables
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#release-process" class="md-nav__link">
+  <a href="#differences-from-docker-compose" class="md-nav__link">
     <span class="md-ellipsis">
-      Release Process
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Release Process">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#commit-message-format" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commit Message Format
+      Differences from Docker Compose
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
   
 </li>
       
@@ -520,6 +475,27 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -572,55 +548,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-you-can-contribute" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      How You Can Contribute
+      Overview
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="How You Can Contribute">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Commands
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#report-bugs" class="md-nav__link">
+  <a href="#basic-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Report Bugs
+      Basic Commands
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#fix-bugs" class="md-nav__link">
+  <a href="#experimental-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Fix Bugs
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#implement-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Implement Features
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#write-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Write Documentation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#submit-feedback" class="md-nav__link">
-    <span class="md-ellipsis">
-      Submit Feedback
+      Experimental Commands
     </span>
   </a>
   
@@ -632,55 +608,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
+  <a href="#how-to-use" class="md-nav__link">
     <span class="md-ellipsis">
-      Requirements
+      How to Use
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Requirements">
+    <nav class="md-nav" aria-label="How to Use">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#conda-environment" class="md-nav__link">
+  <a href="#building-services" class="md-nav__link">
     <span class="md-ellipsis">
-      Conda Environment
+      Building Services
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#git" class="md-nav__link">
+  <a href="#running-services" class="md-nav__link">
     <span class="md-ellipsis">
-      Git
+      Running Services
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#python" class="md-nav__link">
+  <a href="#executing-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Python
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#docker" class="md-nav__link">
-    <span class="md-ellipsis">
-      Docker
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#how-to-get-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      How to Get Support
+      Executing Commands
     </span>
   </a>
   
@@ -692,35 +650,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setting-up-for-local-development" class="md-nav__link">
+  <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting Up for Local Development
+      Environment Variables
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#release-process" class="md-nav__link">
+  <a href="#differences-from-docker-compose" class="md-nav__link">
     <span class="md-ellipsis">
-      Release Process
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Release Process">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#commit-message-format" class="md-nav__link">
-    <span class="md-ellipsis">
-      Commit Message Format
+      Differences from Docker Compose
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
   
 </li>
       
@@ -743,257 +695,165 @@
   
 
 
-<h1 id="contributing">Contributing</h1>
-<p>Your contributions are valued and play a significant role in the continuous
-improvement of <strong>Sugar</strong>. We welcome contributions of all forms and acknowledge
-all efforts.</p>
-<h2 id="how-you-can-contribute">How You Can Contribute</h2>
-<p>Contributions can be made in various ways, outlined below:</p>
-<h3 id="report-bugs">Report Bugs</h3>
-<p>If you encounter a bug in <strong>Sugar</strong>, please report it via our GitHub issues page
-at:
-<a href="https://github.com/osl-incubator/sugar/issues">https://github.com/osl-incubator/sugar/issues</a>.</p>
-<p>When reporting a bug, kindly include the following information to aid in the
-issue's resolution:</p>
+<h1 id="podman-extension-experimental">Podman Extension (Experimental)</h1>
+<div class="admonition warning">
+  <p class="admonition-title">Experimental</p>
+  <p>This feature is experimental and may change in future releases.</p>
+</div>
+
+<div class="admonition info">
+  <p class="admonition-title">Info</p>
+  <p>Sugar's podman-ext extension includes both standard Podman commands and experimental features like <code>attach</code>, <code>cp</code>, <code>ls</code>, <code>scale</code>, and <code>watch</code> that won't work currently in container operations.</p>
+</div>
+
+<p>Sugar provides support for Podman Compose through the <code>podman-ext</code> extension.
+This extension allows you to use Podman as a container engine backend instead of
+Docker.</p>
+<h2 id="overview">Overview</h2>
+<p>Podman is a daemonless container engine for developing, managing, and running
+OCI containers on your Linux system. The <code>podman-ext</code> extension in Sugar
+provides a seamless interface to work with Podman Compose, similar to how you
+would use Docker Compose.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To use the <code>podman-ext</code> extension, you need to have the following installed:</p>
 <ul>
-<li>The name and version of your operating system.</li>
-<li>Any relevant details about your setup that might assist in diagnosing the
-  issue.</li>
-<li>A step-by-step guide to reproduce the bug.</li>
+<li>Podman (latest version recommended)</li>
+<li>podman-compose</li>
 </ul>
-<h3 id="fix-bugs">Fix Bugs</h3>
-<p>You can contribute by fixing bugs identified in the GitHub issues. Issues tagged
-with both "bug" and "help wanted" are available for anyone to work on.</p>
-<h3 id="implement-features">Implement Features</h3>
-<p>Feature development is another way to contribute. Review the GitHub issues for
-requested features. Issues labeled with "enhancement" and "help wanted" are open
-for implementation.</p>
-<h3 id="write-documentation">Write Documentation</h3>
-<p>There's always a need for more documentation for <strong>Sugar</strong>. This could be
-through enhancing the official documentation, contributing to docstrings, or
-sharing knowledge via blog posts, articles, and other media.</p>
-<h3 id="submit-feedback">Submit Feedback</h3>
-<p>Feedback is crucial for project improvement. To submit feedback or propose a
-feature:</p>
+<p>You can install podman-compose using pip:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>podman-compose
+</code></pre></div>
+<h2 id="configuration">Configuration</h2>
+<p>The configuration for Podman extension is the same as for Docker Compose. You
+need to specify the backend, groups, and other parameters in the <code>.sugar.yaml</code>
+file:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">podman</span>
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">development</span>
+<span class="nt">groups</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">development</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">project-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-project</span>
+<span class="w">    </span><span class="nt">config-path</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">containers/compose.yaml</span>
+<span class="w">    </span><span class="nt">env-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
+<span class="w">    </span><span class="nt">services</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">default</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">database</span>
+<span class="w">      </span><span class="nt">available</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">database</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">redis</span>
+</code></pre></div>
+<h2 id="commands">Commands</h2>
+<p>The <code>podman-ext</code> extension provides the same set of commands as the Docker
+Compose extension. Here are the available commands:</p>
+<h3 id="basic-commands">Basic Commands</h3>
 <ul>
-<li>File an issue at
-  <a href="https://github.com/osl-incubator/sugar/issues">https://github.com/osl-incubator/sugar/issues</a>.</li>
-<li>For feature proposals, please provide a detailed explanation of how the
-  feature would function, aim for a narrow scope to facilitate easier
-  implementation, and remember, <strong>Sugar</strong> is a volunteer-driven project, and we
-  welcome contributions.</li>
+<li><code>sugar podman-ext build</code>: Build or rebuild services</li>
+<li><code>sugar podman-ext config</code>: Parse, resolve and render compose file in canonical
+  format</li>
+<li><code>sugar podman-ext create</code>: Create services</li>
+<li><code>sugar podman-ext down</code>: Stop and remove containers, networks</li>
+<li><code>sugar podman-ext exec</code>: Execute a command in a running container</li>
+<li><code>sugar podman-ext images</code>: List images used by the created containers</li>
+<li><code>sugar podman-ext kill</code>: Kill containers</li>
+<li><code>sugar podman-ext logs</code>: View output from containers</li>
+<li><code>sugar podman-ext pause</code>: Pause services</li>
+<li><code>sugar podman-ext ps</code>: List containers</li>
+<li><code>sugar podman-ext pull</code>: Pull service images</li>
+<li><code>sugar podman-ext push</code>: Push service images</li>
+<li><code>sugar podman-ext restart</code>: Restart services</li>
+<li><code>sugar podman-ext rm</code>: Remove stopped containers</li>
+<li><code>sugar podman-ext run</code>: Run a one-off command on a service</li>
+<li><code>sugar podman-ext start</code>: Start services</li>
+<li><code>sugar podman-ext stop</code>: Stop services</li>
+<li><code>sugar podman-ext top</code>: Display running processes</li>
+<li><code>sugar podman-ext unpause</code>: Unpause services</li>
+<li><code>sugar podman-ext up</code>: Create and start containers</li>
+<li><code>sugar podman-ext version</code>: Show the podman-compose version information</li>
 </ul>
-<h2 id="requirements">Requirements</h2>
-<p>Before you begin contributing to the Sugar project, there are several technical
-prerequisites and best practices you should be familiar with. This section
-outlines the key requirements to ensure a smooth and productive contribution
-process.</p>
-<h3 id="conda-environment">Conda Environment</h3>
-<p>Conda is a versatile tool that provides package, dependency, and environment
-management for various programming languages. In the Sugar project, we leverage
-Conda to manage virtual environments and package dependencies effectively.</p>
+<h3 id="experimental-commands">Experimental Commands</h3>
 <ul>
-<li><strong>Environment Setup</strong>: We strongly advise using a Conda environment while
-  working with Sugar. If Conda is not installed on your system, you can download
-  it from <a href="https://github.com/conda-forge/miniforge">Miniforge</a>. For an
-  introductory overview of Conda, consider watching this
-  <a href="https://learning.anaconda.cloud/conda-basics">Conda Basics video</a>.</li>
-<li><strong>Best Practices</strong>: Avoid installing packages in the base Conda environment.
-  Always create and activate a new environment for each project to prevent
-  dependency conflicts and ensure a clean workspace.</li>
+<li><code>sugar podman-ext attach</code>: Attach to a service's container</li>
+<li><code>sugar podman-ext cp</code>: Copy files/folders between a container and the local
+  filesystem</li>
+<li><code>sugar podman-ext ls</code>: List containers</li>
+<li><code>sugar podman-ext scale</code>: Scale services</li>
+<li><code>sugar podman-ext wait</code>: Block until the first service container stops</li>
+<li><code>sugar podman-ext watch</code>: Watch build context for service source code changes
+  and rebuild/refresh containers</li>
 </ul>
-<h3 id="git">Git</h3>
-<p>Our collaborative efforts are facilitated through Git and GitHub. Understanding
-the fundamentals of Git is crucial for effective participation.</p>
-<ul>
-<li><strong>Learning Resources</strong>: If you're new to Git, we recommend starting with the
-  <a href="https://swcarpentry.github.io/git-novice/">Software Carpentry Git Lesson</a>,
-  which covers essential Git concepts and workflows.</li>
-<li><strong>Quick Reference</strong>: For a concise summary of common Git commands, refer to
-  this
-  <a href="https://education.github.com/git-cheat-sheet-education.pdf">Git Cheat Sheet</a>
-  provided by GitHub.</li>
-<li><strong>Configuration Tips</strong>:</li>
-<li>To streamline your workflow, configure Git to use <code>rebase</code> by default for
-    pulling changes with <code>git config --global pull.rebase true</code>.</li>
-<li>Familiarize yourself with the <code>git rebase</code> command for updating branches
-    from a remote repository. Although more complex, it is preferred over the
-    default merge commit strategy. For an in-depth explanation, visit
-    <a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing">Atlassian's guide on merging vs. rebasing</a>.</li>
-<li><strong>Workflow</strong>: The standard open-source development workflow includes forking a
-  repository, cloning the fork locally, and configuring an <code>upstream</code> remote for
-  the original repository. Detailed instructions can be found in
-  <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/configuring-a-remote-repository-for-a-fork">GitHub's guide to configuring a remote for a fork</a>.</li>
-</ul>
-<h3 id="python">Python</h3>
-<p>Familiarity with Python and adherence to best practices is important for
-contributing to Sugar.</p>
-<ul>
-<li><strong>Style Guide</strong>: Follow the PEP 8 style guide for Python code, available at
-  <a href="https://peps.python.org/pep-0008/">PEP8</a>.</li>
-<li><strong>Best Practices</strong>: pyOpenSci offers a comprehensive guide for writing Python
-  packages, which can be found
-  <a href="https://www.pyopensci.org/python-package-guide/index.html">here</a>.</li>
-<li><strong>Advanced Learning</strong>: To deepen your understanding of Python and general
-  programming concepts, consider enrolling in the
-  <a href="https://www.udacity.com/course/design-of-computer-programs--cs212">Design of Computer Programs</a>
-  course on Udacity. Though challenging and based on Python 2, it provides
-  valuable insights into advanced Python usage and computer programming
-  principles.</li>
-</ul>
-<h3 id="docker">Docker</h3>
-<p>Docker and Docker Compose are fundamental components within the <strong>sugar</strong>
-project infrastructure. These technologies facilitate the creation, deployment,
-and management of isolated environments, making them integral to development and
-testing processes in <strong>sugar</strong>.</p>
-<p>To gain a foundational understanding of Docker and Docker Compose, consider
-exploring the following tutorial, which provides a comprehensive introduction to
-both technologies:
-<a href="https://www.educative.io/blog/docker-compose-tutorial">Educative: Docker Compose Tutorial</a>.
-This resource is designed to help newcomers grasp the essentials of Docker and
-Docker Compose, covering everything from basic concepts to advanced usage
-scenarios.</p>
-<p>A thorough comprehension of Docker and Docker Compose is crucial for
-contributing to the <strong>sugar</strong> project, as all development and deployment
-workflows are designed around these technologies.</p>
-<h3 id="how-to-get-support">How to Get Support</h3>
-<p>Should you require assistance, please join our community on the Open Science
-Labs Discord server at
-<a href="https://opensciencelabs.org/discord">https://opensciencelabs.org/discord</a>.
-Here, you can participate in the incubator program and ask questions about Sugar
-in its dedicated channel. You are also welcome to explore and join other groups
-that align with your interests.</p>
-<h2 id="setting-up-for-local-development">Setting Up for Local Development</h2>
-<p>To contribute to <code>sugar</code>, follow these steps to set up your development
-environment:</p>
-<ol>
-<li>
-<p><strong>Fork the Repository</strong>: Begin by forking the <code>sugar</code> repository on GitHub to
-   your own account.</p>
-</li>
-<li>
-<p><strong>Clone Your Fork Locally</strong>: Clone the forked repository to your local
-   machine and navigate into the project directory.</p>
-</li>
-</ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:your_username/sugar.git
-$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>sugar
+<h2 id="how-to-use">How to Use</h2>
+<p>You can use the <code>podman-ext</code> extension just like you would use the standard
+Docker Compose commands with Sugar. Here are some examples:</p>
+<h3 id="building-services">Building Services</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Build default services defined in the configuration</span>
+sugar<span class="w"> </span>podman-ext<span class="w"> </span>build
+
+<span class="c1"># Build all services, ignoring defaults</span>
+sugar<span class="w"> </span>podman-ext<span class="w"> </span>build<span class="w"> </span>--all
+
+<span class="c1"># Build specific services</span>
+sugar<span class="w"> </span>podman-ext<span class="w"> </span>build<span class="w"> </span>--services<span class="w"> </span>app,database
 </code></pre></div>
-<ol>
-<li><strong>Install Dependencies</strong>: Use <code>mamba</code> to create a Conda environment and
-   <code>poetry</code> for managing Python dependencies.</li>
-</ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>mamba<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>--file<span class="w"> </span>conda/dev.yaml<span class="w"> </span>--yes
-$<span class="w"> </span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.create<span class="w"> </span><span class="nb">false</span>
-$<span class="w"> </span>poetry<span class="w"> </span>install
+<h3 id="running-services">Running Services</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start default services</span>
+sugar<span class="w"> </span>podman-ext<span class="w"> </span>start
+
+<span class="c1"># Start all services in detached mode</span>
+sugar<span class="w"> </span>podman-ext<span class="w"> </span>start<span class="w"> </span>--all<span class="w"> </span>--options<span class="w"> </span>-d
+
+<span class="c1"># Start specific services in detached mode</span>
+sugar<span class="w"> </span>podman-ext<span class="w"> </span>start<span class="w"> </span>--services<span class="w"> </span>app,database<span class="w"> </span>--options<span class="w"> </span>-d
 </code></pre></div>
-<ol>
-<li><strong>Create a Development Branch</strong>: Make a dedicated branch for your bugfix or
-   feature.</li>
-</ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>name-of-your-bugfix-or-feature
+<h3 id="executing-commands">Executing Commands</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Execute a command in a running service container</span>
+sugar<span class="w"> </span>podman-ext<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--service<span class="w"> </span>app<span class="w"> </span>--cmd<span class="w"> </span><span class="s2">&quot;python manage.py migrate&quot;</span>
+
+<span class="c1"># Get a shell in a running service container</span>
+sugar<span class="w"> </span>podman-ext<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--service<span class="w"> </span>database<span class="w"> </span>--cmd<span class="w"> </span><span class="s2">&quot;bash&quot;</span>
 </code></pre></div>
-<ol>
-<li>
-<p><strong>Make Changes Locally</strong>: You are now ready to implement your changes or
-   improvements.</p>
-</li>
-<li>
-<p><strong>Install and Use Pre-commit Hooks</strong>: <code>sugar</code> utilizes <code>pre-commit</code> hooks to
-   ensure code quality. Install them locally and they will automatically run on
-   each commit.</p>
-</li>
-</ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>pre-commit<span class="w"> </span>install
-$<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+<h2 id="environment-variables">Environment Variables</h2>
+<p>Like the Docker Compose extension, the Podman extension supports the use of
+environment variables specified in the <code>env-file</code> parameter:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">groups</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">development</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">env-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.env</span>
+<span class="w">    </span><span class="c1"># Other configuration...</span>
 </code></pre></div>
-<p>To bypass the hooks temporarily, use <code>git commit</code> with <code>--no-verify</code>.</p>
+<h2 id="differences-from-docker-compose">Differences from Docker Compose</h2>
+<p>While Sugar aims to provide a consistent interface for both Docker Compose and
+Podman Compose, there are some differences to be aware of:</p>
 <ol>
-<li><strong>Run Smoke Tests</strong>: Quickly validate the functionality of your changes with
-   smoke tests.</li>
+<li>Podman Compose uses <code>-f</code> instead of <code>--file</code> for specifying compose files
+   (handled automatically by Sugar)</li>
+<li>Podman Compose uses <code>-p</code> instead of <code>--project-name</code> for specifying project
+   names (handled automatically by Sugar)</li>
+<li>Podman Compose doesn't directly support the <code>--env-file</code> flag, so Sugar loads
+   the environment variables before executing commands</li>
 </ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>makim<span class="w"> </span>tests.smoke
-</code></pre></div>
-<p>Always complement smoke tests with thorough unit testing to ensure code
-   integrity.</p>
+<div class="admonition note note">
+<p class="admonition-title">Note</p>
 <ol>
-<li><strong>Unit Testing with <code>pytest</code></strong>: <code>sugar</code> leverages <code>pytest</code> for unit testing,
-   along with <code>pytest-cov</code> for coverage analysis. Run unit tests using:</li>
+<li>There is no such flag <code>-d</code> present in <code>--options</code> for
+   <code>sugar podman-ext start</code>.</li>
+<li>Experimental commands like <code>attach</code>, <code>cp</code>, <code>ls</code>, <code>scale</code>, and <code>watch</code> may have
+   different behavior between Podman versions. These commands are not supported currently in Sugar</li>
+<li>The <code>wait</code> command is still in development.</li>
 </ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest
-</code></pre></div>
-<p>or</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>makim<span class="w"> </span>tests.unittest
-</code></pre></div>
+</div>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>If you encounter issues with the Podman extension:</p>
 <ol>
-<li><strong>Commit and Push Changes</strong>: Stage, commit, and push your changes to GitHub.
-   After setting the upstream branch once, subsequent pushes only require
-   <code>git push</code>.</li>
+<li>Make sure Podman and podman-compose are properly installed and accessible in
+   your PATH</li>
+<li>Check that your <code>.sugar.yaml</code> configuration is correctly set up</li>
+<li>Run commands with the <code>--verbose</code> flag to see detailed output</li>
+<li>If a command fails, check the error message for clues about what went wrong</li>
 </ol>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>.
-$<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Detailed description of your changes.&quot;</span>
-$<span class="w"> </span>git<span class="w"> </span>push<span class="w"> </span>--set-upstream<span class="w"> </span>origin<span class="w"> </span>&lt;branch<span class="w"> </span>name&gt;
-</code></pre></div>
-<ol>
-<li><strong>Submit a Pull Request</strong>: Once your changes are pushed, go to the GitHub
-    website to submit a pull request for review.</li>
-</ol>
-<h2 id="release-process">Release Process</h2>
-<p>The <strong>Sugar</strong> project utilizes <code>semantic-release</code> to automate the release
-process, basing new releases on the content of commit messages.</p>
-<h3 id="commit-message-format">Commit Message Format</h3>
-<p><code>semantic-release</code> analyzes commit messages to assess the impact of changes made
-to the codebase. Adhering to a standardized commit message format allows
-<code>semantic-release</code> to automatically determine the next semantic version number,
-generate a comprehensive changelog, and publish the release.</p>
-<p>While <code>semantic-release</code> defaults to the
-<a href="https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format">Angular Commit Message Conventions</a>,
-<strong>Sugar</strong> adopts the "Conventional Commits" standard
-(<a href="https://www.conventionalcommits.org/en/v1.0.0/">https://www.conventionalcommits.org/en/v1.0.0/</a>).
-This standard facilitates more detailed commit messages, especially for
-"breaking changes".</p>
-<p>Given the project's use of the <code>squash and merge</code> strategy for merging pull
-requests, it is crucial to format the PR title according to the commit message
-standards.</p>
-<p>To aid contributors in crafting compliant commit messages, tools like
-<a href="https://github.com/commitizen/cz-cli">commitizen</a> and
-<a href="https://github.com/conventional-changelog/commitlint">commitlint</a> are
-recommended. These tools help ensure that commit messages adhere to the required
-format.</p>
-<p>The following table illustrates how different commit messages correspond to the
-type of release generated by <code>semantic-release</code>, according to its default
-configuration:</p>
-<table>
-<thead>
-<tr>
-<th>Commit Message Example</th>
-<th>Release Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>fix(pencil): stop graphite breaking when too much pressure</code></td>
-<td>Patch Release</td>
-</tr>
-<tr>
-<td><code>feat(pencil): add 'graphiteWidth' option</code></td>
-<td>Minor Release</td>
-</tr>
-<tr>
-<td><code>perf(pencil): optimize 'graphiteWidth' calculation</code></td>
-<td>Patch Release</td>
-</tr>
-<tr>
-<td><code>fix(pencil)!: 'graphiteWidth' option removed</code></td>
-<td>Major Release</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Note</strong>: Within the Conventional Commits standard, appending <code>!</code> to the message
-prefix indicates a breaking change.</p>
-<p>For more details on the commit message format used by <code>semantic-release</code>, visit
-the
-<a href="https://github.com/semantic-release/semantic-release#commit-message-format">semantic-release documentation</a>.</p>
+<p>For more advanced troubleshooting, you can also directly use podman-compose
+commands to verify functionality outside of Sugar.</p>
 
 
 
