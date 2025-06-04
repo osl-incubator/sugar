@@ -425,7 +425,7 @@ class SugarSwarm(SugarBase):
             )
         # Raise error if only stack is provided without service, or only
         # service without stack
-        if (service and not stack) or (stack and not service):
+        if not (service and stack):
             SugarLogs.raise_error(
                 """Both service name and stack name must be
               provided together for inspect""",
